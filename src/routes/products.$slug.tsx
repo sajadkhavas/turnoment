@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronLeft, Heart, ShieldCheck, Truck, RotateCcw, Star, Plus, Minus } from "lucide-react";
 import { SiteLayout } from "@/components/site/site-layout";
@@ -8,45 +8,47 @@ import { formatNumber, formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart-store";
 
 export const Route = createFileRoute("/products/$slug")({
-  loader: ({ params }): { product: typeof products[number] } => {
-    const product = products.find((p) => p.slug === params.slug);
-    if (!product) throw notFound();
-    return { product };
+  head: ({ params }) => {
+    const p = products.find((x) => x.slug === params.slug);
+    return {
+      meta: p ? [
+        { title: `${p.name} — ایران مهر افزار` },
+        { name: "description", content: p.shortDescription },
+        { property: "og:title", content: p.name },
+        { property: "og:description", content: p.shortDescription },
+        { property: "og:image", content: p.image },
+        { property: "og:type", content: "product" },
+      ] : [{ title: "محصول یافت نشد" }],
+      links: p ? [{ rel: "canonical", href: `/products/${p.slug}` }] : [],
+    };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData ? [
-      { title: `${loaderData.product.name} — ایران مهر افزار` },
-      { name: "description", content: loaderData.product.shortDescription },
-      { property: "og:title", content: loaderData.product.name },
-      { property: "og:description", content: loaderData.product.shortDescription },
-      { property: "og:image", content: loaderData.product.image },
-      { property: "og:type", content: "product" },
-    ] : [],
-    links: loaderData ? [{ rel: "canonical", href: `/products/${loaderData.product.slug}` }] : [],
-  }),
-  notFoundComponent: () => (
-    <SiteLayout>
-      <div className="container mx-auto px-4 py-24 text-center">
-        <h1 className="text-2xl font-black">محصول مورد نظر یافت نشد</h1>
-        <Link to="/products" className="mt-6 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground">بازگشت به محصولات</Link>
-      </div>
-    </SiteLayout>
-  ),
   component: ProductDetail,
 });
 
 function ProductDetail() {
-  const { product } = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  const product = products.find((p) => p.slug === slug);
   const { add } = useCart();
   const [qty, setQty] = useState(1);
-  const [img, setImg] = useState(product.image);
+  const [img, setImg] = useState(product?.image ?? "");
+
+  if (!product) {
+    return (
+      <SiteLayout>
+        <div className="container mx-auto px-4 py-24 text-center">
+          <h1 className="text-2xl font-black">محصول مورد نظر یافت نشد</h1>
+          <Link to="/products" className="mt-6 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground">بازگشت به محصولات</Link>
+        </div>
+      </SiteLayout>
+    );
+  }
+
   const sale = product.salePrice && product.salePrice < product.price;
   const similar = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
   return (
     <SiteLayout>
       <div className="container mx-auto px-4 py-6">
-        {/* breadcrumb */}
         <nav className="mb-6 flex items-center gap-2 text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">خانه</Link>
           <ChevronLeft className="h-3 w-3" />
@@ -56,10 +58,9 @@ function ProductDetail() {
         </nav>
 
         <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
-          {/* Gallery */}
           <div>
             <div className="relative aspect-square overflow-hidden rounded-3xl border border-border bg-elevated">
-              <img src={img} alt={product.name} width={800} height={800} className="h-full w-full object-cover" />
+              <img src={img || product.image} alt={product.name} width={800} height={800} className="h-full w-full object-cover" />
               {sale && (
                 <span className="absolute start-4 top-4 rounded-full bg-destructive/90 px-3 py-1.5 font-mono-num text-sm font-bold text-white">
                   {formatNumber(Math.round(((product.price - product.salePrice!) / product.price) * 100))}٪ تخفیف
@@ -69,7 +70,7 @@ function ProductDetail() {
             {product.gallery.length > 1 && (
               <div className="mt-3 grid grid-cols-4 gap-3">
                 {product.gallery.map((g, i) => (
-                  <button key={i} onClick={() => setImg(g)} className={`aspect-square overflow-hidden rounded-xl border ${img === g ? "border-primary glow-violet" : "border-border"}`}>
+                  <button key={i} onClick={() => setImg(g)} className={`aspect-square overflow-hidden rounded-xl border ${(img || product.image) === g ? "border-primary glow-violet" : "border-border"}`}>
                     <img src={g} alt="" className="h-full w-full object-cover" />
                   </button>
                 ))}
@@ -77,7 +78,6 @@ function ProductDetail() {
             )}
           </div>
 
-          {/* Info */}
           <div>
             <div className="mb-2 flex flex-wrap gap-2">
               {product.platforms.map((pl) => (
@@ -98,7 +98,6 @@ function ProductDetail() {
 
             <p className="mt-5 text-sm leading-8 text-muted-foreground">{product.description}</p>
 
-            {/* Price card */}
             <div className="mt-6 rounded-2xl border border-primary/30 bg-gradient-to-l from-primary/10 to-transparent p-5">
               <div className="flex items-center gap-2 text-xs">
                 <span className={`inline-block h-2 w-2 rounded-full ${stockMeta[product.stock].dot}`} />
@@ -129,7 +128,6 @@ function ProductDetail() {
               </div>
             </div>
 
-            {/* Trust */}
             <div className="mt-6 grid grid-cols-3 gap-3">
               {[
                 { icon: ShieldCheck, t: "ضمانت اصالت" },
@@ -145,7 +143,6 @@ function ProductDetail() {
           </div>
         </div>
 
-        {/* Specs */}
         <div className="mt-12 rounded-2xl border border-border bg-card p-6">
           <h2 className="mb-4 text-lg font-black">مشخصات فنی</h2>
           <dl className="grid gap-3 sm:grid-cols-2">
@@ -158,7 +155,6 @@ function ProductDetail() {
           </dl>
         </div>
 
-        {/* Similar */}
         {similar.length > 0 && (
           <section className="mt-12">
             <h2 className="mb-6 text-xl font-black md:text-2xl">محصولات مشابه</h2>

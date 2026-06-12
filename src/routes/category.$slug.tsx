@@ -1,34 +1,39 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/site-layout";
 import { ProductCard } from "@/components/site/product-card";
 import { categories, products } from "@/lib/mock-data";
 import { formatNumber } from "@/lib/format";
 
 export const Route = createFileRoute("/category/$slug")({
-  loader: ({ params }): { category: typeof categories[number]; items: typeof products } => {
-    const category = categories.find((c) => c.slug === params.slug);
-    if (!category) throw notFound();
-    return { category, items: products.filter((p) => p.category === params.slug) };
+  head: ({ params }) => {
+    const c = categories.find((x) => x.slug === params.slug);
+    return {
+      meta: c ? [
+        { title: `${c.name} — ایران مهر افزار` },
+        { name: "description", content: `خرید ${c.name} با بهترین قیمت و ضمانت.` },
+      ] : [{ title: "دسته‌بندی یافت نشد" }],
+      links: c ? [{ rel: "canonical", href: `/category/${c.slug}` }] : [],
+    };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData ? [
-      { title: `${loaderData.category.name} — ایران مهر افزار` },
-      { name: "description", content: `خرید ${loaderData.category.name} با بهترین قیمت و ضمانت.` },
-    ] : [],
-    links: loaderData ? [{ rel: "canonical", href: `/category/${loaderData.category.slug}` }] : [],
-  }),
-  notFoundComponent: () => (
-    <SiteLayout>
-      <div className="container mx-auto px-4 py-24 text-center">
-        <h1 className="text-2xl font-black">دسته‌بندی یافت نشد</h1>
-      </div>
-    </SiteLayout>
-  ),
   component: CategoryPage,
 });
 
 function CategoryPage() {
-  const { category, items } = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  const category = categories.find((c) => c.slug === slug);
+  const items = products.filter((p) => p.category === slug);
+
+  if (!category) {
+    return (
+      <SiteLayout>
+        <div className="container mx-auto px-4 py-24 text-center">
+          <h1 className="text-2xl font-black">دسته‌بندی یافت نشد</h1>
+          <Link to="/products" className="mt-6 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground">همه محصولات</Link>
+        </div>
+      </SiteLayout>
+    );
+  }
+
   return (
     <SiteLayout>
       <div className="border-b border-border bg-gradient-to-l from-primary/10 to-transparent">
