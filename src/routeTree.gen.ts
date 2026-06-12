@@ -9,38 +9,376 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
+import { Route as ProductsIndexRouteImport } from './routes/products.index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as ServicesRequestRouteImport } from './routes/services.request'
+import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
+import { Route as PaymentResultRouteImport } from './routes/payment.result'
+import { Route as DashboardWishlistRouteImport } from './routes/dashboard.wishlist'
+import { Route as DashboardServicesRouteImport } from './routes/dashboard.services'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
+import { Route as DashboardOrdersRouteImport } from './routes/dashboard.orders'
+import { Route as DashboardAddressesRouteImport } from './routes/dashboard.addresses'
+import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsIndexRoute = ProductsIndexRouteImport.update({
+  id: '/products/',
+  path: '/products/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRequestRoute = ServicesRequestRouteImport.update({
+  id: '/services/request',
+  path: '/services/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsSlugRoute = ProductsSlugRouteImport.update({
+  id: '/products/$slug',
+  path: '/products/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentResultRoute = PaymentResultRouteImport.update({
+  id: '/payment/result',
+  path: '/payment/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardWishlistRoute = DashboardWishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardServicesRoute = DashboardServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardOrdersRoute = DashboardOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAddressesRoute = DashboardAddressesRouteImport.update({
+  id: '/addresses',
+  path: '/addresses',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const CategorySlugRoute = CategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/faq': typeof FaqRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/dashboard/addresses': typeof DashboardAddressesRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/services': typeof DashboardServicesRoute
+  '/dashboard/wishlist': typeof DashboardWishlistRoute
+  '/payment/result': typeof PaymentResultRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/services/request': typeof ServicesRequestRoute
+  '/blog/': typeof BlogIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/products/': typeof ProductsIndexRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/dashboard/addresses': typeof DashboardAddressesRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/services': typeof DashboardServicesRoute
+  '/dashboard/wishlist': typeof DashboardWishlistRoute
+  '/payment/result': typeof PaymentResultRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/services/request': typeof ServicesRequestRoute
+  '/blog': typeof BlogIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/products': typeof ProductsIndexRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/faq': typeof FaqRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/dashboard/addresses': typeof DashboardAddressesRoute
+  '/dashboard/orders': typeof DashboardOrdersRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/services': typeof DashboardServicesRoute
+  '/dashboard/wishlist': typeof DashboardWishlistRoute
+  '/payment/result': typeof PaymentResultRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/services/request': typeof ServicesRequestRoute
+  '/blog/': typeof BlogIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/products/': typeof ProductsIndexRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/dashboard'
+    | '/faq'
+    | '/login'
+    | '/register'
+    | '/blog/$slug'
+    | '/category/$slug'
+    | '/dashboard/addresses'
+    | '/dashboard/orders'
+    | '/dashboard/profile'
+    | '/dashboard/services'
+    | '/dashboard/wishlist'
+    | '/payment/result'
+    | '/products/$slug'
+    | '/services/request'
+    | '/blog/'
+    | '/dashboard/'
+    | '/products/'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/faq'
+    | '/login'
+    | '/register'
+    | '/blog/$slug'
+    | '/category/$slug'
+    | '/dashboard/addresses'
+    | '/dashboard/orders'
+    | '/dashboard/profile'
+    | '/dashboard/services'
+    | '/dashboard/wishlist'
+    | '/payment/result'
+    | '/products/$slug'
+    | '/services/request'
+    | '/blog'
+    | '/dashboard'
+    | '/products'
+    | '/services'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/dashboard'
+    | '/faq'
+    | '/login'
+    | '/register'
+    | '/blog/$slug'
+    | '/category/$slug'
+    | '/dashboard/addresses'
+    | '/dashboard/orders'
+    | '/dashboard/profile'
+    | '/dashboard/services'
+    | '/dashboard/wishlist'
+    | '/payment/result'
+    | '/products/$slug'
+    | '/services/request'
+    | '/blog/'
+    | '/dashboard/'
+    | '/products/'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  FaqRoute: typeof FaqRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  CategorySlugRoute: typeof CategorySlugRoute
+  PaymentResultRoute: typeof PaymentResultRoute
+  ProductsSlugRoute: typeof ProductsSlugRoute
+  ServicesRequestRoute: typeof ServicesRequestRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  ProductsIndexRoute: typeof ProductsIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +386,148 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/': {
+      id: '/products/'
+      path: '/products'
+      fullPath: '/products/'
+      preLoaderRoute: typeof ProductsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/request': {
+      id: '/services/request'
+      path: '/services/request'
+      fullPath: '/services/request'
+      preLoaderRoute: typeof ServicesRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/$slug': {
+      id: '/products/$slug'
+      path: '/products/$slug'
+      fullPath: '/products/$slug'
+      preLoaderRoute: typeof ProductsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/result': {
+      id: '/payment/result'
+      path: '/payment/result'
+      fullPath: '/payment/result'
+      preLoaderRoute: typeof PaymentResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/wishlist': {
+      id: '/dashboard/wishlist'
+      path: '/wishlist'
+      fullPath: '/dashboard/wishlist'
+      preLoaderRoute: typeof DashboardWishlistRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/services': {
+      id: '/dashboard/services'
+      path: '/services'
+      fullPath: '/dashboard/services'
+      preLoaderRoute: typeof DashboardServicesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/orders': {
+      id: '/dashboard/orders'
+      path: '/orders'
+      fullPath: '/dashboard/orders'
+      preLoaderRoute: typeof DashboardOrdersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/addresses': {
+      id: '/dashboard/addresses'
+      path: '/addresses'
+      fullPath: '/dashboard/addresses'
+      preLoaderRoute: typeof DashboardAddressesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/category/$slug': {
+      id: '/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/category/$slug'
+      preLoaderRoute: typeof CategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardAddressesRoute: typeof DashboardAddressesRoute
+  DashboardOrdersRoute: typeof DashboardOrdersRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardServicesRoute: typeof DashboardServicesRoute
+  DashboardWishlistRoute: typeof DashboardWishlistRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAddressesRoute: DashboardAddressesRoute,
+  DashboardOrdersRoute: DashboardOrdersRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
+  DashboardServicesRoute: DashboardServicesRoute,
+  DashboardWishlistRoute: DashboardWishlistRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
+  ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  FaqRoute: FaqRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  CategorySlugRoute: CategorySlugRoute,
+  PaymentResultRoute: PaymentResultRoute,
+  ProductsSlugRoute: ProductsSlugRoute,
+  ServicesRequestRoute: ServicesRequestRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  ProductsIndexRoute: ProductsIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
