@@ -8,7 +8,7 @@ import { formatNumber, formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart-store";
 
 export const Route = createFileRoute("/products/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): { product: typeof products[number] } => {
     const product = products.find((p) => p.slug === params.slug);
     if (!product) throw notFound();
     return { product };

@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/site-layout";
 import { blogPosts } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): { post: typeof blogPosts[number] } => {
     const post = blogPosts.find((p) => p.slug === params.slug);
     if (!post) throw notFound();
     return { post };

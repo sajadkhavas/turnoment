@@ -5,7 +5,7 @@ import { categories, products } from "@/lib/mock-data";
 import { formatNumber } from "@/lib/format";
 
 export const Route = createFileRoute("/category/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): { category: typeof categories[number]; items: typeof products } => {
     const category = categories.find((c) => c.slug === params.slug);
     if (!category) throw notFound();
     return { category, items: products.filter((p) => p.category === params.slug) };
