@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "../lib/cart-store";
 import { SiteLayout } from "../components/site/site-layout";
+import { useLenis } from "../lib/use-lenis";
 
 function NotFoundComponent() {
   return (
@@ -109,6 +110,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useLenis();
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
