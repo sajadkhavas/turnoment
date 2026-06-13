@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
+import Particles, { ParticlesProvider, useParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import type { ISourceOptions } from "@tsparticles/engine";
+import type { Engine, ISourceOptions } from "@tsparticles/engine";
+import { useEffect, useState, type ReactNode } from "react";
 
 const OPTIONS: ISourceOptions = {
   background: { color: { value: "transparent" } },
@@ -23,21 +23,32 @@ const OPTIONS: ISourceOptions = {
   detectRetina: true,
 };
 
-export function ParticlesBackground({ className = "" }: { className?: string }) {
-  const [ready, setReady] = useState(false);
-  const [enabled, setEnabled] = useState(true);
+const init = async (engine: Engine) => {
+  await loadSlim(engine);
+};
 
+function ParticlesInner({ className }: { className: string }) {
+  const { loaded } = useParticlesProvider();
+  if (!loaded) return null;
+  return <Particles id="ima-particles" options={OPTIONS} className={className} />;
+}
+
+export function ParticlesBackground({ className = "" }: { className?: string }) {
+  const [enabled, setEnabled] = useState(false);
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || window.innerWidth < 768) {
-      setEnabled(false);
-      return;
-    }
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => setReady(true));
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.innerWidth < 768) return;
+    setEnabled(true);
   }, []);
+  if (!enabled) return null;
+  return (
+    <ProviderWrapper>
+      <ParticlesInner className={`pointer-events-none absolute inset-0 ${className}`} />
+    </ProviderWrapper>
+  );
+}
 
-  if (!enabled || !ready) return null;
-  return <Particles id="ima-particles" options={OPTIONS} className={`pointer-events-none absolute inset-0 ${className}`} />;
+function ProviderWrapper({ children }: { children: ReactNode }) {
+  return <ParticlesProvider init={init}>{children}</ParticlesProvider>;
 }
