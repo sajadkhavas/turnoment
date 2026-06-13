@@ -43,7 +43,7 @@ function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
           <div className="absolute inset-0 bg-gradient-to-l from-background/90 via-transparent to-background/30" />
         </div>
-        <ParticlesBackground />
+        
         <div className="scanline-overlay pointer-events-none absolute inset-0 opacity-60" />
         <div className="rgb-strip pointer-events-none absolute inset-x-0 top-0 h-[2px]" />
 
