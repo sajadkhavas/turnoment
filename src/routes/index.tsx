@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Zap, Wrench, Gamepad2, ChevronLeft, Star } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import CountUp from "react-countup";
 import Typewriter from "typewriter-effect";
 import { SiteLayout } from "@/components/site/site-layout";
@@ -25,9 +25,9 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
-  show: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } }),
+  show: (i: number = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] } }),
 };
 
 const BRANDS = ["PlayStation", "Xbox", "Nintendo", "Razer", "Logitech", "SteelSeries", "HyperX", "Sony"];
