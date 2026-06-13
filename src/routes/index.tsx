@@ -64,21 +64,9 @@ function HomePage() {
               دستان شما
             </motion.h1>
 
-            <motion.div variants={fadeUp} custom={2} className="mt-5 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
-              <Typewriter
-                options={{
-                  strings: [
-                    "کنسول، بازی و لوازم جانبی اورجینال",
-                    "تعمیر تخصصی PS5، PS4 و Xbox",
-                    "نصب بازی با گارانتی و پشتیبانی",
-                  ],
-                  autoStart: true,
-                  loop: true,
-                  delay: 45,
-                  deleteSpeed: 25,
-                }}
-              />
-            </motion.div>
+            <motion.p variants={fadeUp} custom={2} className="mt-5 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
+              کنسول، بازی و لوازم جانبی اورجینال — تعمیر تخصصی PS5، PS4 و Xbox با گارانتی.
+            </motion.p>
 
             <motion.div variants={fadeUp} custom={3} className="mt-8 flex flex-wrap gap-3">
               <Link to="/products" className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong">
