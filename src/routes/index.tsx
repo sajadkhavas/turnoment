@@ -2,8 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Zap, Wrench, Gamepad2, ChevronLeft, Star } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import CountUp from "react-countup";
+import Typewriter from "typewriter-effect";
 import { SiteLayout } from "@/components/site/site-layout";
 import { ProductCard } from "@/components/site/product-card";
+import { ParticlesBackground } from "@/components/site/particles-bg";
 import { GlitchText } from "@/components/site/glitch-text";
 import { TiltCard } from "@/components/site/tilt-card";
 import { products, categories, services, blogPosts } from "@/lib/mock-data";
@@ -43,7 +45,7 @@ function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
           <div className="absolute inset-0 bg-gradient-to-l from-background/90 via-transparent to-background/30" />
         </div>
-        
+        <ParticlesBackground />
         <div className="scanline-overlay pointer-events-none absolute inset-0 opacity-60" />
         <div className="rgb-strip pointer-events-none absolute inset-x-0 top-0 h-[2px]" />
 
@@ -64,9 +66,21 @@ function HomePage() {
               دستان شما
             </motion.h1>
 
-            <motion.p variants={fadeUp} custom={2} className="mt-5 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
-              کنسول، بازی و لوازم جانبی اورجینال — تعمیر تخصصی PS5، PS4 و Xbox با گارانتی.
-            </motion.p>
+            <motion.div variants={fadeUp} custom={2} className="mt-5 max-w-xl text-base leading-8 text-muted-foreground md:text-lg">
+              <Typewriter
+                options={{
+                  strings: [
+                    "کنسول، بازی و لوازم جانبی اورجینال",
+                    "تعمیر تخصصی PS5، PS4 و Xbox",
+                    "نصب بازی با گارانتی و پشتیبانی",
+                  ],
+                  autoStart: true,
+                  loop: true,
+                  delay: 45,
+                  deleteSpeed: 25,
+                }}
+              />
+            </motion.div>
 
             <motion.div variants={fadeUp} custom={3} className="mt-8 flex flex-wrap gap-3">
               <Link to="/products" className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong">
