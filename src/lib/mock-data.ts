@@ -149,16 +149,23 @@ export const products: Product[] = [
   },
 ];
 
+import catConsoles from "@/assets/cat-consoles.jpg";
+import catControllers from "@/assets/cat-controllers.jpg";
+import catGames from "@/assets/cat-games.jpg";
+import catAccessories from "@/assets/cat-accessories.jpg";
+import catVr from "@/assets/cat-vr.jpg";
+import catUsed from "@/assets/cat-used.jpg";
+
 export interface Category {
-  slug: string; name: string; icon: string; count: number;
+  slug: string; name: string; icon: string; count: number; image: string;
 }
 export const categories: Category[] = [
-  { slug: "consoles", name: "کنسول‌های بازی", icon: "🎮", count: 24 },
-  { slug: "controllers", name: "دسته بازی", icon: "🕹️", count: 38 },
-  { slug: "games", name: "بازی‌ها", icon: "💿", count: 120 },
-  { slug: "accessories", name: "لوازم جانبی", icon: "🎧", count: 56 },
-  { slug: "vr", name: "واقعیت مجازی", icon: "🥽", count: 12 },
-  { slug: "used", name: "کارکرده", icon: "♻️", count: 31 },
+  { slug: "consoles", name: "کنسول‌های بازی", icon: "🎮", count: 24, image: catConsoles },
+  { slug: "controllers", name: "دسته بازی", icon: "🕹️", count: 38, image: catControllers },
+  { slug: "games", name: "بازی‌ها", icon: "💿", count: 120, image: catGames },
+  { slug: "accessories", name: "لوازم جانبی", icon: "🎧", count: 56, image: catAccessories },
+  { slug: "vr", name: "واقعیت مجازی", icon: "🥽", count: 12, image: catVr },
+  { slug: "used", name: "کارکرده", icon: "♻️", count: 31, image: catUsed },
 ];
 
 export interface ServiceType {

@@ -41,9 +41,9 @@ function HomePage() {
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
         <div className="absolute inset-0">
-          <img src={heroImg} alt="" className="h-full w-full object-cover opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
-          <div className="absolute inset-0 bg-gradient-to-l from-background/90 via-transparent to-background/30" />
+          <img src={heroImg} alt="" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/10" />
+          <div className="absolute inset-0 bg-gradient-to-l from-background/70 via-background/15 to-transparent" />
         </div>
         <ParticlesBackground />
         <div className="scanline-overlay pointer-events-none absolute inset-0 opacity-60" />
@@ -142,14 +142,23 @@ function HomePage() {
               <Link
                 to="/category/$slug"
                 params={{ slug: c.slug }}
-                className="group flex h-full flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-1 hover:border-primary/60 hover:glow-violet"
+                className="group relative block h-full overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/60 hover:glow-violet"
               >
-                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-elevated text-3xl transition-all duration-500 group-hover:bg-primary/20 group-hover:[transform:rotateY(360deg)]">
-                  {c.icon}
-                </div>
-                <div>
-                  <div className="text-sm font-bold">{c.name}</div>
-                  <div className="mt-1 font-mono-num text-[11px] text-muted-foreground">{formatNumber(c.count)} محصول</div>
+                <div className="relative aspect-square overflow-hidden bg-elevated">
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                  <span className="absolute end-2 top-2 grid h-9 w-9 place-items-center rounded-xl bg-background/70 text-xl backdrop-blur transition-colors group-hover:bg-primary/30">
+                    {c.icon}
+                  </span>
+                  <div className="absolute inset-x-0 bottom-0 p-3 text-center">
+                    <div className="text-sm font-bold leading-tight transition-colors group-hover:text-primary">{c.name}</div>
+                    <div className="mt-1 font-mono-num text-[11px] text-muted-foreground">{formatNumber(c.count)} محصول</div>
+                  </div>
                 </div>
               </Link>
             </motion.div>
