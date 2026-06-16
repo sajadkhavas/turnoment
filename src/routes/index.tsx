@@ -41,9 +41,9 @@ function HomePage() {
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
         <div className="absolute inset-0">
-          <img src={heroImg} alt="" className="h-full w-full object-cover opacity-40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
-          <div className="absolute inset-0 bg-gradient-to-l from-background/90 via-transparent to-background/30" />
+          <img src={heroImg} alt="" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/10" />
+          <div className="absolute inset-0 bg-gradient-to-l from-background/70 via-background/15 to-transparent" />
         </div>
         <ParticlesBackground />
         <div className="scanline-overlay pointer-events-none absolute inset-0 opacity-60" />
