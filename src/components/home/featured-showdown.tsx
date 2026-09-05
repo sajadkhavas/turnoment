@@ -5,7 +5,7 @@ import { formatNumber } from "@/lib/format";
 
 function PlayerSide({ p, align }: { p: typeof showdown.playerA; align: "start" | "end" }) {
   return (
-    <div className={`min-w-0 text-${align === "start" ? "start" : "end"}`}>
+    <div className={align === "start" ? "min-w-0 text-start" : "min-w-0 text-end"}>
       <div className="truncate text-lg font-black md:text-xl">{p.name}</div>
       <div className="mt-1 truncate text-xs text-muted-foreground">{p.city}</div>
       <div className="mt-3 font-mono-num text-2xl font-black text-secondary">{formatNumber(p.rating)}</div>
