@@ -5,7 +5,7 @@ import { useState } from "react";
 const nav = [
   { to: "/", label: "خانه" },
   { to: "/products", label: "مسابقات" },
-  { to: "/category/consoles", label: "گیم‌نت‌ها" },
+  { to: "/about", label: "گیم‌نت‌ها" },
   { to: "/blog", label: "رتبه‌بندی" },
   { to: "/services", label: "میزبان شو" },
 ];
