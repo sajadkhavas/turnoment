@@ -6,8 +6,8 @@ const cols = [
     title: "مسابقات",
     links: [
       { to: "/products", label: "همه مسابقات" },
-      { to: "/category/consoles", label: "مسابقات کنسول" },
-      { to: "/category/games", label: "مسابقات PC" },
+      { to: "/products", label: "مسابقات کنسول" },
+      { to: "/products", label: "مسابقات PC" },
       { to: "/blog", label: "رتبه‌بندی بازیکنان" },
     ],
   },
