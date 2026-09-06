@@ -4,10 +4,11 @@ import { useState } from "react";
 
 const nav = [
   { to: "/", label: "خانه" },
-  { to: "/products", label: "مسابقات" },
-  { to: "/about", label: "گیم‌نت‌ها" },
-  { to: "/blog", label: "رتبه‌بندی" },
-  { to: "/services", label: "میزبان شو" },
+  { to: "/tournaments", label: "مسابقات" },
+  { to: "/games", label: "بازی‌ها" },
+  { to: "/centers", label: "گیم‌نت‌ها" },
+  { to: "/ranking", label: "رتبه‌بندی" },
+  { to: "/host", label: "میزبان شو" },
 ];
 
 export function TournamentHeader() {
@@ -47,7 +48,7 @@ export function TournamentHeader() {
             ورود بازیکن
           </Link>
           <Link
-            to="/products"
+            to="/tournaments"
             className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong"
           >
             مشاهده مسابقات

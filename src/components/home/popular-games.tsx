@@ -18,7 +18,7 @@ export function PopularGames() {
             transition={{ delay: i * 0.05, duration: 0.5 }}
           >
             <Link
-              to="/products"
+              to="/tournaments"
               className="group block overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/60"
             >
               <div className="relative aspect-[4/5] overflow-hidden bg-elevated">

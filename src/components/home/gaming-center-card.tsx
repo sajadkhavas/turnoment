@@ -48,7 +48,8 @@ export function GamingCenterCard({ c }: { c: GamingCenterSummary }) {
             {formatNumber(c.upcomingTournaments)} مسابقه پیش‌رو
           </span>
           <Link
-            to="/products"
+            to="/centers/$id"
+            params={{ id: c.id }}
             className="inline-flex h-10 shrink-0 items-center rounded-lg border border-border bg-surface px-4 text-xs font-bold transition-colors hover:border-primary hover:text-primary"
           >
             مشاهده مرکز

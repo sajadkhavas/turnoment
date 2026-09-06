@@ -61,7 +61,8 @@ export function TournamentCard({ t }: { t: TournamentSummary }) {
       </div>
 
       <Link
-        to="/products"
+        to="/tournaments/$id"
+        params={{ id: t.id }}
         className={`mt-5 inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-bold transition-all ${
           t.status === "closed"
             ? "border border-border bg-surface text-muted-foreground"
