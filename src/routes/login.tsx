@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { SiteLayout } from "@/components/site/site-layout";
+import { TournamentLayout } from "@/components/tournament/tournament-layout";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "ورود — ایران مهر افزار" }, { name: "robots", content: "noindex" }] }),
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   return (
-    <SiteLayout>
+    <TournamentLayout>
       <div className="container mx-auto grid place-items-center px-4 py-16">
         <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8">
           <div className="text-center">
@@ -28,7 +28,7 @@ function LoginPage() {
           <p className="mt-6 text-center text-sm text-muted-foreground">حساب ندارید؟ <Link to="/register" className="font-bold text-primary hover:underline">ثبت‌نام</Link></p>
         </div>
       </div>
-    </SiteLayout>
+    </TournamentLayout>
   );
 }
 

@@ -5,19 +5,19 @@ const cols = [
   {
     title: "مسابقات",
     links: [
-      { to: "/products", label: "همه مسابقات" },
-      { to: "/products", label: "مسابقات کنسول" },
-      { to: "/products", label: "مسابقات PC" },
-      { to: "/blog", label: "رتبه‌بندی بازیکنان" },
+      { to: "/tournaments", label: "همه مسابقات" },
+      { to: "/games", label: "بازی‌های مسابقات" },
+      { to: "/ranking", label: "رتبه‌بندی بازیکنان" },
+      { to: "/rules", label: "قوانین مسابقات" },
     ],
   },
   {
     title: "گیم‌نت‌ها",
     links: [
-      { to: "/services", label: "ثبت گیم‌نت" },
-      { to: "/services/request", label: "درخواست میزبانی" },
-      { to: "/about", label: "شرایط تأیید مرکز" },
-      { to: "/faq", label: "سوالات متداول" },
+      { to: "/centers", label: "گیم‌نت‌های تأییدشده" },
+      { to: "/host", label: "ثبت گیم‌نت" },
+      { to: "/host", label: "درخواست میزبانی" },
+      { to: "/rules", label: "شرایط و قوانین" },
     ],
   },
 ];
@@ -73,8 +73,8 @@ export function TournamentFooter() {
         <div className="container mx-auto flex flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:flex-row">
           <div>© ۱۴۰۳ ایران مهر افزار — پلتفرم مسابقات حضوری گیمینگ</div>
           <div className="flex gap-4">
-            <a href="#">حریم خصوصی</a>
-            <a href="#">قوانین مسابقات</a>
+            <Link to="/rules" className="hover:text-primary">قوانین مسابقات</Link>
+            <Link to="/host" className="hover:text-primary">همکاری با ما</Link>
           </div>
         </div>
       </div>
