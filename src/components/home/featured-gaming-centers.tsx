@@ -12,7 +12,7 @@ export function FeaturedGamingCenters() {
         title="گیم‌نت‌های تأییدشده"
         subtitle="مراکز میزبان با تجهیزات بررسی‌شده"
         action={
-          <Link to="/products" className="inline-flex shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/10">
+          <Link to="/centers" className="inline-flex shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/10">
             همه گیم‌نت‌ها <ChevronLeft className="h-4 w-4" />
           </Link>
         }

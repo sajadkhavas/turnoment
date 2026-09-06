@@ -44,7 +44,7 @@ export function FeaturedShowdown() {
 
         <div className="relative mt-7 text-center">
           <Link
-            to="/products"
+            to="/tournaments"
             className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong"
           >
             جزئیات مسابقه

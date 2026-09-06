@@ -12,13 +12,13 @@ export function FinalCta() {
         </p>
         <div className="relative mt-7 flex flex-wrap justify-center gap-3">
           <Link
-            to="/products"
+            to="/tournaments"
             className="inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong"
           >
             مشاهده مسابقات <ArrowLeft className="h-4 w-4" />
           </Link>
           <Link
-            to="/services"
+            to="/host"
             className="inline-flex h-12 items-center rounded-xl border border-border bg-surface px-6 text-sm font-bold transition-colors hover:border-primary hover:text-primary"
           >
             ثبت گیم‌نت

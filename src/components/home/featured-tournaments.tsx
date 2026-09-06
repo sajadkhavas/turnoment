@@ -13,7 +13,7 @@ export function FeaturedTournaments() {
           title="مسابقات پیش‌رو"
           subtitle="ثبت‌نام باز در گیم‌نت‌های تأییدشده"
           action={
-            <Link to="/products" className="inline-flex shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/10">
+            <Link to="/tournaments" className="inline-flex shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/10">
               همه مسابقات <ChevronLeft className="h-4 w-4" />
             </Link>
           }

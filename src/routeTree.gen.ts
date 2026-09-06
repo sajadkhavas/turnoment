@@ -9,8 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RulesRouteImport } from './routes/rules'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as HostRouteImport } from './routes/host'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -18,10 +21,14 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TournamentsIndexRouteImport } from './routes/tournaments.index'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
+import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as CentersIndexRouteImport } from './routes/centers.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
 import { Route as ServicesRequestRouteImport } from './routes/services.request'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
 import { Route as PaymentResultRouteImport } from './routes/payment.result'
@@ -30,17 +37,33 @@ import { Route as DashboardServicesRouteImport } from './routes/dashboard.servic
 import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
 import { Route as DashboardOrdersRouteImport } from './routes/dashboard.orders'
 import { Route as DashboardAddressesRouteImport } from './routes/dashboard.addresses'
+import { Route as CentersIdRouteImport } from './routes/centers.$id'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HostRoute = HostRouteImport.update({
+  id: '/host',
+  path: '/host',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -78,6 +101,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TournamentsIndexRoute = TournamentsIndexRouteImport.update({
+  id: '/tournaments/',
+  path: '/tournaments/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
   id: '/services/',
   path: '/services/',
@@ -88,14 +116,29 @@ const ProductsIndexRoute = ProductsIndexRouteImport.update({
   path: '/products/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesIndexRoute = GamesIndexRouteImport.update({
+  id: '/games/',
+  path: '/games/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const CentersIndexRoute = CentersIndexRouteImport.update({
+  id: '/centers/',
+  path: '/centers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TournamentsIdRoute = TournamentsIdRouteImport.update({
+  id: '/tournaments/$id',
+  path: '/tournaments/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRequestRoute = ServicesRequestRouteImport.update({
@@ -138,6 +181,11 @@ const DashboardAddressesRoute = DashboardAddressesRouteImport.update({
   path: '/addresses',
   getParentRoute: () => DashboardRoute,
 } as any)
+const CentersIdRoute = CentersIdRouteImport.update({
+  id: '/centers/$id',
+  path: '/centers/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -157,10 +205,14 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/faq': typeof FaqRoute
+  '/host': typeof HostRoute
   '/login': typeof LoginRoute
+  '/ranking': typeof RankingRoute
   '/register': typeof RegisterRoute
+  '/rules': typeof RulesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/centers/$id': typeof CentersIdRoute
   '/dashboard/addresses': typeof DashboardAddressesRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -169,10 +221,14 @@ export interface FileRoutesByFullPath {
   '/payment/result': typeof PaymentResultRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/services/request': typeof ServicesRequestRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/blog/': typeof BlogIndexRoute
+  '/centers/': typeof CentersIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/games/': typeof GamesIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/tournaments/': typeof TournamentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -181,10 +237,14 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/host': typeof HostRoute
   '/login': typeof LoginRoute
+  '/ranking': typeof RankingRoute
   '/register': typeof RegisterRoute
+  '/rules': typeof RulesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/centers/$id': typeof CentersIdRoute
   '/dashboard/addresses': typeof DashboardAddressesRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -193,10 +253,14 @@ export interface FileRoutesByTo {
   '/payment/result': typeof PaymentResultRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/services/request': typeof ServicesRequestRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/blog': typeof BlogIndexRoute
+  '/centers': typeof CentersIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/games': typeof GamesIndexRoute
   '/products': typeof ProductsIndexRoute
   '/services': typeof ServicesIndexRoute
+  '/tournaments': typeof TournamentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -207,10 +271,14 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/faq': typeof FaqRoute
+  '/host': typeof HostRoute
   '/login': typeof LoginRoute
+  '/ranking': typeof RankingRoute
   '/register': typeof RegisterRoute
+  '/rules': typeof RulesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/centers/$id': typeof CentersIdRoute
   '/dashboard/addresses': typeof DashboardAddressesRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -219,10 +287,14 @@ export interface FileRoutesById {
   '/payment/result': typeof PaymentResultRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/services/request': typeof ServicesRequestRoute
+  '/tournaments/$id': typeof TournamentsIdRoute
   '/blog/': typeof BlogIndexRoute
+  '/centers/': typeof CentersIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/games/': typeof GamesIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/tournaments/': typeof TournamentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -234,10 +306,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/faq'
+    | '/host'
     | '/login'
+    | '/ranking'
     | '/register'
+    | '/rules'
     | '/blog/$slug'
     | '/category/$slug'
+    | '/centers/$id'
     | '/dashboard/addresses'
     | '/dashboard/orders'
     | '/dashboard/profile'
@@ -246,10 +322,14 @@ export interface FileRouteTypes {
     | '/payment/result'
     | '/products/$slug'
     | '/services/request'
+    | '/tournaments/$id'
     | '/blog/'
+    | '/centers/'
     | '/dashboard/'
+    | '/games/'
     | '/products/'
     | '/services/'
+    | '/tournaments/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -258,10 +338,14 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contact'
     | '/faq'
+    | '/host'
     | '/login'
+    | '/ranking'
     | '/register'
+    | '/rules'
     | '/blog/$slug'
     | '/category/$slug'
+    | '/centers/$id'
     | '/dashboard/addresses'
     | '/dashboard/orders'
     | '/dashboard/profile'
@@ -270,10 +354,14 @@ export interface FileRouteTypes {
     | '/payment/result'
     | '/products/$slug'
     | '/services/request'
+    | '/tournaments/$id'
     | '/blog'
+    | '/centers'
     | '/dashboard'
+    | '/games'
     | '/products'
     | '/services'
+    | '/tournaments'
   id:
     | '__root__'
     | '/'
@@ -283,10 +371,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/faq'
+    | '/host'
     | '/login'
+    | '/ranking'
     | '/register'
+    | '/rules'
     | '/blog/$slug'
     | '/category/$slug'
+    | '/centers/$id'
     | '/dashboard/addresses'
     | '/dashboard/orders'
     | '/dashboard/profile'
@@ -295,10 +387,14 @@ export interface FileRouteTypes {
     | '/payment/result'
     | '/products/$slug'
     | '/services/request'
+    | '/tournaments/$id'
     | '/blog/'
+    | '/centers/'
     | '/dashboard/'
+    | '/games/'
     | '/products/'
     | '/services/'
+    | '/tournaments/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -309,20 +405,35 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   FaqRoute: typeof FaqRoute
+  HostRoute: typeof HostRoute
   LoginRoute: typeof LoginRoute
+  RankingRoute: typeof RankingRoute
   RegisterRoute: typeof RegisterRoute
+  RulesRoute: typeof RulesRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
+  CentersIdRoute: typeof CentersIdRoute
   PaymentResultRoute: typeof PaymentResultRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ServicesRequestRoute: typeof ServicesRequestRoute
+  TournamentsIdRoute: typeof TournamentsIdRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  CentersIndexRoute: typeof CentersIndexRoute
+  GamesIndexRoute: typeof GamesIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  TournamentsIndexRoute: typeof TournamentsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -330,11 +441,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/host': {
+      id: '/host'
+      path: '/host'
+      fullPath: '/host'
+      preLoaderRoute: typeof HostRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -386,6 +511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tournaments/': {
+      id: '/tournaments/'
+      path: '/tournaments'
+      fullPath: '/tournaments/'
+      preLoaderRoute: typeof TournamentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/': {
       id: '/services/'
       path: '/services'
@@ -400,6 +532,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games/': {
+      id: '/games/'
+      path: '/games'
+      fullPath: '/games/'
+      preLoaderRoute: typeof GamesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -407,11 +546,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/centers/': {
+      id: '/centers/'
+      path: '/centers'
+      fullPath: '/centers/'
+      preLoaderRoute: typeof CentersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments/$id': {
+      id: '/tournaments/$id'
+      path: '/tournaments/$id'
+      fullPath: '/tournaments/$id'
+      preLoaderRoute: typeof TournamentsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/request': {
@@ -470,6 +623,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAddressesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/centers/$id': {
+      id: '/centers/$id'
+      path: '/centers/$id'
+      fullPath: '/centers/$id'
+      preLoaderRoute: typeof CentersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/category/$slug': {
       id: '/category/$slug'
       path: '/category/$slug'
@@ -517,16 +677,24 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   FaqRoute: FaqRoute,
+  HostRoute: HostRoute,
   LoginRoute: LoginRoute,
+  RankingRoute: RankingRoute,
   RegisterRoute: RegisterRoute,
+  RulesRoute: RulesRoute,
   BlogSlugRoute: BlogSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
+  CentersIdRoute: CentersIdRoute,
   PaymentResultRoute: PaymentResultRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ServicesRequestRoute: ServicesRequestRoute,
+  TournamentsIdRoute: TournamentsIdRoute,
   BlogIndexRoute: BlogIndexRoute,
+  CentersIndexRoute: CentersIndexRoute,
+  GamesIndexRoute: GamesIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  TournamentsIndexRoute: TournamentsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
