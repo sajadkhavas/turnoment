@@ -36,6 +36,7 @@ export function createHttpTournamentRepository(client: PublicApiClient): Tournam
       return {
         items: parsed.items,
         stats: parsed.meta,
+        facets: parsed.facets,
       };
     },
 
