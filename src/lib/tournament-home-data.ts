@@ -16,12 +16,22 @@ export interface GameSummary {
   tournamentCount: number;
 }
 
-export type TournamentStatus = "open" | "filling" | "closed";
+export type TournamentStatus = "open" | "filling" | "closed" | "upcoming";
+
+export type TournamentFormat = "1v1" | "team" | "single-elim" | "double-elim" | "round-robin";
+
+export type TournamentDateBucket = "today" | "tomorrow" | "weekend" | "week" | "later";
 
 export interface TournamentSummary {
   id: string;
+  slug: string;
   title: string;
   game: string;
+  gameId: string;
+  gamingCenterId: string;
+  formatKind: TournamentFormat;
+  bracket: string;
+  dateBucket: TournamentDateBucket;
   venue: string;
   venueVerified: boolean;
   city: string;
@@ -83,8 +93,14 @@ export const popularGames: GameSummary[] = [
 export const featuredTournaments: TournamentSummary[] = [
   {
     id: "t1",
+    slug: "fc26-karaj-champions-cup",
     title: "جام قهرمانان کرج",
     game: "EA FC 26",
+    gameId: "eafc26",
+    gamingCenterId: "c1",
+    formatKind: "single-elim",
+    bracket: "حذفی تک‌حذفی",
+    dateBucket: "weekend",
     venue: "Arena Gaming Center",
     venueVerified: true,
     city: "کرج",
@@ -100,8 +116,14 @@ export const featuredTournaments: TournamentSummary[] = [
   },
   {
     id: "t2",
+    slug: "tekken-night-04",
     title: "Tekken Night #04",
     game: "Tekken 8",
+    gameId: "tekken8",
+    gamingCenterId: "c2",
+    formatKind: "double-elim",
+    bracket: "دوحذفی",
+    dateBucket: "week",
     venue: "Nova Gaming",
     venueVerified: true,
     city: "تهران",
@@ -117,8 +139,14 @@ export const featuredTournaments: TournamentSummary[] = [
   },
   {
     id: "t3",
+    slug: "mortal-kombat-clash",
     title: "Mortal Kombat Clash",
     game: "Mortal Kombat",
+    gameId: "mk",
+    gamingCenterId: "c3",
+    formatKind: "single-elim",
+    bracket: "گروهی + حذفی",
+    dateBucket: "week",
     venue: "Pixel House",
     venueVerified: true,
     city: "تهران",
