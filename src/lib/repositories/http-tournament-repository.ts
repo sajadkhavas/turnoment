@@ -5,7 +5,7 @@ import {
   type TournamentQuery,
   type TournamentSummary,
 } from "@/lib/contracts/tournament";
-import type { PublicApiClient } from "@/lib/api/public-client";
+import { PublicApiError, type PublicApiClient } from "@/lib/api/public-client";
 import type { TournamentRepository } from "./tournament-repository";
 
 function queryForApi(query: TournamentQuery) {
@@ -45,9 +45,7 @@ export function createHttpTournamentRepository(client: PublicApiClient): Tournam
         const payload = await client.get<unknown>(`api/v1/tournaments/${encodeURIComponent(idOrSlug)}/`);
         return tournamentDetailResponseSchema.parse(payload).item;
       } catch (error) {
-        // A missing item is represented by undefined at the repository boundary.
-        // Non-404 classification will be added when the backend error envelope is frozen.
-        if (error instanceof Error && error.message.includes("HTTP 404")) return undefined;
+        if (error instanceof PublicApiError && error.status === 404) return undefined;
         throw error;
       }
     },
