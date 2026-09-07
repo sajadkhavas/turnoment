@@ -326,7 +326,10 @@ export const cityOptions = [
   { value: "tehran", label: "تهران" },
 ];
 
-const citySlugByName: Record<string, string> = { کرج: "karaj", تهران: "تهران" === "" ? "" : "tehran" };
+const citySlugByName: Record<string, string> = {
+  کرج: "karaj",
+  تهران: "tehran",
+};
 
 export function citySlug(name: string) {
   return citySlugByName[name] ?? name;

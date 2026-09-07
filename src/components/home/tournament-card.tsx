@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { BadgeCheck, CalendarDays, Clock, MapPin, Trophy, Users } from "lucide-react";
-import type { TournamentSummary } from "@/lib/tournament-home-data";
+import type { TournamentStatus, TournamentSummary } from "@/lib/tournament-home-data";
 import { formatNumber, formatPrice } from "@/lib/format";
 
-const statusMap = {
+const statusMap: Record<TournamentStatus, { label: string; cls: string }> = {
   open: { label: "ثبت‌نام باز", cls: "border-success/40 bg-success/10 text-success" },
   filling: { label: "در حال تکمیل", cls: "border-warning/40 bg-warning/10 text-warning" },
   closed: { label: "ظرفیت تکمیل", cls: "border-border bg-muted text-muted-foreground" },
-} as const;
+  upcoming: { label: "به‌زودی", cls: "border-secondary/40 bg-secondary/10 text-secondary" },
+};
 
 export function TournamentCard({ t }: { t: TournamentSummary }) {
   const status = statusMap[t.status];
@@ -52,7 +53,7 @@ export function TournamentCard({ t }: { t: TournamentSummary }) {
       <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-border bg-background/60 p-3">
         <div className="min-w-0">
           <div className="text-[11px] text-muted-foreground">هزینه ثبت‌نام</div>
-          <div className="mt-0.5 truncate font-mono-num text-sm font-bold">{formatPrice(t.entryFee)}</div>
+          <div className="mt-0.5 truncate font-mono-num text-sm font-bold">{t.entryFee === 0 ? "رایگان" : formatPrice(t.entryFee)}</div>
         </div>
         <div className="min-w-0">
           <div className="flex items-center gap-1 text-[11px] text-muted-foreground"><Trophy className="h-3.5 w-3.5 text-warning" />جایزه ثابت</div>
@@ -62,14 +63,14 @@ export function TournamentCard({ t }: { t: TournamentSummary }) {
 
       <Link
         to="/tournaments/$id"
-        params={{ id: t.id }}
+        params={{ id: t.slug }}
         className={`mt-5 inline-flex h-11 items-center justify-center rounded-xl px-4 text-sm font-bold transition-all ${
-          t.status === "closed"
-            ? "border border-border bg-surface text-muted-foreground"
+          t.status === "closed" || t.status === "upcoming"
+            ? "border border-border bg-surface text-muted-foreground hover:text-foreground"
             : "bg-primary text-primary-foreground hover:glow-violet-strong"
         }`}
       >
-        {t.status === "closed" ? "مشاهده جزئیات" : "ثبت‌نام در مسابقه"}
+        {t.status === "closed" ? "مشاهده جزئیات" : t.status === "upcoming" ? "مشاهده مسابقه" : "ثبت‌نام در مسابقه"}
       </Link>
     </article>
   );
