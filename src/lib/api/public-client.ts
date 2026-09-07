@@ -4,6 +4,16 @@ export interface PublicApiClient {
   get<T>(path: string, query?: Record<string, PublicQueryValue>): Promise<T>;
 }
 
+export class PublicApiError extends Error {
+  readonly status: number;
+
+  constructor(status: number, message = `Public API request failed with HTTP ${status}.`) {
+    super(message);
+    this.name = "PublicApiError";
+    this.status = status;
+  }
+}
+
 function normalizeBaseUrl(value: string): string {
   return value.endsWith("/") ? value : `${value}/`;
 }
@@ -37,7 +47,7 @@ export function createPublicApiClient(baseUrlProvider = getPublicApiBaseUrl): Pu
       });
 
       if (!response.ok) {
-        throw new Error(`Public API request failed with HTTP ${response.status}.`);
+        throw new PublicApiError(response.status);
       }
 
       return (await response.json()) as T;
