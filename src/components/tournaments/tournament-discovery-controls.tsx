@@ -23,6 +23,9 @@ import {
 export type DiscoverySearch = Partial<TournamentQuery>;
 
 type UpdateSearch = (patch: Partial<DiscoverySearch>) => void;
+type SelectableChipKey = "game" | "city" | "date" | "status" | "format" | "price";
+type FilterChipKey = SelectableChipKey | "verified";
+type FilterChip = { key: FilterChipKey; label: string };
 
 type ControlsProps = {
   query: TournamentQuery;
@@ -116,7 +119,7 @@ export function AdvancedTournamentFilters({ query, onUpdate, onReset }: Controls
 }
 
 export function ResultsToolbar({ query, facets, count, onUpdate, onReset }: ControlsProps & { count: number }) {
-  const chipLabels: Record<"game" | "city" | "date" | "status" | "format" | "price", FilterOption[]> = {
+  const chipLabels: Record<SelectableChipKey, FilterOption[]> = {
     game: facets.games,
     city: facets.cities,
     date: dateFilterOptions,
@@ -125,14 +128,40 @@ export function ResultsToolbar({ query, facets, count, onUpdate, onReset }: Cont
     price: priceOptions,
   };
 
-  const chips = (Object.keys(chipLabels) as Array<keyof typeof chipLabels>)
+  const chips: FilterChip[] = (Object.keys(chipLabels) as SelectableChipKey[])
     .filter((key) => query[key] !== "all")
     .map((key) => ({
       key,
       label: chipLabels[key].find((item) => item.value === query[key])?.label ?? String(query[key]),
     }));
 
-  if (query.verified) chips.push({ key: "verified" as never, label: "گیم‌نت تأییدشده" });
+  if (query.verified) chips.push({ key: "verified", label: "گیم‌نت تأییدشده" });
+
+  const clearChip = (key: FilterChipKey) => {
+    switch (key) {
+      case "verified":
+        onUpdate({ verified: false });
+        break;
+      case "game":
+        onUpdate({ game: "all" });
+        break;
+      case "city":
+        onUpdate({ city: "all" });
+        break;
+      case "date":
+        onUpdate({ date: "all" });
+        break;
+      case "status":
+        onUpdate({ status: "all" });
+        break;
+      case "format":
+        onUpdate({ format: "all" });
+        break;
+      case "price":
+        onUpdate({ price: "all" });
+        break;
+    }
+  };
 
   return (
     <div className="mt-7 flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between">
@@ -144,7 +173,7 @@ export function ResultsToolbar({ query, facets, count, onUpdate, onReset }: Cont
               <button
                 key={`${chip.key}-${chip.label}`}
                 type="button"
-                onClick={() => chip.key === "verified" ? onUpdate({ verified: false }) : onUpdate({ [chip.key]: "all" })}
+                onClick={() => clearChip(chip.key)}
                 className="inline-flex h-8 items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-3 text-xs font-bold text-primary"
               >
                 {chip.label}<X className="h-3 w-3" />
