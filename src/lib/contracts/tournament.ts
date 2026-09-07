@@ -45,6 +45,18 @@ export interface TournamentQuery {
   sort: string;
 }
 
+export const filterOptionSchema = z.object({
+  value: z.string(),
+  label: z.string(),
+});
+export type FilterOption = z.infer<typeof filterOptionSchema>;
+
+export const tournamentDiscoveryFacetsSchema = z.object({
+  games: z.array(filterOptionSchema),
+  cities: z.array(filterOptionSchema),
+});
+export type TournamentDiscoveryFacets = z.infer<typeof tournamentDiscoveryFacetsSchema>;
+
 export const tournamentDiscoveryStatsSchema = z.object({
   tournaments: z.number().int().nonnegative(),
   centers: z.number().int().nonnegative(),
@@ -55,6 +67,7 @@ export type TournamentDiscoveryStats = z.infer<typeof tournamentDiscoveryStatsSc
 export const tournamentDiscoveryResultSchema = z.object({
   items: z.array(tournamentSummarySchema),
   stats: tournamentDiscoveryStatsSchema,
+  facets: tournamentDiscoveryFacetsSchema,
 });
 export type TournamentDiscoveryResult = z.infer<typeof tournamentDiscoveryResultSchema>;
 
@@ -65,4 +78,5 @@ export const tournamentDetailResponseSchema = z.object({
 export const tournamentListResponseSchema = z.object({
   items: z.array(tournamentSummarySchema),
   meta: tournamentDiscoveryStatsSchema,
+  facets: tournamentDiscoveryFacetsSchema,
 });
