@@ -8,111 +8,44 @@ import {
 } from "@/components/tournaments/tournament-discovery-controls";
 import {
   FeaturedTournamentCard,
+  TournamentCardSkeleton,
   TournamentDiscoveryCard,
 } from "@/components/tournaments/tournament-discovery-card";
-import {
-  cityOptions,
-  dateFilterOptions,
-  discoveryStats,
-  filterTournaments,
-  formatOptions,
-  gameOptions,
-  priceOptions,
-  sortOptions,
-  statusOptions,
-  type TournamentQuery,
-} from "@/lib/tournament-data";
 import { formatNumber } from "@/lib/format";
+import { tournamentRepository } from "@/lib/repositories/tournaments";
+import {
+  compactTournamentSearch,
+  parseTournamentSearch,
+  toTournamentQuery,
+} from "@/lib/routing/tournament-search";
+import { publicSeoHead } from "@/lib/seo";
 
 const TITLE = "مسابقات گیمینگ حضوری | ایران مهر افزار";
 const DESCRIPTION = "مسابقات حضوری EA FC، Tekken، eFootball، CS2 و دیگر بازی‌ها را بر اساس شهر، تاریخ و گیم‌نت پیدا کنید.";
 
-const optionValue = (value: unknown, options: { value: string }[]) =>
-  typeof value === "string" && options.some((option) => option.value === value) ? value : undefined;
-
-export interface TournamentSearch {
-  game?: string;
-  city?: string;
-  date?: string;
-  status?: string;
-  format?: string;
-  price?: string;
-  verified?: boolean;
-  sort?: string;
-}
-
 export const Route = createFileRoute("/tournaments/")({
-  validateSearch: (search: Record<string, unknown>): TournamentSearch => ({
-    game: optionValue(search.game, gameOptions),
-    city: optionValue(search.city, cityOptions),
-    date: optionValue(search.date, dateFilterOptions),
-    status: optionValue(search.status, statusOptions),
-    format: optionValue(search.format, formatOptions),
-    price: optionValue(search.price, priceOptions),
-    verified: search.verified === true || search.verified === "true" ? true : undefined,
-    sort: optionValue(search.sort, sortOptions),
+  validateSearch: parseTournamentSearch,
+  loaderDeps: ({ search }) => toTournamentQuery(search),
+  loader: ({ deps }) => tournamentRepository.list(deps),
+  head: () => publicSeoHead({
+    title: TITLE,
+    description: DESCRIPTION,
+    canonical: "/tournaments",
   }),
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: "/tournaments" }],
-  }),
+  pendingComponent: TournamentDiscoveryPending,
   component: TournamentsPage,
 });
 
-const defaultQuery: TournamentQuery = {
-  game: "all",
-  city: "all",
-  date: "all",
-  status: "all",
-  format: "all",
-  price: "all",
-  verified: false,
-  sort: "suggested",
-};
-
-function toQuery(search: TournamentSearch): TournamentQuery {
-  return {
-    game: search.game ?? defaultQuery.game,
-    city: search.city ?? defaultQuery.city,
-    date: search.date ?? defaultQuery.date,
-    status: search.status ?? defaultQuery.status,
-    format: search.format ?? defaultQuery.format,
-    price: search.price ?? defaultQuery.price,
-    verified: search.verified ?? false,
-    sort: search.sort ?? defaultQuery.sort,
-  };
-}
-
-function compactSearch(search: DiscoverySearch): TournamentSearch {
-  return {
-    game: search.game && search.game !== "all" ? search.game : undefined,
-    city: search.city && search.city !== "all" ? search.city : undefined,
-    date: search.date && search.date !== "all" ? search.date : undefined,
-    status: search.status && search.status !== "all" ? search.status : undefined,
-    format: search.format && search.format !== "all" ? search.format : undefined,
-    price: search.price && search.price !== "all" ? search.price : undefined,
-    verified: search.verified ? true : undefined,
-    sort: search.sort && search.sort !== "suggested" ? search.sort : undefined,
-  };
-}
-
 function TournamentsPage() {
   const search = Route.useSearch();
+  const { items: results, stats, facets } = Route.useLoaderData();
   const navigate = useNavigate({ from: Route.fullPath });
-  const query = toQuery(search);
-  const results = filterTournaments(query);
+  const query = toTournamentQuery(search);
   const featured = results.find((t) => t.status === "filling") ?? results.find((t) => t.status === "open") ?? results[0];
   const gridResults = featured ? results.filter((t) => t.id !== featured.id) : results;
 
   const updateSearch = (patch: Partial<DiscoverySearch>) => {
-    const next = compactSearch({ ...search, ...patch });
+    const next = compactTournamentSearch({ ...search, ...patch });
     void navigate({ search: next, replace: true });
   };
 
@@ -133,18 +66,18 @@ function TournamentsPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2 text-xs">
-              <Stat value={discoveryStats.tournaments} label="مسابقه" />
-              <Stat value={discoveryStats.centers} label="گیم‌نت فعال" />
-              <Stat value={discoveryStats.cities} label="شهر" />
+              <Stat value={stats.tournaments} label="مسابقه" />
+              <Stat value={stats.centers} label="گیم‌نت فعال" />
+              <Stat value={stats.cities} label="شهر" />
             </div>
           </div>
         </div>
       </section>
 
       <main className="container mx-auto px-4 py-7 md:py-9">
-        <TournamentFinder query={query} onUpdate={updateSearch} />
-        <AdvancedTournamentFilters query={query} onUpdate={updateSearch} onReset={resetSearch} />
-        <ResultsToolbar query={query} count={results.length} onUpdate={updateSearch} onReset={resetSearch} />
+        <TournamentFinder query={query} facets={facets} onUpdate={updateSearch} />
+        <AdvancedTournamentFilters query={query} facets={facets} onUpdate={updateSearch} onReset={resetSearch} />
+        <ResultsToolbar query={query} facets={facets} count={results.length} onUpdate={updateSearch} onReset={resetSearch} />
 
         {featured && (
           <div className="mt-6">
@@ -169,6 +102,21 @@ function TournamentsPage() {
             </div>
           </section>
         )}
+      </main>
+    </TournamentLayout>
+  );
+}
+
+function TournamentDiscoveryPending() {
+  return (
+    <TournamentLayout>
+      <main className="container mx-auto px-4 py-10" aria-busy="true" aria-label="در حال بارگذاری مسابقات">
+        <div className="h-8 w-52 animate-pulse rounded bg-muted" />
+        <div className="mt-3 h-4 w-full max-w-xl animate-pulse rounded bg-muted" />
+        <div className="mt-8 h-28 animate-pulse rounded-2xl border border-border bg-card" />
+        <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 6 }, (_, index) => <TournamentCardSkeleton key={index} />)}
+        </div>
       </main>
     </TournamentLayout>
   );
