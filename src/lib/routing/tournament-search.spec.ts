@@ -1,3 +1,4 @@
+import "../contracts/tournament-contract.spec";
 import {
   compactTournamentSearch,
   parseTournamentSearch,
