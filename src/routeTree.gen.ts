@@ -31,6 +31,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
 import { Route as ServicesRequestRouteImport } from './routes/services.request'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
+import { Route as PlayersUsernameRouteImport } from './routes/players.$username'
 import { Route as PaymentResultRouteImport } from './routes/payment.result'
 import { Route as DashboardWishlistRouteImport } from './routes/dashboard.wishlist'
 import { Route as DashboardServicesRouteImport } from './routes/dashboard.services'
@@ -151,6 +152,11 @@ const ProductsSlugRoute = ProductsSlugRouteImport.update({
   path: '/products/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlayersUsernameRoute = PlayersUsernameRouteImport.update({
+  id: '/players/$username',
+  path: '/players/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PaymentResultRoute = PaymentResultRouteImport.update({
   id: '/payment/result',
   path: '/payment/result',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
   '/payment/result': typeof PaymentResultRoute
+  '/players/$username': typeof PlayersUsernameRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/services/request': typeof ServicesRequestRoute
   '/tournaments/$id': typeof TournamentsIdRoute
@@ -251,6 +258,7 @@ export interface FileRoutesByTo {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
   '/payment/result': typeof PaymentResultRoute
+  '/players/$username': typeof PlayersUsernameRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/services/request': typeof ServicesRequestRoute
   '/tournaments/$id': typeof TournamentsIdRoute
@@ -285,6 +293,7 @@ export interface FileRoutesById {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
   '/payment/result': typeof PaymentResultRoute
+  '/players/$username': typeof PlayersUsernameRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/services/request': typeof ServicesRequestRoute
   '/tournaments/$id': typeof TournamentsIdRoute
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/wishlist'
     | '/payment/result'
+    | '/players/$username'
     | '/products/$slug'
     | '/services/request'
     | '/tournaments/$id'
@@ -352,6 +362,7 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/wishlist'
     | '/payment/result'
+    | '/players/$username'
     | '/products/$slug'
     | '/services/request'
     | '/tournaments/$id'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/wishlist'
     | '/payment/result'
+    | '/players/$username'
     | '/products/$slug'
     | '/services/request'
     | '/tournaments/$id'
@@ -414,6 +426,7 @@ export interface RootRouteChildren {
   CategorySlugRoute: typeof CategorySlugRoute
   CentersIdRoute: typeof CentersIdRoute
   PaymentResultRoute: typeof PaymentResultRoute
+  PlayersUsernameRoute: typeof PlayersUsernameRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ServicesRequestRoute: typeof ServicesRequestRoute
   TournamentsIdRoute: typeof TournamentsIdRoute
@@ -581,6 +594,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/players/$username': {
+      id: '/players/$username'
+      path: '/players/$username'
+      fullPath: '/players/$username'
+      preLoaderRoute: typeof PlayersUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/payment/result': {
       id: '/payment/result'
       path: '/payment/result'
@@ -686,6 +706,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategorySlugRoute: CategorySlugRoute,
   CentersIdRoute: CentersIdRoute,
   PaymentResultRoute: PaymentResultRoute,
+  PlayersUsernameRoute: PlayersUsernameRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ServicesRequestRoute: ServicesRequestRoute,
   TournamentsIdRoute: TournamentsIdRoute,
