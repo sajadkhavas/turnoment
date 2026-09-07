@@ -4,8 +4,10 @@ import type {
   TournamentSummary,
 } from "@/lib/contracts/tournament";
 import {
+  cityOptions,
   discoveryStats,
   filterTournaments,
+  gameOptions,
   getTournament,
 } from "@/lib/tournament-data";
 import type { TournamentRepository } from "./tournament-repository";
@@ -20,6 +22,10 @@ export const mockTournamentRepository: TournamentRepository = {
     return {
       items,
       stats: { ...discoveryStats },
+      facets: {
+        games: gameOptions.map((option) => ({ ...option })),
+        cities: cityOptions.map((option) => ({ ...option })),
+      },
     };
   },
 
