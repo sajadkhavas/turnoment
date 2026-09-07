@@ -2,12 +2,14 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { BadgeCheck, CalendarDays, Clock, MapPin, Trophy, Users } from "lucide-react";
 import { TournamentLayout } from "@/components/tournament/tournament-layout";
-import { getTournament, gamingCenters, tournamentRules } from "@/lib/tournament-data";
+import { gamingCenters, tournamentRules } from "@/lib/tournament-data";
 import { formatNumber, formatPrice } from "@/lib/format";
+import { tournamentRepository } from "@/lib/repositories/tournaments";
+import { publicSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/tournaments/$id")({
-  loader: ({ params }) => {
-    const t = getTournament(params.id);
+  loader: async ({ params }) => {
+    const t = await tournamentRepository.getByIdOrSlug(params.id);
     if (!t) throw notFound();
     return { t };
   },
@@ -17,20 +19,32 @@ export const Route = createFileRoute("/tournaments/$id")({
     }
     const title = `${loaderData.t.title} | مسابقات ایران مهر افزار`;
     const description = `مسابقه ${loaderData.t.game} در ${loaderData.t.venue}، ${loaderData.t.city} — ${loaderData.t.date} ساعت ${loaderData.t.time}. ثبت‌نام آنلاین.`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-        { name: "twitter:card", content: "summary_large_image" },
-      ],
-    };
+    return publicSeoHead({
+      title,
+      description,
+      canonical: `/tournaments/${loaderData.t.slug}`,
+      ogType: "article",
+    });
   },
+  pendingComponent: TournamentDetailPending,
   notFoundComponent: TournamentNotFound,
   component: TournamentDetail,
 });
+
+function TournamentDetailPending() {
+  return (
+    <TournamentLayout>
+      <main className="container mx-auto px-4 py-16" aria-busy="true" aria-label="در حال بارگذاری مسابقه">
+        <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+        <div className="mt-4 h-9 w-full max-w-xl animate-pulse rounded bg-muted" />
+        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="h-80 animate-pulse rounded-2xl border border-border bg-card" />
+          <div className="h-72 animate-pulse rounded-2xl border border-border bg-card" />
+        </div>
+      </main>
+    </TournamentLayout>
+  );
+}
 
 function TournamentNotFound() {
   return (
