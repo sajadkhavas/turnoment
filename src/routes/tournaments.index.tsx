@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { RouteErrorState } from "@/components/system/route-error-state";
 import { TournamentLayout } from "@/components/tournament/tournament-layout";
 import {
   AdvancedTournamentFilters,
@@ -33,6 +34,14 @@ export const Route = createFileRoute("/tournaments/")({
     canonical: "/tournaments",
   }),
   pendingComponent: TournamentDiscoveryPending,
+  errorComponent: () => (
+    <TournamentLayout>
+      <RouteErrorState
+        title="بارگذاری مسابقات انجام نشد"
+        description="ارتباط با منبع داده مسابقات با مشکل روبه‌رو شد. دوباره تلاش کن."
+      />
+    </TournamentLayout>
+  ),
   component: TournamentsPage,
 });
 
