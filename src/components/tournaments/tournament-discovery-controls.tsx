@@ -1,13 +1,15 @@
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import type {
+  FilterOption,
+  TournamentDiscoveryFacets,
+  TournamentQuery,
+} from "@/lib/contracts/tournament";
 import {
-  cityOptions,
   dateFilterOptions,
   formatOptions,
-  gameOptions,
   priceOptions,
   sortOptions,
   statusOptions,
-  type TournamentQuery,
 } from "@/lib/tournament-data";
 import {
   Sheet,
@@ -24,13 +26,14 @@ type UpdateSearch = (patch: Partial<DiscoverySearch>) => void;
 
 type ControlsProps = {
   query: TournamentQuery;
+  facets: TournamentDiscoveryFacets;
   onUpdate: UpdateSearch;
   onReset: () => void;
 };
 
 const selectClass = "h-11 w-full rounded-xl border border-border bg-background px-3 text-sm outline-none transition-colors focus:border-primary";
 
-function SelectField({ label, value, options, onChange }: { label: string; value: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) {
+function SelectField({ label, value, options, onChange }: { label: string; value: string; options: FilterOption[]; onChange: (value: string) => void }) {
   return (
     <label className="min-w-0">
       <span className="mb-1.5 block text-xs text-muted-foreground">{label}</span>
@@ -43,11 +46,11 @@ function SelectField({ label, value, options, onChange }: { label: string; value
   );
 }
 
-export function TournamentFinder({ query, onUpdate }: Omit<ControlsProps, "onReset">) {
+export function TournamentFinder({ query, facets, onUpdate }: Pick<ControlsProps, "query" | "facets" | "onUpdate">) {
   return (
     <div className="grid gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
-      <SelectField label="بازی" value={query.game} options={gameOptions} onChange={(game) => onUpdate({ game })} />
-      <SelectField label="شهر" value={query.city} options={cityOptions} onChange={(city) => onUpdate({ city })} />
+      <SelectField label="بازی" value={query.game} options={facets.games} onChange={(game) => onUpdate({ game })} />
+      <SelectField label="شهر" value={query.city} options={facets.cities} onChange={(city) => onUpdate({ city })} />
       <SelectField label="تاریخ" value={query.date} options={dateFilterOptions} onChange={(date) => onUpdate({ date })} />
       <button type="button" onClick={() => onUpdate({})} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong">
         <Search className="h-4 w-4" />پیدا کردن مسابقه
@@ -112,16 +115,16 @@ export function AdvancedTournamentFilters({ query, onUpdate, onReset }: Controls
   );
 }
 
-const chipLabels = {
-  game: gameOptions,
-  city: cityOptions,
-  date: dateFilterOptions,
-  status: statusOptions,
-  format: formatOptions,
-  price: priceOptions,
-} as const;
+export function ResultsToolbar({ query, facets, count, onUpdate, onReset }: ControlsProps & { count: number }) {
+  const chipLabels: Record<"game" | "city" | "date" | "status" | "format" | "price", FilterOption[]> = {
+    game: facets.games,
+    city: facets.cities,
+    date: dateFilterOptions,
+    status: statusOptions,
+    format: formatOptions,
+    price: priceOptions,
+  };
 
-export function ResultsToolbar({ query, count, onUpdate, onReset }: ControlsProps & { count: number }) {
   const chips = (Object.keys(chipLabels) as Array<keyof typeof chipLabels>)
     .filter((key) => query[key] !== "all")
     .map((key) => ({
