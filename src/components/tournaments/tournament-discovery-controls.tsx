@@ -122,14 +122,16 @@ const chipLabels = {
 } as const;
 
 export function ResultsToolbar({ query, count, onUpdate, onReset }: ControlsProps & { count: number }) {
-  const chips = (Object.keys(chipLabels) as Array<keyof typeof chipLabels>)
+  const chips: Array<{ key: keyof typeof chipLabels | "verified"; label: string }> = (
+    Object.keys(chipLabels) as Array<keyof typeof chipLabels>
+  )
     .filter((key) => query[key] !== "all")
     .map((key) => ({
       key,
       label: chipLabels[key].find((item) => item.value === query[key])?.label ?? String(query[key]),
     }));
 
-  if (query.verified) chips.push({ key: "verified" as never, label: "گیم‌نت تأییدشده" });
+  if (query.verified) chips.push({ key: "verified", label: "گیم‌نت تأییدشده" });
 
   return (
     <div className="mt-7 flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between">
