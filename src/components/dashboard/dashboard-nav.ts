@@ -1,3 +1,4 @@
+import type { LinkProps } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Trophy,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 
 export interface DashboardNavItem {
-  to: string;
+  to: LinkProps["to"];
   label: string;
   icon: LucideIcon;
   exact?: boolean;

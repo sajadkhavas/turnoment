@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, type LinkProps } from "@tanstack/react-router";
 import { AlertTriangle, LockKeyhole } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -24,7 +24,7 @@ export function SectionCard({
   );
 }
 
-export function EmptyState({ text, ctaLabel, ctaTo }: { text: string; ctaLabel?: string; ctaTo?: string }) {
+export function EmptyState({ text, ctaLabel, ctaTo }: { text: string; ctaLabel?: string; ctaTo?: LinkProps["to"] }) {
   return (
     <div className="rounded-xl border border-dashed border-border bg-elevated/40 p-6 text-center">
       <p className="text-sm text-muted-foreground">{text}</p>
