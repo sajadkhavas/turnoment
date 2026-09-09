@@ -1,10 +1,12 @@
 # F01 — Final Tournament Detail & Registration
 
-Status: `READY TO MERGE`
+Status: `DONE / MERGED / FROZEN`
 
 START_SHA: `678c436998417933ee13224754c93cfe71068210`
 
-Branch: `phase/f01-final-tournament-detail-registration`
+Implementation branch: `phase/f01-final-tournament-detail-registration`
+
+Closeout branch: `closeout/f01-tournament-detail-registration`
 
 Tracking issue: `#8`
 
@@ -140,19 +142,47 @@ F01 owns:
 
 F01 does not own the full Live Tournament / Bracket page design.
 
-## Acceptance evidence — pre-merge
+## Acceptance evidence
 
-Implementation head before this evidence-only commit:
+Implementation acceptance head:
 
 `3d962cb6eb26a4088618cf052948e78c139f04fe`
 
-Frontend Quality Gate:
+Implementation acceptance CI:
 
 `34346918992` — PASS
 
+Final reviewed branch SHA:
+
+`ee08a067c82217db4dfe9ef0c6abc7f38d061695`
+
+Exact-head pre-PR CI:
+
+`34347206840` — PASS
+
+PR:
+
+`#26 — F01 — Final Tournament Detail & Registration`
+
+PR Quality Gate:
+
+`34347532831` — PASS
+
+Open review threads before merge:
+
+`0`
+
+Implementation merge SHA:
+
+`71d2382012b1042ab7667217e8691fad3303f711`
+
+Implementation post-merge main Quality Gate:
+
+`34347780114` — PASS
+
 Verified gates:
 - frozen dependency install — PASS
-- lint correctness — PASS (repository-existing warnings only; zero lint errors)
+- lint correctness — PASS (zero errors)
 - production build and TanStack route generation — PASS
 - TypeScript typecheck — PASS
 - Player Dashboard regression contract checks — PASS
@@ -161,7 +191,7 @@ Verified gates:
 - SSR landmark invariant: exactly one `<main>` on Detail and Registration — PASS
 - responsive browser screenshots at `375 / 390 / 430 / 768 / 1024 / 1440` for both routes — PASS
 
-Browser QA artifact:
+Browser QA artifact from the final implementation acceptance run:
 
 - artifact: `browser-qa-3d962cb6eb26a4088618cf052948e78c139f04fe`
 - artifact id: `10102113344`
@@ -169,8 +199,8 @@ Browser QA artifact:
 - 12 screenshots total
 - manual visual review repeated after the final landmark/sticky-navigation fixes on representative mobile and desktop captures — PASS
 
-Final accessibility hardening in this workstream includes a single-main-landmark invariant, sticky tournament section navigation below the persistent header, section scroll offsets, semantic native controls, accessible status/error regions, and RTL-safe responsive navigation.
+Final accessibility hardening includes a single-main-landmark invariant, sticky tournament section navigation below the persistent header, section scroll offsets, semantic native controls, accessible status/error regions, and RTL-safe responsive navigation.
 
 User-facing copy audit: PASS. No backend/API/mock/demo/temporary engineering-status wording is exposed by the final F01 UI.
 
-Merge/freeze evidence is intentionally recorded after the PR and post-merge main CI; until then this workstream remains `READY TO MERGE`, not `DONE`.
+The implementation is frozen at merge SHA `71d2382012b1042ab7667217e8691fad3303f711`. This closeout branch only records completion/continuity evidence; terminal closeout merge and final-main CI are recorded in Issue `#8` after they exist.
