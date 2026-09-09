@@ -82,7 +82,7 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
             </div>
 
             <div className="grid grid-cols-3 gap-2 rounded-2xl border border-border bg-background/70 p-3 backdrop-blur-sm sm:gap-3 lg:grid-cols-1">
-              <StatRow label="ثبت‌نام باز" value={game.stats.openTournamentCount} icon={<Trophy className="h-4 w-4 text-warning" />} />
+              <StatRow label="مسابقه با ثبت‌نام باز" value={game.stats.openTournamentCount} icon={<Trophy className="h-4 w-4 text-warning" />} />
               <StatRow label="گیم‌نت میزبان" value={game.stats.supportingCenterCount} icon={<MapPin className="h-4 w-4 text-primary" />} />
               <StatRow label="بازیکن رتبه‌دار" value={game.stats.rankedPlayerCount} icon={<Users className="h-4 w-4 text-secondary" />} />
             </div>
@@ -93,12 +93,12 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
       <section aria-labelledby="game-tournaments-heading" className="container mx-auto px-4 py-10 md:py-14">
         <SectionHeader
           id="game-tournaments-heading"
-          eyebrow="رقابت‌های فعال"
+          eyebrow="مسابقات و تورنمنت‌ها"
           title={`مسابقات ${game.shortName}`}
-          description="وضعیت ثبت‌نام، ظرفیت، گیم‌نت میزبان و جایزه ثابت هر مسابقه را قبل از ورود بررسی کن."
+          description={`مسابقات و تورنمنت‌های ${game.shortName} را با زمان برگزاری، وضعیت ثبت‌نام، ظرفیت، گیم‌نت میزبان و جایزه بررسی کن.`}
           action={
             <Link to="/tournaments" search={{ game: game.id }} className="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline">
-              مشاهده همه
+              همه مسابقات {game.shortName}
               <ArrowLeft className="h-4 w-4" />
             </Link>
           }
@@ -113,8 +113,8 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
         ) : (
           <EmptyPanel
             icon={<Trophy className="h-6 w-6" />}
-            title="مسابقه فعالی پیدا نشد"
-            description="فهرست عمومی مسابقات این بازی در حال حاضر رویداد قابل ثبت‌نام یا برنامه‌ریزی‌شده‌ای ندارد."
+            title={`فعلاً مسابقه‌ای برای ${game.shortName} در دسترس نیست`}
+            description={`در حال حاضر مسابقه‌ای با ثبت‌نام باز یا زمان‌بندی‌شده برای ${game.shortName} وجود ندارد. می‌توانی فهرست همه مسابقات را بررسی کنی.`}
             action={
               <Link to="/tournaments" className="text-sm font-bold text-primary hover:underline">
                 مشاهده همه مسابقات
@@ -128,9 +128,9 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
         <div className="container mx-auto px-4 py-10 md:py-14">
           <SectionHeader
             id="game-formats-heading"
-            eyebrow="ساختار رقابت"
-            title="فرمت‌های رقابتی"
-            description="این فرمت‌ها قابلیت‌های ثبت‌شده برای این بازی هستند؛ Ruleset دقیق هر مسابقه در صفحه همان رویداد نمایش داده می‌شود."
+            eyebrow="نحوه برگزاری"
+            title={`فرمت‌های مسابقات ${game.shortName}`}
+            description="مسابقات این بازی می‌توانند با فرمت‌های زیر برگزار شوند. قوانین، تعداد بازی‌ها و شرایط صعود هر تورنمنت را در صفحه همان مسابقه ببین."
           />
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {game.competitiveFormats.map((format) => (
@@ -142,7 +142,7 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
                   <div>
                     <h3 className="font-black">{format.label}</h3>
                     {format.teamSize ? (
-                      <p className="mt-1 text-xs text-muted-foreground">اندازه تیم: {formatNumber(format.teamSize)} بازیکن</p>
+                      <p className="mt-1 text-xs text-muted-foreground">تعداد بازیکن در تیم: {formatNumber(format.teamSize)}</p>
                     ) : null}
                   </div>
                 </div>
@@ -156,12 +156,12 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
       <section aria-labelledby="game-ranking-heading" className="container mx-auto px-4 py-10 md:py-14">
         <SectionHeader
           id="game-ranking-heading"
-          eyebrow="عملکرد رقابتی"
-          title={`برترین بازیکنان ${game.shortName}`}
-          description="Rating و سابقه از وضعیت رسمی رتبه‌بندی ترنومنت نمایش داده می‌شود و در رابط کاربری محاسبه نمی‌شود."
+          eyebrow="رتبه‌بندی بازیکنان"
+          title={`رتبه‌بندی بازیکنان ${game.shortName}`}
+          description={`جایگاه و عملکرد بازیکنان ${game.shortName} را بر اساس نتایج مسابقات ثبت‌شده دنبال کن.`}
           action={
             <Link to="/ranking" className="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline">
-              جدول رتبه‌بندی
+              مشاهده رتبه‌بندی کامل
               <ArrowLeft className="h-4 w-4" />
             </Link>
           }
@@ -172,7 +172,7 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
             <div className="hidden grid-cols-[70px_minmax(0,1fr)_110px_110px_90px] gap-3 border-b border-border bg-muted/35 px-5 py-3 text-xs font-bold text-muted-foreground md:grid">
               <span>رتبه</span>
               <span>بازیکن</span>
-              <span>Rating</span>
+              <span>امتیاز</span>
               <span>مسابقه</span>
               <span>روند</span>
             </div>
@@ -199,8 +199,8 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
         ) : (
           <EmptyPanel
             icon={<Users className="h-6 w-6" />}
-            title="رتبه‌بندی رسمی این بازی فعال نیست"
-            description="تا زمانی که این بازی در سیستم رتبه‌بندی عمومی ترنومنت فعال نباشد، جایگاه بازیکنان در این صفحه نمایش داده نمی‌شود."
+            title={`رتبه‌بندی ${game.shortName} منتشر نشده است`}
+            description="برای این بازی در حال حاضر جدول رتبه‌بندی منتشر نشده است. مسابقات فعال را از بخش بالای همین صفحه دنبال کن."
           />
         )}
       </section>
@@ -209,9 +209,9 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
         <div className="container mx-auto px-4 py-10 md:py-14">
           <SectionHeader
             id="game-centers-heading"
-            eyebrow="محل رقابت"
-            title={`گیم‌نت‌های میزبان ${game.shortName}`}
-            description="مراکزی که در فهرست عمومی این بازی مسابقه یا ظرفیت میزبانی ثبت‌شده دارند."
+            eyebrow="گیم‌نت و محل برگزاری"
+            title={`گیم‌نت‌های میزبان مسابقات ${game.shortName}`}
+            description={`گیم‌نت‌هایی که برای ${game.shortName} مسابقه برگزار می‌کنند یا میزبان رویدادهای ثبت‌شده این بازی هستند.`}
           />
 
           {game.centers.length > 0 ? (
@@ -248,7 +248,7 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
                       params={{ id: center.id }}
                       className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      مشاهده گیم‌نت
+                      مشاهده {center.name}
                       <ArrowLeft className="h-4 w-4" />
                     </Link>
                   </div>
@@ -258,8 +258,13 @@ export function GameDetailPage({ game }: { game: GameDetail }) {
           ) : (
             <EmptyPanel
               icon={<MapPin className="h-6 w-6" />}
-              title="گیم‌نت عمومی برای این بازی ثبت نشده"
-              description="در فهرست عمومی فعلی، مرکز میزبانی برای این بازی نمایش داده نمی‌شود."
+              title={`گیم‌نت میزبان برای ${game.shortName} پیدا نشد`}
+              description="در حال حاضر گیم‌نت میزبان فعالی برای این بازی در فهرست مسابقات وجود ندارد."
+              action={
+                <Link to="/centers" className="text-sm font-bold text-primary hover:underline">
+                  مشاهده گیم‌نت‌ها
+                </Link>
+              }
             />
           )}
         </div>

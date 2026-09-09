@@ -29,67 +29,67 @@ const GAME_CATALOG: GameCatalogFixture[] = [
     id: "eafc26",
     shortName: "EA FC 26",
     description:
-      "EA FC 26 یکی از محورهای رقابت حضوری فوتبال در ترنومنت است؛ مسابقات تک‌نفره با فرمت‌های حذفی و لیگ گروهی در مراکز میزبان برگزار می‌شوند و نتایج رسمی در سابقه رقابتی بازیکن ثبت می‌شود.",
+      "مسابقات حضوری EA SPORTS FC 26 را در گیم‌نت‌های میزبان پیدا کن، وضعیت ثبت‌نام و فرمت برگزاری را ببین و رتبه‌بندی بازیکنان این بازی را دنبال کن.",
     platforms: ["PS5", "PC"],
     formats: [
-      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "براکت مستقیم برای رقابت‌های سریع حضوری.", teamSize: 1 },
-      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "فرمت دو شانس با مسیر برندگان و بازنده‌ها.", teamSize: 1 },
-      { id: "1v1-league", label: "۱ در برابر ۱ — لیگ گروهی", description: "چند بازی مرحله گروهی پیش از تعیین جایگاه نهایی.", teamSize: 1 },
+      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "براکت تک‌حذفی برای رقابت مستقیم بازیکنان تا تعیین نفر برتر.", teamSize: 1 },
+      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "براکت دوحذفی با مسیر برنده‌ها و بازنده‌ها و فرصت بازگشت پس از نخستین شکست.", teamSize: 1 },
+      { id: "1v1-league", label: "۱ در برابر ۱ — لیگ گروهی", description: "مرحله گروهی با چند مسابقه برای هر بازیکن و جدول صعود همان تورنمنت.", teamSize: 1 },
     ],
   },
   {
     id: "efootball",
     shortName: "eFootball",
     description:
-      "eFootball در ترنومنت برای رقابت‌های حضوری سریع و لیگ‌های دوره‌ای استفاده می‌شود. صفحه هر مسابقه فرمت، قوانین، زمان حضور و وضعیت ثبت‌نام همان رویداد را به‌صورت مستقل مشخص می‌کند.",
+      "مسابقات eFootball را در گیم‌نت‌های میزبان پیدا کن؛ زمان برگزاری، وضعیت ثبت‌نام، فرمت رقابت و رتبه‌بندی بازیکنان را از همین صفحه دنبال کن.",
     platforms: ["PS5", "موبایل"],
     formats: [
-      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "رقابت دوحذفی برای حفظ شانس بازگشت بازیکن.", teamSize: 1 },
-      { id: "1v1-league", label: "۱ در برابر ۱ — لیگ گروهی", description: "مناسب لیگ‌های هفتگی و جدول امتیازی.", teamSize: 1 },
+      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "براکت دوحذفی برای رقابت‌های ۱ در برابر ۱ با فرصت بازگشت پس از نخستین شکست.", teamSize: 1 },
+      { id: "1v1-league", label: "۱ در برابر ۱ — لیگ گروهی", description: "چند مسابقه در مرحله گروهی با جدول صعود مشخص برای همان تورنمنت.", teamSize: 1 },
     ],
   },
   {
     id: "tekken8",
     shortName: "Tekken 8",
     description:
-      "Tekken 8 در ترنومنت یک بازی رقابتی مبارزه‌ای برای رویدادهای حضوری ۱ در برابر ۱ است. مسابقات می‌توانند با براکت تک‌حذفی یا دوحذفی برگزار شوند و وضعیت هر رقابت از قرارداد همان تورنمنت می‌آید.",
+      "مسابقات و تورنمنت‌های حضوری Tekken 8 را پیدا کن، گیم‌نت میزبان و براکت یا فرمت برگزاری را ببین و رتبه‌بندی بازیکنان این بازی را دنبال کن.",
     platforms: ["PS5"],
     formats: [
-      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "براکت مستقیم برای مسابقات کوتاه و فشرده.", teamSize: 1 },
-      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "براکت دوحذفی برای رقابت‌های عمیق‌تر.", teamSize: 1 },
+      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "براکت مستقیم ۱ در برابر ۱ برای تورنمنت‌های کوتاه و فشرده.", teamSize: 1 },
+      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "براکت دوحذفی با مسیر برنده‌ها و بازنده‌ها برای رقابت‌های چندمرحله‌ای.", teamSize: 1 },
     ],
   },
   {
     id: "mk",
     shortName: "Mortal Kombat",
     description:
-      "Mortal Kombat در ترنومنت برای رقابت‌های حضوری مبارزه‌ای ۱ در برابر ۱ استفاده می‌شود. فرمت هر رویداد، ظرفیت، Ruleset و نتیجه نهایی فقط از همان مسابقه معتبر است.",
+      "مسابقات حضوری Mortal Kombat را پیدا کن، زمان و محل برگزاری، وضعیت ثبت‌نام و فرمت رقابت را ببین و رتبه‌بندی بازیکنان را دنبال کن.",
     platforms: ["PS5", "Xbox"],
     formats: [
-      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "رقابت مستقیم در براکت تک‌حذفی.", teamSize: 1 },
-      { id: "1v1-groups", label: "گروهی + حذفی", description: "مرحله گروهی و سپس براکت حذفی برای تعیین قهرمان.", teamSize: 1 },
+      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "براکت تک‌حذفی برای رقابت مستقیم بازیکنان تا مشخص شدن قهرمان.", teamSize: 1 },
+      { id: "1v1-groups", label: "گروهی + حذفی", description: "مرحله گروهی برای تعیین صعودکنندگان و سپس براکت حذفی نهایی.", teamSize: 1 },
     ],
   },
   {
     id: "cs2",
     shortName: "CS2",
     description:
-      "Counter-Strike 2 در ترنومنت محور رقابت‌های تیمی حضوری است. رویدادهای ۵ در برابر ۵، لیگ و براکت حذفی با مرکز میزبان، ظرفیت تیم‌ها و Ruleset مستقل هر مسابقه مدیریت می‌شوند.",
+      "مسابقات حضوری Counter-Strike 2 (CS2) را پیدا کن، وضعیت ثبت‌نام تیم‌ها، گیم‌نت میزبان و فرمت رقابت را ببین و رتبه‌بندی بازیکنان این بازی را دنبال کن.",
     platforms: ["PC"],
     formats: [
-      { id: "5v5-single", label: "۵ در برابر ۵ — تک‌حذفی", description: "براکت تیمی مستقیم برای رویدادهای حضوری.", teamSize: 5 },
-      { id: "5v5-league", label: "۵ در برابر ۵ — لیگ گروهی", description: "رقابت تیمی چندمرحله‌ای با جدول گروهی.", teamSize: 5 },
+      { id: "5v5-single", label: "۵ در برابر ۵ — تک‌حذفی", description: "براکت تیمی تک‌حذفی برای رقابت مستقیم تیم‌های پنج‌نفره.", teamSize: 5 },
+      { id: "5v5-league", label: "۵ در برابر ۵ — لیگ گروهی", description: "مرحله گروهی چندمسابقه‌ای برای تیم‌های پنج‌نفره با جدول صعود همان تورنمنت.", teamSize: 5 },
     ],
   },
   {
     id: "warcraft",
     shortName: "Warcraft",
     description:
-      "Warcraft در ترنومنت برای رقابت‌های استراتژی حضوری تک‌نفره استفاده می‌شود. هر مسابقه Ruleset و ساختار رقابتی خود را دارد و صفحه بازی فقط مسیر کشف رقابت‌ها و وضعیت عمومی این رشته را نمایش می‌دهد.",
+      "مسابقات حضوری Warcraft را پیدا کن، زمان و محل برگزاری، وضعیت ثبت‌نام و فرمت رقابت را ببین و مسیر رقابتی بازیکنان این بازی را دنبال کن.",
     platforms: ["PC"],
     formats: [
-      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "براکت مستقیم برای رقابت‌های حضوری تک‌نفره.", teamSize: 1 },
-      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "فرمت دوحذفی برای رویدادهای رقابتی طولانی‌تر.", teamSize: 1 },
+      { id: "1v1-single", label: "۱ در برابر ۱ — تک‌حذفی", description: "براکت تک‌حذفی برای رقابت مستقیم بازیکنان در رویدادهای حضوری.", teamSize: 1 },
+      { id: "1v1-double", label: "۱ در برابر ۱ — دوحذفی", description: "براکت دوحذفی با فرصت بازگشت پس از نخستین شکست.", teamSize: 1 },
     ],
   },
 ];
@@ -184,12 +184,15 @@ function toGameDetail(catalog: GameCatalogFixture): GameDetail | null {
   ).length;
 
   const rankingState = rankingEntries.length > 0 ? "active" : "inactive";
-  const seoDescription = `${summary.name} در ترنومنت: مسابقات حضوری، گیم‌نت‌های میزبان، فرمت‌های رقابتی و رتبه‌بندی بازیکنان را در یک صفحه ببینید.`;
+  const rankingCopy = rankingEntries.length > 0
+    ? " و رتبه‌بندی بازیکنان"
+    : "";
+  const seoDescription = `مسابقات حضوری ${summary.name} در ایران؛ وضعیت ثبت‌نام، تورنمنت‌ها، گیم‌نت‌های میزبان، فرمت رقابت${rankingCopy} را دنبال کن.`;
 
   return gameDetailSchema.parse({
     id: catalog.id,
     slug: publicGameSlug(catalog.id),
-    detailVersion: `${catalog.id}:2026-09-09:1`,
+    detailVersion: `${catalog.id}:2026-09-09:2`,
     publicationState: "published",
     name: summary.name,
     shortName: catalog.shortName,
@@ -210,7 +213,7 @@ function toGameDetail(catalog: GameCatalogFixture): GameDetail | null {
     },
     centers,
     seo: {
-      title: `${summary.name} | مسابقات و رتبه‌بندی ایران مهر افزار`,
+      title: `مسابقات ${summary.name} در ایران | تورنمنت حضوری | ایران مهر افزار`,
       description: seoDescription,
     },
   });

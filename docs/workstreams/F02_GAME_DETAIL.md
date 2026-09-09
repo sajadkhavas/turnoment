@@ -1,179 +1,186 @@
 # F02 — Final Game Detail
 
-Status: `READY TO MERGE`
+Status: `READY TO MERGE — SEO FINAL COPY GREEN / EXACT-HEAD CI REQUIRED`
 
-START_SHA: `2ea5df3ecbd3a698fa838a8023994c0fc73e18a1`
+Original F02 START_SHA: `2ea5df3ecbd3a698fa838a8023994c0fc73e18a1`
 
-Branch: `phase/f02-game-detail`
+SEO/final-copy START_SHA: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 
-Tracking issue: `#29`
+Current branch: `phase/f02-seo-final-copy`
 
-## Scope
+Tracking issue: `#29` — intentionally reopened after the stricter SEO/final-copy protocol became mandatory.
 
-Build `/games/$slug` once as the final public Game Detail route under `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`, and connect `/games` listing cards to stable semantic game URLs.
+## 1. Goal
 
-## Official documentation audit
+Deliver `/games/$slug` as a final public competitive game hub under both:
 
-Reviewed on 2026-09-09 before implementation:
+- `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
+- `SEO_FINAL_COPY_PROTOCOL.md`
 
-1. TanStack Start — https://tanstack.com/start/latest
-   - Start is router-first; route params, loaders, pending/error/notFound boundaries remain the application contract.
-   - Game Detail primary content stays route-loader driven and SSR-renderable.
-2. TanStack Start selective SSR — https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr
-   - Matching routes render on the server by default (`ssr: true`).
-   - Game Detail remains full SSR because game identity, tournament discovery and rankings are public crawlable content.
-3. TanStack Router document head management — https://tanstack.com/router/latest/docs/guide/document-head-management
-   - Route `head` owns title, description, canonical and social metadata.
-4. Google canonicalization — https://developers.google.com/search/docs/crawling-indexing/canonicalization
-   - Stable semantic game slug is the canonical public URL.
-5. Google Breadcrumb structured data — https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
-   - A visible Games → Game hierarchy is appropriate for the page.
-   - F02 evaluated BreadcrumbList but intentionally does not emit it until the application has a stable absolute public-origin contract for structured-data item URLs.
-6. Google structured data general policies — https://developers.google.com/search/docs/appearance/structured-data/sd-policies
-   - Do not invent unsupported game rich-result markup. F02 intentionally avoids speculative VideoGame schema for search features Google does not document as supported rich results.
-7. W3C WCAG 2.2 — https://www.w3.org/TR/WCAG22/
-   - Semantic landmarks/headings, keyboard links, visible focus, text-based status and responsive readable content remain acceptance requirements.
+No later generic SEO/copy phase may be required for this route after F02 terminal closeout.
 
-## Design reference audit
+## 2. Original implementation truth
 
-Turnoment masters inspected first:
-- Homepage
-- Tournament Discovery
-- F01 Tournament Detail + Registration
-- Player Dashboard
+The technical F02 implementation was already merged and green before the stricter SEO protocol was introduced.
 
-External product references:
+Evidence:
 
-### BLAST Counter-Strike hub
-Reference: https://blast.tv/cs
-Useful patterns:
-- game identity and short positioning copy are immediately visible;
-- ongoing/upcoming/past competition is the main content hierarchy;
-- rankings/players/content sit under the same game hub without turning the page into a generic directory;
-- the page acts as a competitive game home, not a product-detail page.
+- implementation branch: `phase/f02-game-detail`
+- final reviewed head: `a72bdcbcba0b54674adc1e8d6eb6685818e245d4`
+- PR `#30 — F02 — Final Game Detail`
+- PR CI `34351774310` — PASS
+- open review threads: `0`
+- implementation merge SHA: `6c36325e92dacc3eb60f895afa2b553e3046087a`
+- post-merge main CI: `34352013348` — PASS
+- browser QA: PASS at `375 / 390 / 430 / 768 / 1024 / 1440`
+- browser artifact id: `10103768778`
+- artifact digest: `sha256:b287add1165d611a03e6a98fd35cb5baae6ae67d0bf2856019cfb851105176e8`
 
-### Liquipedia Counter-Strike tournament portal
-Reference: https://liquipedia.net/counterstrike/Portal:Tournaments
-Useful patterns:
-- tournament information is grouped around a game-specific hub;
-- rankings/statistics are separate but closely linked information domains;
-- high-density competition data still benefits from clear section hierarchy.
+The issue was reopened because final visible copy had engineering/system language that is not acceptable under the newer mandatory SEO/final-copy law.
 
-### Battlefy tournament discovery
-Reference: https://help.battlefy.com/en/articles/6950799-finding-tournaments-for-you
-Useful patterns:
-- game selection is a primary discovery dimension;
-- platform/region context belongs near game discovery rather than hidden in generic filters;
-- mobile keeps game discovery actionable without preserving desktop density.
+## 3. Official documentation baseline
 
-### Toornament 2025 player platform
-Reference: https://blog.toornament.com/2025/02/toornament-evolves-with-a-new-tournament-platform-and-products-for-organizers/
-Useful patterns:
-- modern player-facing discovery prioritizes participation and competition content;
-- white-label responsive hierarchy can preserve event/game identity without copying organizer admin patterns.
+Reviewed and applicable:
 
-## Selected Turnoment direction
+- TanStack Start
+- TanStack Start selective SSR
+- TanStack Router document head
+- Google canonicalization
+- Google Breadcrumb structured data
+- Google structured-data policies
+- W3C WCAG 2.2
+- Google Search sources recorded in `SEO_FINAL_COPY_PROTOCOL.md` and `docs/OFFICIAL_FRONTEND_SOURCES.md`
 
-Game Detail is a competitive hub for one game, not an encyclopedia article or ecommerce product page.
+## 4. Design direction
 
-Information architecture:
+Game Detail is a competitive game hub, not an encyclopedia or ecommerce product page. Existing Turnoment visual DNA is preserved; BLAST, Liquipedia, Battlefy and Toornament were used only for IA/interaction/reference research.
+
+## 5. SEO/search-intent research
+
+Full evidence: `docs/workstreams/F02_GAME_DETAIL_SEO_RESEARCH.md`
+
+Primary intent:
+
+**Find tournaments/competitions for one game in Iran and understand how to participate.**
+
+Primary topic cluster:
+
+- `مسابقات {game}`
+- `تورنمنت {game}`
+- `مسابقات حضوری {game}`
+- `مسابقات {game} در ایران`
+
+Supporting cluster:
+
+- `ثبت نام مسابقات {game}`
+- `گیم نت {game}`
+- `براکت {game}`
+- `لیگ {game}`
+- `فرمت مسابقات {game}`
+- `رتبه بندی بازیکنان {game}`
+
+No search-volume, difficulty, ranking or popularity figures are invented.
+
+## 6. Final information architecture
+
 1. visible breadcrumb: Games → current game
-2. compact cinematic game hero with game name, supported platforms and product-controlled competitive summary
-3. authoritative game stats: open tournaments, listed gaming centers, ranked-player availability
-4. open/upcoming tournaments for this game
-5. competitive formats supported by the game catalog contract
-6. ranking preview when official Turnoment ranking is active; explicit product-state empty/unavailable UI otherwise
-7. gaming centers currently supporting/hosting the game
-8. strong internal links to filtered Tournament Discovery and Ranking
+2. game identity + supported platforms + people-first competitive summary
+3. aggregate competition stats
+4. current/open/upcoming tournaments
+5. competition formats
+6. player ranking state/preview
+7. gaming centers hosting/supporting the game
+8. descriptive internal links to tournament discovery, rankings and centers
 
-The page does not claim universal rules for the game. Tournament-specific rules remain owned by each Tournament Ruleset.
+## 7. Permanent contract
 
-## Permanent frontend contract
-
-Production endpoint mapping:
+Production mapping:
 
 `GET /api/v1/games/{slug}/`
 
-Contract domains:
-- stable game id + slug
-- publication state
-- name + short label + public description
-- hero/media projection
-- supported platform labels
-- competitive format summaries supplied by the domain contract
-- public aggregate counts supplied by the domain contract
-- open/upcoming tournament summaries
-- official Turnoment ranking preview/state
-- gaming-center summaries supporting the game
-- SEO projection
+Contract domains include stable id/semantic slug, publication state, final public description, media, platforms, competition-format summaries, aggregate counts, tournament summaries, ranking projection, gaming-center summaries and SEO projection.
 
-The frontend does not calculate authoritative publication state, supported competition formats, official ranking eligibility or venue support truth.
+Frontend does not authoritatively calculate publication state, tournament lifecycle, ranking eligibility, venue support or competition-format truth.
 
-Deterministic fixtures implement the exact same repository interface for development/test/browser QA only.
+## 8. SEO/final-copy implementation
 
-## SEO decision
+Implemented on `phase/f02-seo-final-copy`:
 
-- canonical: `/games/{slug}`
-- robots: `index,follow` for published games; archived games are `noindex,follow`
-- dynamic title/description/Open Graph from runtime-validated loader data
-- visible Games → Game breadcrumb hierarchy
-- BreadcrumbList JSON-LD evaluated and intentionally omitted until stable absolute public-origin URLs are available for structured-data item values
-- no speculative VideoGame rich-result schema
+- final game descriptions rewritten around tournament/registration/venue/format/ranking user intent;
+- visible engineering/system wording removed;
+- section headings changed to explicit natural Persian search-aware wording;
+- visible `Rating` label changed to `امتیاز`;
+- ambiguous internal anchors replaced with descriptive anchors;
+- no-tournament/no-ranking/no-center states rewritten as user-facing product states;
+- metadata pattern changed to `مسابقات {game} در ایران | تورنمنت حضوری | ایران مهر افزار`;
+- targeted final-copy regression checks added so prohibited engineering/system wording cannot silently return.
 
-## Final implementation
+## 9. Cannibalization decision
 
-- stable public slugs are centralized independently from internal game IDs (`eafc26 → ea-fc-26`, `cs2 → counter-strike-2`, etc.)
-- legacy/internal identifiers resolve and redirect to the canonical semantic slug
-- public content is SSR-first through the route loader
-- production network payloads are validated by Zod before entering UI
-- `/games` cards now link to semantic Game Detail URLs
-- the page includes game/platform identity, public aggregate stats, open/upcoming tournaments, competitive-format capabilities, ranking state/preview and hosting-center state
-- loading, retry/error, notFound and domain empty/inactive states are final product states
-- user-facing copy contains no backend/server/API/mock/demo/temporary engineering-status language
-- existing F01 Tournament Detail/Registration browser checks remain active as regressions
+- `/games` → browse games
+- `/games/$slug` → one-game competitive hub
+- `/tournaments` → full tournament discovery/registration
+- `/ranking` → full rankings
+- `/centers` → center discovery
 
-## Owned files
+Game Detail summarizes adjacent information and links to the authoritative route instead of duplicating full experiences.
 
-F02 owns:
-- `src/routes/games.$slug.tsx`
-- material update to `src/routes/games.index.tsx` for semantic detail links
-- `src/components/games/game-detail-page.tsx`
-- `src/lib/game-slugs.ts`
-- F02 Game Detail contract/repository/fixture/http adapter/data selector/test files
-- F02-specific quality/browser QA additions
-- F02 workstream/continuity evidence
+## 10. Structured data decision
 
-## Acceptance evidence — implementation head
+- visible breadcrumb remains shipped;
+- `BreadcrumbList` JSON-LD remains intentionally omitted until stable absolute public-origin URLs are available for item URLs;
+- unsupported/speculative `VideoGame` rich-result markup remains omitted.
 
-Implementation acceptance head:
+## 11. Current pre-PR quality evidence
 
-`5bc2c2498ed8ed79713c4e5b9827d7066dba1962`
+Reviewed implementation checkpoint:
 
-Frontend Quality Gate:
+`dfa43a178ab11c9607720494bcb165e003ae0691`
 
-`34351078060` — PASS
+Quality Gate:
 
-Verified gates:
+`34358425752` — PASS
+
+Evidence:
+
 - frozen dependency install — PASS
-- lint correctness — PASS
-- production build and TanStack route generation — PASS
-- TypeScript typecheck — PASS
-- Player Dashboard regression contract checks — PASS
-- F01 Tournament Detail / Registration regression contract checks — PASS
-- F02 Game Detail contract checks — PASS
+- lint — PASS (`0` errors; inherited warnings only)
+- production build + route generation — PASS
+- TypeScript — PASS
+- dashboard/F01/F02 contract checks — PASS
+- F02 final-copy regression checks — PASS
 - browser smoke — PASS
-- exactly one `<main>` on F01 Detail, F01 Registration and F02 Game Detail — PASS
-- F01 responsive screenshot regression retained — PASS
-- F02 Game Detail screenshots at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS
+- exactly one `<main>` for F01 detail, F01 registration and F02 Game Detail — PASS
+- 18 browser captures at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS
+- artifact id: `10106806417`
+- artifact digest: `sha256:2c941652f83398f8fb6cb2f328a31b5c3995104c57c04d5a3e4996ce5d6ec5c7`
 
-Browser QA artifact:
-- artifact: `browser-qa-5bc2c2498ed8ed79713c4e5b9827d7066dba1962`
-- artifact id: `10103768778`
-- digest: `sha256:b287add1165d611a03e6a98fd35cb5baae6ae67d0bf2856019cfb851105176e8`
-- 18 screenshots total across F01 regression routes + F02 Game Detail
-- F02 representative captures at 375/430/768/1440 manually reviewed — PASS
-- no visible horizontal clipping; Persian copy wraps safely; hero/actions/stats/tournament cards remain usable across reviewed widths
+Manual visual review of Game Detail at `375 / 430 / 768 / 1440` — PASS:
 
-Open implementation blocker: `none`.
+- no horizontal clipping/overflow observed;
+- Persian copy wraps naturally in reviewed captures;
+- hero, stats, tournament cards and primary CTAs remain visible;
+- desktop/tablet/mobile hierarchy remains consistent with Turnoment design DNA.
 
-This evidence commit changes documentation only. An exact-head quality run must pass on the resulting branch SHA before PR creation. F02 remains `READY TO MERGE`, not `DONE`, until PR/review/merge/post-merge CI and continuity closeout are complete.
+## 12. Route compliance registry
+
+`docs/ROUTE_COMPLIANCE_REGISTRY.md` is the canonical route inventory.
+
+`/games/$slug` remains `IN_PROGRESS` until terminal merge + closeout evidence exists. Promotion to `FINAL_CURRENT` is reserved for the closeout branch after real post-merge evidence.
+
+## 13. Remaining terminal gates
+
+- [x] SEO research and final copy
+- [x] current implementation checkpoint Quality Gate
+- [x] representative manual visual QA
+- [ ] exact-head Quality Gate after this evidence commit
+- [ ] SEO/final-copy PR CI PASS
+- [ ] review threads = 0
+- [ ] expected-head merge
+- [ ] post-merge main CI PASS
+- [ ] closeout continuity + registry promotion to `FINAL_CURRENT`
+- [ ] closeout PR/CI/merge
+- [ ] terminal main CI PASS
+- [ ] Issue #29 close with completed evidence
+
+F02 must remain open until every unchecked item above has real evidence.
