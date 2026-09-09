@@ -1,6 +1,6 @@
 # F06 — Final Match Dispute
 
-Status: `IN PROGRESS / PRE-IMPLEMENTATION ACCEPTED`
+Status: `IN PROGRESS / IMPLEMENTATION ACCEPTED / PR PENDING`
 
 START_SHA: `0407a925974d50b4a75af292231bacb48c66eb38`
 
@@ -12,253 +12,205 @@ Route: `/matches/$id/dispute`
 
 Indexability: `PRIVATE / NOINDEX`
 
-## Identity / repository lock
+Runtime integration: `FRONTEND MOCK / BACKEND PENDING`
 
-- frontend frozen `main` verified at START: `0407a925974d50b4a75af292231bacb48c66eb38`;
+## 1. Repository / overlap lock
+
+- frontend frozen `main` at START: `0407a925974d50b4a75af292231bacb48c66eb38`;
 - F05 terminal Quality Gate `34407220433` — PASS;
-- F05 Issue #44 — `CLOSED / COMPLETED`; exact frontend NEXT is Dispute;
-- `/matches/$id/dispute` does not exist at START;
-- backend frontend-contract baseline reserves `/matches/{id}/dispute` under owner `disputes`;
-- overlapping Dispute branch/open Issue/open PR: none before creation;
-- dedicated branch created exactly from START_SHA.
+- F05 Issue #44 — closed completed;
+- `/matches/$id/dispute` did not exist at START;
+- backend contract baseline already reserved `/matches/{id}/dispute` under owner `disputes`;
+- no overlapping F06/Dispute branch, open Issue or PR existed before workstream creation;
+- branch `phase/f06-dispute` was created exactly from START_SHA.
 
-## Corrective navigation finding
-
-Stage A source audit found a real discrepancy in the frozen F05 repository: the Result Submission route is final and exists, but the `My Matches` attention card still only renders the Check-in link and does not render the previously documented `submit-result` CTA. F06 acceptance therefore includes a bounded navigation reconciliation:
-
-- `attention === "submit-result"` → `/matches/$id/result`;
-- `attention === "dispute"` → `/matches/$id/dispute`;
-- Check-in behavior remains unchanged;
-- `confirm-result` remains unlinked until its own accepted workstream exists.
-
-This correction must pass the full F05 + F06 regression gate before F06 may merge.
-
-## Mandatory governance / source audit
+## 2. Mandatory source / design / security audit
 
 Read before implementation:
-
 - `PROJECT_CONTINUITY.md`;
 - `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`;
 - `SEO_FINAL_COPY_PROTOCOL.md` applicability;
 - `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
-- F04 My Matches contract/evidence;
-- F05 Result Submission route, contract, mutation and closeout evidence;
-- backend `docs/FRONTEND_BACKEND_CONTRACT.md` at accepted backend main.
+- F04 My Matches contracts/evidence;
+- F05 Result Submission contracts/evidence/closeout;
+- backend `PROJECT_CONTINUITY.md` and frontend/backend contract documents.
 
-### TanStack Router
+External guidance applied:
+- TanStack Router data loading/mutation patterns: route params/access before loader, loader owns projection, stale/accepted mutations refresh authoritative truth instead of inventing lifecycle;
+- WCAG 2.2 input/error assistance: persistent labels, associated textual errors, keyboard-operable controls, semantic status/alert feedback;
+- Battlefy/Challonge interaction patterns: dispute is separate from score confirmation and evidence may support a match issue; no branding/layout/copy copied;
+- OWASP File Upload guidance: browser file checks are usability hints only; backend owns actual type/signature/size/count/storage/security/authorization validation.
 
-Reviewed current data-loading and data-mutation guidance.
+Public SERP research is not applicable because this is a private authenticated `noindex,nofollow` route.
 
-Decisions:
-- route params and private access policy are validated before loader use;
-- loader owns the authoritative Dispute projection;
-- mutation state is explicit in the page/repository layer;
-- after stale or accepted mutations, authoritative truth may be refreshed through router invalidation rather than optimistic lifecycle invention.
+## 3. Product scope
 
-### WCAG 2.2 — input/error assistance
-
-Decisions:
-- reason and statement controls have persistent labels;
-- validation failures are textual and associated with their control/form;
-- correction guidance is shown where known;
-- mutation/loading states remain keyboard operable and announced with semantic status/alert regions.
-
-### Battlefy interaction audit
-
-Patterns reviewed:
-- Match issue/dispute is a separate action from score confirmation;
-- incorrect-score confirmation may lead to a dispute state;
-- screenshot/image proof may be attached to a match issue;
-- dispute handling is an administrative/moderation process, not a client-side result decision.
-
-Only interaction boundaries were learned. No third-party branding, wording, layout, rules or lifecycle is copied.
-
-### OWASP File Upload Cheat Sheet
-
-Security boundary adopted:
-- frontend file filtering is usability only, never security truth;
-- backend must independently allowlist actual accepted formats and enforce file-size/count limits;
-- browser-provided `Content-Type` is not trusted as authoritative validation;
-- backend owns file-signature/type validation, safe storage naming/location, authorization, CSRF, malware/sandbox handling where applicable, and download/view authorization;
-- evidence remains private; the frontend contract does not invent a public evidence URL.
-
-## Selected final product direction
-
-F06 is one focused private Match Dispute page that supports the complete player-facing lifecycle owned by this frontend workstream:
-
+F06 owns the complete player-facing Dispute surface for one Match:
 1. show authoritative Match/result context;
-2. create a dispute only when backend state is `eligible`;
-3. show current dispute when `open` or `under-review`;
-4. allow evidence upload only when backend policy + `canAddEvidence` permit it;
-5. show authoritative resolution when `resolved`;
-6. show safe unavailable state otherwise.
+2. allow dispute creation only when state is `eligible`;
+3. show current case for `open` / `under-review`;
+4. allow evidence only when backend policy and `canAddEvidence` permit it;
+5. show authoritative resolution for `resolved`;
+6. show unavailable/not-found/auth/error/stale states safely.
 
-Dispute withdrawal/cancellation is deliberately out of scope because no accepted backend transition/endpoint currently owns it.
+Dispute withdrawal/cancellation is deliberately not implemented because no accepted backend transition owns it.
 
-## SEO / final-copy decision
+Frontend never decides dispute eligibility, moderation result, score correction, winner, rating impact or Match lifecycle.
 
-The route is authenticated/private and permanently `noindex,nofollow`.
+## 4. Permanent frontend contract
 
-Public SERP/keyword research: `N/A` under project protocol.
+Boundary:
 
-Final H1: `اعتراض به Match`
+`validated matchId → private Session UX access policy → loader → typed MatchDisputeRepository → runtime validation → Mock/Django adapter → explicit create/evidence mutation state → UI`
 
-Final title: `اعتراض به Match — ایران مهر افزار`
-
-User copy must not expose backend/API/mock/demo/temporary/waiting language and must not promise a moderation result or response time.
-
-## Final production contract
-
-### Stable identity / read
-
-Planned endpoint:
+Planned read endpoint:
 
 `GET /api/v1/matches/{matchId}/dispute/`
 
-Returns runtime-validated `MatchDisputePageData`:
-
-- `matchId`;
+Read projection includes:
+- stable Match/player/opponent/game/competition/venue identity;
 - opaque `revision`;
-- `disputeState`: `eligible | open | under-review | resolved | unavailable`;
-- stable player/opponent/game/competition/venue identities;
-- offset-aware `startsAt` + backend IANA `timezone`;
-- `formatLabel`;
-- authoritative result context with optional reported/final score data;
-- dispute policy;
-- nullable current dispute.
+- `disputeState = eligible | open | under-review | resolved | unavailable`;
+- offset-aware `startsAt` + backend IANA timezone;
+- authoritative result context;
+- backend-owned dispute/evidence policy;
+- nullable current dispute with stable dispute ID, reason/statement, status, evidence metadata and nullable resolution.
 
-### Dispute policy
+Runtime validation rejects contradictory page/dispute states, resolved cases without resolution, evidence-policy contradictions, excessive evidence count and identity mismatches.
 
-- stable allowed reason codes;
-- `minStatementLength` / `maxStatementLength`;
-- evidence policy: enabled, max files, max bytes per file, accepted client-hint MIME types;
-- backend remains authoritative for actual evidence acceptance/security validation.
-
-### Current dispute
-
-When present:
-- `disputeId` stable identity;
-- `status`: `open | under-review | resolved`;
-- authoritative reason + statement;
-- `createdAt`;
-- `canAddEvidence` backend boolean;
-- private evidence metadata only;
-- nullable resolution, required only for `resolved`.
-
-### Create dispute mutation
+## 5. Create dispute mutation
 
 Planned endpoint:
 
 `POST /api/v1/matches/{matchId}/dispute/`
 
 Command:
-- `revision`;
-- reason code;
-- statement;
-- per-logical-attempt `Idempotency-Key` header.
+- opaque `revision`;
+- stable backend-approved reason code;
+- statement within backend policy limits;
+- one `Idempotency-Key` per logical attempt.
 
-Boundary:
-- Django Session through `credentials: include`;
-- CSRF bootstrap through `/api/v1/auth/csrf/`;
+Web boundary:
+- `credentials: include`;
+- P01 CSRF bootstrap;
 - `X-CSRFToken`;
-- backend object authorization and eligibility are independent of frontend route access.
+- backend server-side participant/Match authorization independent of frontend UX guard.
 
-Outcomes:
+Typed outcomes:
 - `accepted`;
 - `validation_error`;
 - `stale`;
 - `unavailable`;
 - `already_open`.
 
-### Evidence mutation
+## 6. Evidence mutation
 
 Planned endpoint:
 
 `POST /api/v1/matches/{matchId}/dispute/{disputeId}/evidence/`
 
-- multipart `file`;
-- Django Session + CSRF;
-- per-logical-attempt `Idempotency-Key`;
-- browser checks are convenience only;
-- backend validates actual file/type/signature/size/quota/security and authorization.
+Multipart file upload uses Session + CSRF + per-attempt `Idempotency-Key` and current opaque revision.
 
-Outcomes:
+Typed outcomes:
 - `accepted`;
 - `validation_error`;
 - `stale`;
 - `unavailable`;
 - `already_uploaded`.
 
-## Runtime integrity rules
+Frontend MIME/size/count checks improve UX only. Backend implementation must validate actual file type/signature, size/count quota, safe storage/name, malware/security handling, object authorization and private evidence access. No public evidence URL is part of the frontend contract.
 
-Reject contradictory data, including:
+## 7. Final UX / copy / accessibility
 
-- route `matchId` mismatch;
-- `eligible` with an active dispute;
-- `open/under-review/resolved` without current dispute;
-- page state and dispute status mismatch;
-- `resolved` without resolution;
-- resolution outside resolved state;
-- resolved dispute with `canAddEvidence=true`;
-- disabled evidence policy with evidence items or `canAddEvidence=true`;
-- evidence count greater than policy maximum;
-- accepted mutation receipt for another Match/dispute identity.
+- final H1: `اعتراض به Match`;
+- final title: `اعتراض به Match — ایران مهر افزار`;
+- final product copy contains no backend/API/mock/demo/waiting/temporary language;
+- reason select and statement textarea have persistent labels and associated errors;
+- review-before-submit is explicit;
+- stale state blocks unsafe continuation with an old revision;
+- resolved state shows only server-returned decision summary;
+- evidence picker is a localized accessible control labelled `انتخاب تصویر` rather than browser-native English text;
+- route remains `noindex,nofollow`.
 
-Frontend never derives moderation decision, corrected score, winner, rating impact or Match lifecycle from a dispute.
+## 8. Corrective F04/F05 navigation reconciliation
 
-## UI state matrix
+Repository audit found a discrepancy: frozen My Matches did not actually contain the previously documented `submit-result` CTA. F06 includes the bounded correction:
+- `attention=submit-result` → `/matches/$id/result`;
+- `attention=dispute` → `/matches/$id/dispute`;
+- F05 `submissionState=disputed` → `/matches/$id/dispute`;
+- Check-in remains unchanged;
+- `confirm-result` remains unlinked until its own governed workstream exists.
 
-- `eligible` — reason + statement form, client/backend errors, explicit review before create;
-- `submitting` — locked controls, busy state;
-- `stale` — no reuse of old revision, refresh authoritative truth;
-- `open` — active dispute summary + evidence surface only if allowed;
-- `under-review` — moderation-in-progress summary + optional evidence only if backend allows;
-- `resolved` — backend resolution summary, no evidence mutation;
-- `unavailable` — no create controls;
-- evidence validation/transport/idempotent receipt states;
-- not-found / unauthorized / session-expired boundaries consistent with F05.
+This correction is covered by the same full regression gate as F06.
 
-## Navigation integration
+## 9. Accepted implementation / QA evidence
 
-After F06 route exists:
-- My Matches `submit-result` CTA is restored as corrective F05 navigation;
-- My Matches `dispute` attention links to this route;
-- F05 Result Submission `disputed` state links to this route;
-- no `confirm-result` route is invented.
+Accepted code checkpoint:
 
-## QA plan
+`1a1bf97da61ce9f4845c7ed78262519f54e1a3f3`
 
-Required before implementation acceptance:
+Quality Gate:
+
+`34410106647` — PASS
+
+All steps passed:
 - frozen install;
 - lint;
 - production build / route generation;
 - TypeScript typecheck;
-- F06 contract tests, negative invariants and mutation identity checks;
-- existing F05 contract regression remains green;
-- SSR smoke for `/matches/m-206/dispute`;
-- private `noindex,nofollow` assertion;
-- exactly one `<main>`;
-- responsive screenshots `375 / 390 / 430 / 768 / 1024 / 1440`;
-- representative manual visual review;
-- review threads `0` before merge.
+- contract checks including F05 regression + F06 negative integrity tests;
+- browser smoke;
+- private robots assertion;
+- one-main assertion;
+- responsive screenshots and artifact upload.
 
-## Cross-repo rule
+Artifact:
+- `10126954058`;
+- digest `sha256:385120df87ea2ea15cae7eccfa978aba0a8f083f82b8101b6138cdc232118bcd`;
+- total regression screenshots: `42`;
+- F06 widths: `375 / 390 / 430 / 768 / 1024 / 1440`.
 
-F06 may refine the planned dispute read/create/evidence contract in backend documentation, but must not start/reorder the backend disputes implementation phase.
+Representative manual review after final picker correction:
+- `375` PASS;
+- `768` PASS;
+- `1440` PASS;
+- no overflow/collision;
+- mobile/desktop hierarchy accepted;
+- localized picker visible.
 
-Runtime remains:
+Earlier checkpoint `cb89585727b0de46a17300ff005229073cd9d342` / run `34409285411` is superseded because manual QA found native English file-picker copy.
 
-`FRONTEND MOCK / BACKEND PENDING`
+Detailed acceptance record: `docs/workstreams/F06_ACCEPTANCE_EVIDENCE.md`.
 
-Backend NEXT remains `P02 — Games / Catalog Foundation`.
+## 10. Cross-repo backend alignment
 
-## Exact NEXT
+Backend Issue #15: `CLOSED / COMPLETED`.
 
-1. define runtime schemas and deterministic fixture;
-2. implement Django read/create/evidence adapter with Session/CSRF/idempotency;
-3. build final private route/UI and states;
-4. reconcile F05/My Matches navigation without inventing Result Confirmation;
-5. extend contract/browser gates;
-6. docs-only backend contract alignment;
-7. exact-head QA → implementation PR/CI/merge/post-merge CI;
-8. documentation-only closeout/freeze + terminal main CI before DONE.
+Backend documentation PR #16: `MERGED`.
+
+- backend docs head: `c38052f2c9aaa79ad269e5445610f5f2a28c6845`;
+- PR gate `34409560819` — PASS Python 3.12 / 3.14;
+- review threads: `0`;
+- merge/current accepted backend main: `38dccbf213d5f439e56cd608e3e4ac419d5092d1`;
+- post-merge gate `34409893478` — PASS Python 3.12 / 3.14;
+- Python/domain/models/migrations/phase registry changes: `NONE`;
+- backend NEXT remains `P02 — Games / Catalog Foundation`.
+
+The backend work above is contract/governance alignment only. Disputes runtime remains pending its accepted backend implementation phase.
+
+## 11. Remaining terminal gates
+
+F06 is not terminally DONE yet. Exact next:
+1. commit final governance/evidence reconciliation;
+2. require exact-head branch Quality Gate PASS;
+3. open implementation PR without auto-closing Issue #47;
+4. require exact-head PR CI PASS, mergeable true and review threads `0`;
+5. verify `main` still equals START_SHA immediately before merge;
+6. merge with expected-head lock;
+7. require post-implementation `main` Quality Gate PASS on exact merge SHA;
+8. create documentation-only closeout branch from exact implementation merge;
+9. create closeout record + promote Registry to target `FINAL_PRIVATE` non-recursively;
+10. require closeout PR CI PASS, mergeable true and review threads `0`;
+11. merge closeout with expected-head lock;
+12. require terminal post-closeout `main` Quality Gate PASS;
+13. record frozen main SHA + terminal CI in Issue #47 and close completed.
