@@ -58,7 +58,7 @@ export const Route = createFileRoute("/tournaments/$id")({
 function TournamentDetailRoute() {
   const { tournament } = Route.useLoaderData();
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <TournamentDetailPage tournament={tournament} />
     </TournamentLayout>
   );
@@ -66,7 +66,7 @@ function TournamentDetailRoute() {
 
 function TournamentDetailPending() {
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <TournamentDetailSkeleton />
     </TournamentLayout>
   );
@@ -75,7 +75,7 @@ function TournamentDetailPending() {
 function TournamentDetailRouteError() {
   const router = useRouter();
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <TournamentDetailError retry={() => void router.invalidate()} />
     </TournamentLayout>
   );
@@ -83,7 +83,7 @@ function TournamentDetailRouteError() {
 
 function TournamentNotFound() {
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <main className="container mx-auto px-4 py-24 text-center">
         <h1 className="text-2xl font-black">این مسابقه پیدا نشد</h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-muted-foreground">
