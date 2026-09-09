@@ -33,6 +33,14 @@ async function bootstrapCsrf(baseUrl: string) {
   return csrfSchema.parse(await response.json()).csrf_token;
 }
 
+export function parseSubmitResultActionForMatch(matchId: string, payload: unknown): SubmitResultAction {
+  const action = submitResultActionSchema.parse(payload);
+  if (action.outcome === "accepted" && action.matchId !== matchId) {
+    throw new Error("Result Submission receipt identity mismatch.");
+  }
+  return action;
+}
+
 export class ResultSubmissionHttpError extends Error {
   readonly status: number;
 
@@ -54,7 +62,10 @@ export class DjangoResultSubmissionRepository implements ResultSubmissionReposit
 
     if (response.status === 404) return null;
     if (!response.ok) throw new ResultSubmissionHttpError(response.status);
-    return resultSubmissionPageSchema.parse(await response.json());
+
+    const page = resultSubmissionPageSchema.parse(await response.json());
+    if (page.matchId !== matchId) throw new Error("Result Submission projection identity mismatch.");
+    return page;
   }
 
   async submitResult(matchId: string, command: SubmitResultCommand): Promise<SubmitResultAction> {
@@ -81,7 +92,7 @@ export class DjangoResultSubmissionRepository implements ResultSubmissionReposit
     const payload = await response.json().catch(() => null);
     if (payload !== null) {
       const action = submitResultActionSchema.safeParse(payload);
-      if (action.success) return action.data;
+      if (action.success) return parseSubmitResultActionForMatch(matchId, action.data);
     }
 
     throw new ResultSubmissionHttpError(response.status);
