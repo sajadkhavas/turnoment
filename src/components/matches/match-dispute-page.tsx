@@ -338,15 +338,27 @@ export function MatchDisputePage({ context }: { context: MatchDisputePageData })
                 ) : <p className="mt-4 text-xs text-muted-foreground">هنوز مدرکی برای این پرونده ثبت نشده است.</p>}
 
                 <div className="mt-5 space-y-2">
-                  <Label htmlFor="dispute-evidence">افزودن تصویر</Label>
+                  <span className="block text-sm font-medium">افزودن تصویر</span>
                   <input
                     id="dispute-evidence"
                     type="file"
                     accept={context.policy.evidence.allowedMimeTypes.join(",")}
                     onChange={(event) => chooseFile(event.target.files?.[0] ?? null)}
                     disabled={uploading || evidenceStale}
-                    className="block w-full rounded-xl border border-input bg-background p-2 text-xs file:me-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-xs file:font-bold file:text-primary-foreground"
+                    className="sr-only"
                   />
+                  <label
+                    htmlFor="dispute-evidence"
+                    aria-disabled={uploading || evidenceStale}
+                    className={`inline-flex min-h-11 items-center gap-2 rounded-xl border border-input bg-background px-4 text-sm font-bold transition-colors focus-within:ring-2 focus-within:ring-ring ${
+                      uploading || evidenceStale
+                        ? "pointer-events-none cursor-not-allowed opacity-50"
+                        : "cursor-pointer hover:border-primary/50 hover:text-primary"
+                    }`}
+                  >
+                    <FileImage className="h-4 w-4" aria-hidden="true" />
+                    انتخاب تصویر
+                  </label>
                   <p className="text-[11px] leading-5 text-muted-foreground">حداکثر {context.policy.evidence.maxFiles} فایل، هر فایل تا {fileSize(context.policy.evidence.maxFileBytes)}. پذیرش نهایی فایل بر اساس بررسی امن سامانه انجام می‌شود.</p>
                 </div>
 
