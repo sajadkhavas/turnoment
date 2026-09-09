@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "bun run src/lib/dashboard-contract.spec.ts && bun run src/lib/tournament-detail-contract.spec.ts && bun run src/lib/game-detail-contract.spec.ts && bun run src/lib/my-tournaments-contract.spec.ts",
+    "test": "bun run src/lib/dashboard-contract.spec.ts && bun run src/lib/tournament-detail-contract.spec.ts && bun run src/lib/game-detail-contract.spec.ts && bun run src/lib/my-tournaments-contract.spec.ts && bun run src/lib/my-matches-contract.spec.ts",
     "quality": "bun run lint && bun run build && bun run typecheck && bun run test",
     "format": "prettier --write ."
   },
