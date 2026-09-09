@@ -2,7 +2,7 @@
 
 > **MANDATORY FIRST READ FOR EVERY CHAT / AGENT / SESSION**
 >
-> This file is the operational source of truth for continuing Turnoment without duplicate work. Read it before making changes and update it before ending every session, even when the work is incomplete or blocked.
+> This file is the operational source of truth for continuing Turnoment without duplicate work. Every frontend page workstream MUST also read `FRONTEND_PAGE_DELIVERY_PROTOCOL.md` before implementation.
 
 Last checkpoint update: `2026-09-09`
 
@@ -11,13 +11,14 @@ Last checkpoint update: `2026-09-09`
 Every working chat/agent MUST:
 
 1. Read this file before implementation.
-2. Verify the current `main` SHA of every repository it will change.
-3. Read the relevant phase/PR/Issue evidence before repeating work.
-4. Work on a dedicated branch for controlled changes.
-5. Never claim `DONE / MERGED / FROZEN` from conversation memory alone.
-6. Update this file before ending the session, whether work is complete, partial or blocked.
-7. Record exact branch / SHA / PR / CI evidence when available.
-8. If a cross-repo API contract or global product state changes, update continuity in both repositories.
+2. For frontend page work, read `FRONTEND_PAGE_DELIVERY_PROTOCOL.md` before implementation.
+3. Verify the current `main` SHA of every repository it will change.
+4. Read relevant PR/Issue/phase evidence before repeating work.
+5. Work on a dedicated branch for controlled changes.
+6. Never claim `DONE / MERGED / FROZEN` from conversation memory alone.
+7. Update this file before ending the session, whether work is complete, partial, blocked, or merge-ready.
+8. Record exact branch / SHA / PR / CI evidence when available.
+9. If a cross-repo API contract or global product state changes, update continuity in both repositories.
 
 Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKED`, `READY TO MERGE`, `DONE / MERGED / FROZEN`.
 
@@ -27,15 +28,17 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKE
 
 Repository: `sajadkhavas/turnoment`
 
-Latest accepted implementation merge on `main` before this documentation freeze:
+Verified `main` SHA before the active protocol branch:
 
-`2375122848b435d052ec926626b3d1f4a9d3f107`
+`d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
 
-Post-merge Frontend Quality Gate:
+Final main Quality Gate for the Player Dashboard closeout:
 
-`34326094888` — PASS
+`34326343712` — PASS
 
-This SHA includes the Lovable Player Dashboard visual design plus the accepted productionization layer.
+Current protocol branch:
+
+`chore/final-page-delivery-protocol`
 
 ### Backend
 
@@ -53,56 +56,99 @@ Backend phase state:
 
 Backend P01 authentication truth for the web frontend is Django Session + CSRF + OTP. Do not introduce localStorage bearer-token auth.
 
-## 3. Product architecture law
+## 3. Permanent frontend architecture law
 
-Frontend is never the source of truth for competitive/business/user state.
+Every new or rebuilt frontend page is implemented as the final frontend version from its first accepted merge.
 
 Required direction:
 
-`Route → validated params/search → route guard where needed → loader → typed repository → active adapter → runtime-validated data → UI`
+`Route → validated params/search → route access policy → loader → typed repository/service contract → runtime-validated data → UI`
 
-Parallel-development adapter model:
+Production data contracts are defined first. Deterministic fixture implementations may satisfy the same interfaces for local development, automated tests, and visual QA only. Changing environment/data source must not require rebuilding page components or changing user-facing behavior.
 
-`Mock adapter now → Django HTTP adapter later`
+Frontend is never the source of truth for competitive/business/user state.
 
-Switching adapters must not require rewriting page components. Public important pages should be SSR-friendly and SEO-aware from day one. Private pages must be explicitly `noindex` and protected at the route UX layer while Django/API authorization remains the security boundary.
+No page created under the final delivery protocol may depend on a later generic phase to add its fundamental:
 
-## 4. Current important frontend page truth
+- SSR architecture
+- routing/URL validation
+- SEO/indexing policy
+- metadata/canonical strategy
+- accessibility baseline
+- responsive layout
+- loading/error/empty/notFound states
+- runtime API validation
+- production contract mapping
+
+These are acceptance requirements of the page itself.
+
+User-visible product copy MUST NOT expose implementation-stage wording such as waiting for backend/server/API connection, mock/demo/temporary mode, or similar engineering status language.
+
+## 4. Mandatory page workflow
+
+Every frontend page workstream follows this order:
+
+1. exact repository/START_SHA lock
+2. official documentation audit
+3. design reference audit
+4. final information architecture and state model
+5. final route/SSR/SEO/accessibility/contract implementation
+6. responsive and visual QA
+7. lint/typecheck/contract tests/production build
+8. PR/review/merge/post-merge CI
+9. continuity update
+
+Full requirements are in `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`.
+
+### Official-source baseline verified for this rule
+
+The protocol was based on current official documentation covering:
+
+- TanStack Start router-first architecture and SSR
+- TanStack Start selective SSR
+- TanStack Router data loading/search/head management
+- TanStack Start environment-variable boundaries
+- W3C WCAG 2.2 accessibility requirements
+- Google Search Central canonicalization and structured-data policies
+
+Every page must add page-specific official sources as needed.
+
+### Design research rule
+
+Before implementation, inspect Turnoment's existing design masters first, then research current high-quality real-product interfaces solving the same page problem. Extract information architecture, interaction and responsive patterns without copying branding/assets. Design research is required evidence for new major pages.
+
+## 5. Current important frontend page truth
 
 ### Homepage
 
-Strong visual reference. Backend/data-contract productionization remains a later controlled task.
+Strong visual reference. Any future material rebuild must follow the final page protocol.
 
 ### Tournament Discovery `/tournaments`
 
-Visual discovery page is merged and working with URL-driven filters/search, stable slugs, responsive filtering and SEO metadata.
+Merged and working with URL-driven filters/search, stable slugs, responsive filtering and SEO metadata. Future material changes follow the final page protocol.
 
 ### Tournament Detail `/tournaments/$id`
 
 Status: `PROTOTYPE — NOT FINAL`.
 
-Still must replace fake local registration/payment copy and complete rules/participants/bracket/registration architecture in its own workstream.
+It predates the final page delivery rule and must be rebuilt once as the final implementation. The accepted rebuild must include permanent route/data contract, registration architecture, SSR/SEO/indexing, rules/participants/bracket states, accessibility, responsive QA and quality gates in the same workstream.
 
 ### Player Dashboard `/dashboard`
 
 Status: `DONE / MERGED / FROZEN`.
 
-Lovable Design Master was accepted visually and then productionized without redesigning the accepted UI.
+Lovable Design Master was accepted visually and productionized with:
 
-Final accepted architecture includes:
-
-- private route `noindex,nofollow`
-- `beforeLoad` session UX guard
-- replaceable `PlayerSessionRepository`
-- mock session adapter for current design/development
-- Django P01 session adapter using `GET /api/v1/auth/me/` with `credentials: include`
+- private `noindex,nofollow` policy
+- route session UX guard
+- replaceable session repository
+- Django P01 session contract via `GET /api/v1/auth/me/` with credentials included
 - typed Player Dashboard repository boundary
-- mock dashboard adapter for parallel frontend development
-- Django dashboard adapter prepared for `GET /api/v1/me/dashboard/`
-- Zod runtime validation for dashboard payloads
+- deterministic fixture data path for development/test/visual QA
+- production dashboard contract prepared for `GET /api/v1/me/dashboard/`
+- Zod runtime validation
 - runtime dashboard contract test
-- `VITE_DATA_ADAPTER=mock|django` adapter selection
-- `VITE_API_BASE_URL` documented as public configuration only
+- environment-based adapter selection
 - Quality Gate: frozen install + lint + typecheck + dashboard contract test + production build
 
 Competitive rules preserved:
@@ -112,7 +158,7 @@ Competitive rules preserved:
 - frontend never calculates authoritative winner/rating/eligibility state.
 - challenge flow contains no wager/betting/stake mechanics.
 
-## 5. Player Dashboard completion evidence
+## 6. Player Dashboard completion evidence
 
 Status: `DONE / MERGED / FROZEN`
 
@@ -124,7 +170,7 @@ Productionization branch:
 
 `phase/player-dashboard-productionization`
 
-Green implementation head before final continuity commit:
+Green implementation head:
 
 `022256dd71e84914b44bc2c748107aaee5eb8137`
 
@@ -152,53 +198,77 @@ Implementation merge SHA:
 
 `2375122848b435d052ec926626b3d1f4a9d3f107`
 
-Post-merge main Quality Gate:
+Implementation post-merge main Quality Gate:
 
 `34326094888` — PASS
 
-Closeout branch:
+Closeout PR:
 
-`chore/player-dashboard-continuity-freeze`
+`#5 — Freeze Player Dashboard continuity`
 
-The route guard is intentionally not treated as the security boundary. Django/API endpoints must authorize private requests independently.
+Final frozen main SHA:
 
-## 6. Known constraints / debt
+`d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
 
-- Player Dashboard uses the mock data adapter by default until `GET /api/v1/me/dashboard/` exists and is accepted in Django.
-- `/login` is still the old visual/password prototype and does not represent final OTP UX; Auth/OTP frontend productionization remains a separate workstream.
+Final main Quality Gate:
+
+`34326343712` — PASS
+
+## 7. Known constraints / debt
+
+- `/login` is an inherited password-oriented prototype and is not accepted as the final Turnoment auth page. Its replacement must follow the final page protocol and the existing Django Session + CSRF + OTP contract.
 - Several inherited ecommerce routes remain in the repository. Do not copy their architecture into Turnoment competitive flows.
 - Formatting debt remains separate from correctness lint; avoid massive unrelated formatting diffs inside feature phases.
+- Any page explicitly marked `PROTOTYPE — NOT FINAL` must be rebuilt under `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`; do not patch it incrementally into a second temporary layer.
 
-## 7. Exact NEXT
+## 8. Exact NEXT
 
-Engineering workstreams that can proceed independently:
+Independent engineering workstreams that may proceed under the final page protocol:
 
-1. Final Tournament Detail + Registration Contract
-2. Game Detail productionization
+1. Final Tournament Detail + Registration
+2. Game Detail
 3. My Tournaments
-4. Result Submission
-5. Dispute
-6. Challenge Hub / Detail
-7. Rivalry Detail
-8. Auth / OTP frontend integration
-9. Notifications / Settings
+4. My Matches
+5. Result Submission
+6. Dispute
+7. Challenge Hub / Detail
+8. Rivalry Detail
+9. Auth / OTP
+10. Notifications / Settings
 
 Next Lovable Design Master:
 
 `Live Tournament / Bracket`
 
-Lovable output is never automatically production-final; it must pass the same branch/repository/runtime-validation/CI process.
+Lovable output is a design input, not an automatic acceptance. Its final merge must satisfy the same route/SSR/SEO/indexing/accessibility/contract/CI rules.
 
-## 8. Latest session checkpoint
+## 9. Active protocol-registration workstream
 
-- Date: `2026-09-09`
-- Repo: `sajadkhavas/turnoment`
-- Completed workstream: `Player Dashboard Productionization`
-- Status: `DONE / MERGED / FROZEN`
-- Accepted implementation main SHA before closeout: `2375122848b435d052ec926626b3d1f4a9d3f107`
-- Post-merge CI: `34326094888` — PASS
-- Closeout branch: `chore/player-dashboard-continuity-freeze`
-- Backend main: `b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
-- Blockers: `none`
-- Exact NEXT for Lovable: `Live Tournament / Bracket`
-- Exact NEXT for engineering: start one of the independent workstreams above from verified current main after this closeout is merged.
+Workstream: `Final Frontend Page Delivery Protocol`
+
+Status: `IN PROGRESS`
+
+START_SHA:
+
+`d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
+
+Branch:
+
+`chore/final-page-delivery-protocol`
+
+Created:
+
+`FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
+
+Purpose:
+
+- make official-document review mandatory before implementation
+- make design-reference research mandatory before implementation
+- make every new page a one-pass final frontend implementation
+- prohibit user-facing engineering/waiting/temporary language
+- make SSR/routing/SEO/accessibility/contracts/states/CI part of page completion
+- ensure every chat leaves exact continuity evidence
+
+Blockers: `none`
+
+Exact NEXT: `run Quality Gate for this documentation branch, open/review/merge the protocol PR, verify post-merge main CI, update continuity closeout if required, then start page workstreams only under this protocol.`
