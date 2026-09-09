@@ -1,6 +1,6 @@
 # F01 — Final Tournament Detail & Registration
 
-Status: `IN PROGRESS`
+Status: `READY TO MERGE`
 
 START_SHA: `678c436998417933ee13224754c93cfe71068210`
 
@@ -131,7 +131,7 @@ Deterministic fixture repositories implement these same TypeScript contracts for
 
 F01 owns:
 - `src/routes/tournaments.$id.tsx`
-- `src/routes/tournaments.$id.register.tsx`
+- `src/routes/tournaments.$id_.register.tsx`
 - tournament detail/registration components created by F01
 - tournament detail/registration contracts, repositories and tests
 - route tree changes caused by the registration child route
@@ -139,3 +139,38 @@ F01 owns:
 - F01 evidence and continuity entries
 
 F01 does not own the full Live Tournament / Bracket page design.
+
+## Acceptance evidence — pre-merge
+
+Implementation head before this evidence-only commit:
+
+`3d962cb6eb26a4088618cf052948e78c139f04fe`
+
+Frontend Quality Gate:
+
+`34346918992` — PASS
+
+Verified gates:
+- frozen dependency install — PASS
+- lint correctness — PASS (repository-existing warnings only; zero lint errors)
+- production build and TanStack route generation — PASS
+- TypeScript typecheck — PASS
+- Player Dashboard regression contract checks — PASS
+- F01 Tournament Detail / Registration contract checks — PASS
+- browser smoke — PASS
+- SSR landmark invariant: exactly one `<main>` on Detail and Registration — PASS
+- responsive browser screenshots at `375 / 390 / 430 / 768 / 1024 / 1440` for both routes — PASS
+
+Browser QA artifact:
+
+- artifact: `browser-qa-3d962cb6eb26a4088618cf052948e78c139f04fe`
+- artifact id: `10102113344`
+- digest: `sha256:143f4b4f55904e85cec85a72d6700dc3fe5924eeb2019c0b6101fd1d513aae85`
+- 12 screenshots total
+- manual visual review repeated after the final landmark/sticky-navigation fixes on representative mobile and desktop captures — PASS
+
+Final accessibility hardening in this workstream includes a single-main-landmark invariant, sticky tournament section navigation below the persistent header, section scroll offsets, semantic native controls, accessible status/error regions, and RTL-safe responsive navigation.
+
+User-facing copy audit: PASS. No backend/API/mock/demo/temporary engineering-status wording is exposed by the final F01 UI.
+
+Merge/freeze evidence is intentionally recorded after the PR and post-merge main CI; until then this workstream remains `READY TO MERGE`, not `DONE`.
