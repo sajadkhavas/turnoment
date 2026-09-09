@@ -19,14 +19,7 @@ Every working chat/agent MUST:
 7. Record exact branch / SHA / PR / CI evidence when available.
 8. If a cross-repo API contract or global product state changes, update continuity in both repositories.
 
-Allowed statuses:
-
-- `PLANNED`
-- `IN PROGRESS`
-- `PARTIAL / SAFE CHECKPOINT`
-- `BLOCKED`
-- `READY TO MERGE`
-- `DONE / MERGED / FROZEN`
+Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKED`, `READY TO MERGE`, `DONE / MERGED / FROZEN`.
 
 ## 2. Repository truth
 
@@ -34,15 +27,15 @@ Allowed statuses:
 
 Repository: `sajadkhavas/turnoment`
 
-Current `main` SHA before the active productionization merge:
+Latest accepted implementation merge on `main` before this documentation freeze:
 
-`91a924e38194096a26070e11d2a9ae28858d20a3`
+`2375122848b435d052ec926626b3d1f4a9d3f107`
 
-That commit is the latest Lovable Player Dashboard result (`تکمیل داشبورد بازیکن`).
+Post-merge Frontend Quality Gate:
 
-Main quality run for the Lovable result:
+`34326094888` — PASS
 
-`34324869851` — PASS, but the inherited workflow at that point checked build only.
+This SHA includes the Lovable Player Dashboard visual design plus the accepted productionization layer.
 
 ### Backend
 
@@ -64,7 +57,7 @@ Backend P01 authentication truth for the web frontend is Django Session + CSRF +
 
 Frontend is never the source of truth for competitive/business/user state.
 
-Required frontend direction:
+Required direction:
 
 `Route → validated params/search → route guard where needed → loader → typed repository → active adapter → runtime-validated data → UI`
 
@@ -72,9 +65,7 @@ Parallel-development adapter model:
 
 `Mock adapter now → Django HTTP adapter later`
 
-Switching adapters must not require rewriting page components.
-
-Public important pages should be SSR-friendly and SEO-aware from day one. Private pages must be explicitly `noindex` and protected at the route UX layer while Django/API authorization remains the actual security boundary.
+Switching adapters must not require rewriting page components. Public important pages should be SSR-friendly and SEO-aware from day one. Private pages must be explicitly `noindex` and protected at the route UX layer while Django/API authorization remains the security boundary.
 
 ## 4. Current important frontend page truth
 
@@ -94,69 +85,93 @@ Still must replace fake local registration/payment copy and complete rules/parti
 
 ### Player Dashboard `/dashboard`
 
-Lovable visual Design Master is present on `main`.
+Status: `DONE / MERGED / FROZEN`.
 
-Active productionization workstream upgrades it to the permanent frontend architecture without redesigning the accepted visual system.
+Lovable Design Master was accepted visually and then productionized without redesigning the accepted UI.
 
-Implemented on the active branch:
+Final accepted architecture includes:
 
-- private route remains `noindex,nofollow`
+- private route `noindex,nofollow`
 - `beforeLoad` session UX guard
 - replaceable `PlayerSessionRepository`
 - mock session adapter for current design/development
 - Django P01 session adapter using `GET /api/v1/auth/me/` with `credentials: include`
 - typed Player Dashboard repository boundary
-- mock dashboard adapter retained for parallel frontend development
+- mock dashboard adapter for parallel frontend development
 - Django dashboard adapter prepared for `GET /api/v1/me/dashboard/`
 - Zod runtime validation for dashboard payloads
 - runtime dashboard contract test
-- `VITE_DATA_ADAPTER=mock|django` public adapter selection
+- `VITE_DATA_ADAPTER=mock|django` adapter selection
 - `VITE_API_BASE_URL` documented as public configuration only
-- Quality Gate upgraded to lint + typecheck + dashboard contract test + production build
-- inherited legacy `catch {}` correctness error fixed without reformatting unrelated legacy ecommerce files
+- Quality Gate: frozen install + lint + typecheck + dashboard contract test + production build
 
-## 5. Active frontend workstream
+Competitive rules preserved:
 
-### Player Dashboard Productionization
+- Tournament Rating and Challenge Rating are separate systems.
+- Challenge unlock is based on 30 finalized valid matches, not wins.
+- frontend never calculates authoritative winner/rating/eligibility state.
+- challenge flow contains no wager/betting/stake mechanics.
 
-Status: `READY TO MERGE`
+## 5. Player Dashboard completion evidence
 
-Branch:
+Status: `DONE / MERGED / FROZEN`
 
-`phase/player-dashboard-productionization`
-
-START_SHA:
+Lovable/main START_SHA:
 
 `91a924e38194096a26070e11d2a9ae28858d20a3`
 
-Reviewed implementation head before this continuity documentation commit:
+Productionization branch:
+
+`phase/player-dashboard-productionization`
+
+Green implementation head before final continuity commit:
 
 `022256dd71e84914b44bc2c748107aaee5eb8137`
 
-Green branch Quality Gate:
+Implementation CI:
 
 `34325863864` — PASS
 
-Passed steps:
+Final reviewed branch head:
 
-- frozen dependency install
-- full-repo ESLint correctness
-- TypeScript `tsc --noEmit`
-- Player Dashboard runtime contract checks
-- production build
+`8ceb861483da547b20530ec81c89a54733f78093`
+
+PR:
+
+`#4 — Player Dashboard productionization`
+
+PR Quality Gate:
+
+`34326017238` — PASS
+
+Open review threads before merge:
+
+`0`
+
+Implementation merge SHA:
+
+`2375122848b435d052ec926626b3d1f4a9d3f107`
+
+Post-merge main Quality Gate:
+
+`34326094888` — PASS
+
+Closeout branch:
+
+`chore/player-dashboard-continuity-freeze`
 
 The route guard is intentionally not treated as the security boundary. Django/API endpoints must authorize private requests independently.
 
 ## 6. Known constraints / debt
 
-- Player Dashboard still uses the mock adapter by default until the corresponding Django dashboard endpoint exists and is accepted.
-- `/login` is still the old visual/password prototype and does not represent the final OTP UX; Auth/OTP frontend productionization remains a separate workstream.
+- Player Dashboard uses the mock data adapter by default until `GET /api/v1/me/dashboard/` exists and is accepted in Django.
+- `/login` is still the old visual/password prototype and does not represent final OTP UX; Auth/OTP frontend productionization remains a separate workstream.
 - Several inherited ecommerce routes remain in the repository. Do not copy their architecture into Turnoment competitive flows.
-- Formatting debt remains separate from correctness lint; do not create a massive unrelated formatting diff inside feature phases.
+- Formatting debt remains separate from correctness lint; avoid massive unrelated formatting diffs inside feature phases.
 
-## 7. Next frontend work
+## 7. Exact NEXT
 
-After Player Dashboard productionization is merged and post-merge CI is green:
+Engineering workstreams that can proceed independently:
 
 1. Final Tournament Detail + Registration Contract
 2. Game Detail productionization
@@ -168,22 +183,22 @@ After Player Dashboard productionization is merged and post-merge CI is green:
 8. Auth / OTP frontend integration
 9. Notifications / Settings
 
-Lovable credits should be reserved for high-value visual Design Masters. The next strong Lovable candidate after Player Dashboard is:
+Next Lovable Design Master:
 
 `Live Tournament / Bracket`
 
-Lovable output is never automatically production-final; it must pass the same architecture/quality process.
+Lovable output is never automatically production-final; it must pass the same branch/repository/runtime-validation/CI process.
 
 ## 8. Latest session checkpoint
 
 - Date: `2026-09-09`
 - Repo: `sajadkhavas/turnoment`
-- Workstream: `Player Dashboard Productionization`
-- Status: `READY TO MERGE`
-- Frontend main before merge: `91a924e38194096a26070e11d2a9ae28858d20a3`
-- Active branch: `phase/player-dashboard-productionization`
-- Green implementation head: `022256dd71e84914b44bc2c748107aaee5eb8137`
-- Green CI: `34325863864`
+- Completed workstream: `Player Dashboard Productionization`
+- Status: `DONE / MERGED / FROZEN`
+- Accepted implementation main SHA before closeout: `2375122848b435d052ec926626b3d1f4a9d3f107`
+- Post-merge CI: `34326094888` — PASS
+- Closeout branch: `chore/player-dashboard-continuity-freeze`
 - Backend main: `b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
 - Blockers: `none`
-- Exact NEXT: `run the continuity-head quality gate, open/review/merge the productionization PR, verify post-merge main CI, then update this file with the final merged SHA and begin the next page workstream.`
+- Exact NEXT for Lovable: `Live Tournament / Bracket`
+- Exact NEXT for engineering: start one of the independent workstreams above from verified current main after this closeout is merged.
