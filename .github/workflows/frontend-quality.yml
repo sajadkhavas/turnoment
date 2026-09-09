@@ -70,6 +70,11 @@ jobs:
           grep -q "جام قهرمانان کرج" /tmp/f01-detail.html
           grep -q "ثبت‌نام مسابقه" /tmp/f01-register.html
 
+          DETAIL_MAIN_COUNT="$(grep -o '<main' /tmp/f01-detail.html | wc -l | tr -d ' ')"
+          REGISTER_MAIN_COUNT="$(grep -o '<main' /tmp/f01-register.html | wc -l | tr -d ' ')"
+          test "$DETAIL_MAIN_COUNT" -eq 1
+          test "$REGISTER_MAIN_COUNT" -eq 1
+
           for WIDTH in 375 390 430 768 1024 1440; do
             "$CHROME" \
               --headless=new \
