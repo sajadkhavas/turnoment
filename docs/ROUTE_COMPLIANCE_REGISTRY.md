@@ -6,7 +6,7 @@
 
 Last audit: `2026-09-09`
 
-Audit baseline: `79330a95c05161d5896fb9328134caf814528036` — F04 implementation merge with post-merge `main` Quality Gate `34390091802` PASS.
+Audit baseline: `864fe1491739b06c763be487a73a589c7e0f3609` — F04 terminal frozen main with Quality Gate `34391019079` PASS and Issue #41 completed.
 
 ## Status meanings
 
@@ -25,7 +25,8 @@ Audit baseline: `79330a95c05161d5896fb9328134caf814528036` — F04 implementatio
 |---|---|---|
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Final main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; terminal Quality Gate `34386636373` PASS; terminal evidence in Issue #38. |
-| `/dashboard/matches` | `FINAL_PRIVATE` | F04 My Matches. START `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; final implementation head `c5dce2302b3f33f990b529bb723543c70477be5d`; PR #42 merged as `79330a95c05161d5896fb9328134caf814528036`; PR CI `34389760407` PASS; post-implementation `main` CI `34390091802` PASS; exact QA in `docs/workstreams/F04_MY_MATCHES.md`; closeout record in `docs/workstreams/F04_CLOSEOUT.md`. F04 may only be reported `DONE / MERGED / FROZEN` after Issue #41 records closeout merge/frozen main + green terminal main CI. Runtime integration remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen. Final main `864fe1491739b06c763be487a73a589c7e0f3609`; terminal Quality Gate `34391019079` PASS; terminal evidence in Issue #41. Runtime integration remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/matches/$id/result` | `IN_PROGRESS` | F05 Result Submission — START `864fe1491739b06c763be487a73a589c7e0f3609`; branch `phase/f05-result-submission`; Issue #44; evidence `docs/workstreams/F05_RESULT_SUBMISSION.md`. New private route; final promotion requires implementation merge + closeout + terminal main CI. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
@@ -109,7 +110,7 @@ Status: `LEGACY_REVIEW`
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. **Result Submission**;
+1. **complete active F05 Result Submission `/matches/$id/result`**;
 2. **Dispute**;
 3. Challenge Hub / Detail;
 4. Rivalry Detail;
