@@ -4,6 +4,7 @@ import {
   submitResultActionSchema,
   validateScoreDraft,
 } from "./result-submission-contract";
+import { parseSubmitResultActionForMatch } from "./result-submission-http-repository";
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -39,6 +40,19 @@ const accepted = submitResultActionSchema.parse(
 assert(accepted.outcome === "accepted", "Valid report must produce accepted outcome.");
 assert(accepted.status === "awaiting-confirmation", "Mock accepted report must await confirmation.");
 assert(accepted.finalResult === null, "Frontend must not manufacture a final result after reporting.");
+
+assertThrows(
+  () =>
+    parseSubmitResultActionForMatch("m-204", {
+      outcome: "accepted",
+      receiptId: "receipt-wrong-match",
+      matchId: "m-999",
+      status: "awaiting-confirmation",
+      reportedScore: { playerScore: 3, opponentScore: 1, reportedAt: "2026-09-09T20:00:00+03:30" },
+      finalResult: null,
+    }),
+  "Accepted receipt must be rejected when match identity differs from the requested Match.",
+);
 
 const stale = await repository.submitResult("m-204", {
   revision: "old-revision",
