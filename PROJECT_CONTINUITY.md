@@ -30,19 +30,19 @@ Repository: `sajadkhavas/turnoment`
 
 Latest accepted implementation `main` SHA before this closeout-only continuity commit:
 
-`c692f900ce290d7925a16724004e47221e7518c2`
+`71d2382012b1042ab7667217e8691fad3303f711`
 
 Post-merge Frontend Quality Gate:
 
-`34328618238` — PASS
+`34347780114` — PASS
 
-This SHA includes the mandatory final frontend page delivery protocol and all protocol templates/sources.
+This SHA includes F01 Final Tournament Detail + Registration and the mandatory final frontend page delivery protocol.
 
 ### Backend
 
 Repository: `sajadkhavas/turnoment-backend`
 
-Current verified `main` SHA:
+Current verified `main` SHA at the latest backend checkpoint:
 
 `b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
 
@@ -133,9 +133,40 @@ Merged and working with URL-driven filters/search, stable slugs, responsive filt
 
 ### Tournament Detail `/tournaments/$id`
 
-Status: `PROTOTYPE — NOT FINAL`.
+Status: `DONE / MERGED / FROZEN`.
 
-It predates the final page delivery rule and must be rebuilt once as the final implementation. The accepted rebuild must include permanent route/data contract, registration architecture, SSR/SEO/indexing, rules/participants/bracket states, accessibility, responsive QA and quality gates in the same workstream.
+F01 rebuilt the inherited prototype once under the final frontend delivery protocol. The accepted implementation now includes:
+
+- SSR-first route loader and stable semantic slug canonicalization with legacy identifier compatibility
+- final title/meta/robots/canonical/Open Graph policy
+- authoritative lifecycle/capacity/rules/participant/bracket/registration state contracts
+- compact tournament event hero and responsive detail information architecture
+- overview, rules, participants, bracket preview and gaming-center sections
+- desktop sticky registration summary and mobile registration action bar
+- explicit loading/error/notFound boundaries
+- exactly-one-`<main>` landmark invariant
+- sticky section navigation offset below the persistent header
+- browser QA at 375/390/430/768/1024/1440
+
+Event JSON-LD was intentionally not shipped because the current production contract does not yet provide the detailed venue PostalAddress required for valid event markup.
+
+### Tournament Registration `/tournaments/$id/register`
+
+Status: `DONE / MERGED / FROZEN`.
+
+The route is the final frontend registration flow and includes:
+
+- route-level signed-in session UX policy
+- player identity reuse instead of duplicate name/mobile inputs
+- solo/team modes and eligible-team selection
+- exact Ruleset version acknowledgement
+- authoritative `available / already_registered / full / closed / upcoming / ineligible` states
+- typed outcomes for `confirmed / payment_required / already_registered / unavailable / stale / validation_error`
+- Django Session + CSRF production adapter boundary
+- private `noindex,nofollow` indexing policy
+- accessible status/error handling and responsive UI
+
+Frontend does not calculate registration eligibility, tournament lifecycle, capacity truth or payment truth.
 
 ### Player Dashboard `/dashboard`
 
@@ -275,27 +306,90 @@ Purpose now enforced for all future page workstreams:
 - SSR/routing/SEO/accessibility/contracts/states/CI included in page completion
 - exact continuity evidence after every complete or incomplete session
 
-## 8. Known constraints / debt
+## 8. F01 — Tournament Detail & Registration completion evidence
+
+Status: `DONE / MERGED / FROZEN`
+
+START_SHA:
+
+`678c436998417933ee13224754c93cfe71068210`
+
+Implementation branch:
+
+`phase/f01-final-tournament-detail-registration`
+
+Implementation acceptance head:
+
+`3d962cb6eb26a4088618cf052948e78c139f04fe`
+
+Implementation acceptance Quality Gate:
+
+`34346918992` — PASS
+
+Final reviewed branch head:
+
+`ee08a067c82217db4dfe9ef0c6abc7f38d061695`
+
+Exact-head pre-PR Quality Gate:
+
+`34347206840` — PASS
+
+PR:
+
+`#26 — F01 — Final Tournament Detail & Registration`
+
+PR Quality Gate:
+
+`34347532831` — PASS
+
+Open review threads before merge:
+
+`0`
+
+Implementation merge SHA:
+
+`71d2382012b1042ab7667217e8691fad3303f711`
+
+Implementation post-merge main Quality Gate:
+
+`34347780114` — PASS
+
+Browser QA evidence:
+
+- Detail and Registration each verified at `375 / 390 / 430 / 768 / 1024 / 1440`
+- 12 screenshots
+- representative mobile/desktop captures manually reviewed — PASS
+- artifact id: `10102113344`
+- artifact digest: `sha256:143f4b4f55904e85cec85a72d6700dc3fe5924eeb2019c0b6101fd1d513aae85`
+- SSR exactly-one-`<main>` assertion — PASS
+
+Closeout branch:
+
+`closeout/f01-tournament-detail-registration`
+
+Closeout branch is documentation/continuity only. The frozen F01 implementation code SHA remains `71d2382012b1042ab7667217e8691fad3303f711`. Terminal closeout PR/merge/final-main CI evidence is recorded in Issue `#8` after those objects exist.
+
+## 9. Known constraints / debt
 
 - `/login` is an inherited password-oriented prototype and is not accepted as the final Turnoment auth page. Its replacement must follow the final page protocol and the existing Django Session + CSRF + OTP contract.
 - Several inherited ecommerce routes remain in the repository. Do not copy their architecture into Turnoment competitive flows.
 - Formatting debt remains separate from correctness lint; avoid massive unrelated formatting diffs inside feature phases.
 - Any page explicitly marked `PROTOTYPE — NOT FINAL` must be rebuilt under `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`; do not patch it incrementally into a second temporary layer.
+- F01 deliberately does not emit Google Event structured data until the tournament/venue contract exposes a sufficiently detailed postal address.
 
-## 9. Exact NEXT
+## 10. Exact NEXT
 
 Independent engineering workstreams that may proceed under the final page protocol:
 
-1. Final Tournament Detail + Registration
-2. Game Detail
-3. My Tournaments
-4. My Matches
-5. Result Submission
-6. Dispute
-7. Challenge Hub / Detail
-8. Rivalry Detail
-9. Auth / OTP
-10. Notifications / Settings
+1. Game Detail
+2. My Tournaments
+3. My Matches
+4. Result Submission
+5. Dispute
+6. Challenge Hub / Detail
+7. Rivalry Detail
+8. Auth / OTP
+9. Notifications / Settings
 
 Next Lovable Design Master:
 
@@ -303,16 +397,21 @@ Next Lovable Design Master:
 
 Lovable output is a design input, not an automatic acceptance. Its final merge must satisfy the same route/SSR/SEO/indexing/accessibility/contract/CI rules.
 
-## 10. Latest session checkpoint
+## 11. Latest session checkpoint
 
 - Date: `2026-09-09`
 - Repo: `sajadkhavas/turnoment`
-- Completed workstream: `Final Frontend Page Delivery Protocol`
+- Completed workstream: `F01 — Final Tournament Detail & Registration`
 - Status: `DONE / MERGED / FROZEN`
-- Accepted implementation main SHA before closeout: `c692f900ce290d7925a16724004e47221e7518c2`
-- Post-merge CI: `34328618238` — PASS
-- Closeout branch: `chore/final-page-delivery-protocol-closeout`
-- Backend main: `b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
+- START_SHA: `678c436998417933ee13224754c93cfe71068210`
+- Final reviewed implementation branch SHA: `ee08a067c82217db4dfe9ef0c6abc7f38d061695`
+- Implementation PR: `#26`
+- PR CI: `34347532831` — PASS
+- Open review threads before merge: `0`
+- Implementation merge SHA: `71d2382012b1042ab7667217e8691fad3303f711`
+- Post-merge main CI: `34347780114` — PASS
+- Closeout branch: `closeout/f01-tournament-detail-registration`
+- Backend main at latest checkpoint: `b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
 - Blockers: `none`
 - Exact NEXT for Lovable: `Live Tournament / Bracket`
-- Exact NEXT for engineering: start any independent page workstream above only after reading `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`, performing the official-source audit, performing the design-reference audit, and locking the verified current main SHA.
+- Exact NEXT for engineering: start any remaining independent page workstream above only after reading `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`, performing the official-source audit, performing the design-reference audit, and locking the verified current main SHA.
