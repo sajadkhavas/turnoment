@@ -6,7 +6,7 @@
 
 Last audit: `2026-09-09`
 
-Audit baseline: `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`
+Audit baseline: `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
 
 ## Status meanings
 
@@ -24,9 +24,10 @@ Audit baseline: `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`
 | Route | Status | Evidence / exact next |
 |---|---|---|
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
+| `/dashboard/tournaments` | `IN_PROGRESS` | F03 My Tournaments — START `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`; branch `phase/f03-my-tournaments`; Issue #38. Placeholder replacement, dedicated contract/repository and final private QA are active. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
-| `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged. SEO PR #34 merge `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`; PR CI `34373132933` PASS; post-merge main CI `34373382549` PASS; final route freeze is completed by this closeout branch and terminal evidence is recorded in Issue #29. |
+| `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
 
 ## B. Public competitive routes requiring current-law recertification
 
@@ -53,9 +54,10 @@ Audit baseline: `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`
 
 These routes currently use `DashboardSectionPlaceholder`, including user-facing language that says the section will be enabled later / after service connection. That wording directly violates final-delivery law.
 
+`/dashboard/tournaments` left this list when F03 started and is tracked as `IN_PROGRESS` in section A.
+
 | Route | Status | Planned product workstream |
 |---|---|---|
-| `/dashboard/tournaments` | `PLACEHOLDER` | My Tournaments |
 | `/dashboard/matches` | `PLACEHOLDER` | My Matches |
 | `/dashboard/challenges` | `PLACEHOLDER` | Challenge Hub |
 | `/dashboard/rivalries` | `PLACEHOLDER` | Rivalry |
@@ -112,7 +114,7 @@ These paths may later be intentionally repurposed as Turnoment corporate/content
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. My Tournaments `/dashboard/tournaments`;
+1. **complete active F03 My Tournaments `/dashboard/tournaments`**;
 2. My Matches `/dashboard/matches`;
 3. Result Submission;
 4. Dispute;
