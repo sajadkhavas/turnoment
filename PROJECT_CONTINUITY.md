@@ -3,10 +3,6 @@
 > **MANDATORY FIRST READ FOR EVERY CHAT / AGENT / SESSION**
 >
 > Operational source of truth for continuing Turnoment without duplicate work.
->
-> Frontend page work MUST read `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`.
->
-> Public/indexable page work or material public copy changes MUST also read `SEO_FINAL_COPY_PROTOCOL.md`.
 
 Last update: `2026-09-09`
 
@@ -16,14 +12,15 @@ Every chat/agent MUST:
 
 1. read this file before implementation;
 2. read `FRONTEND_PAGE_DELIVERY_PROTOCOL.md` for frontend page work;
-3. read `SEO_FINAL_COPY_PROTOCOL.md` for public/indexable pages or material public copy changes;
-4. verify current `main` SHA of every repo it will change;
-5. read relevant issue/PR/workstream evidence before repeating work;
-6. use a dedicated branch;
-7. never claim `DONE / MERGED / FROZEN` from chat memory alone;
-8. update continuity before ending, even if partial/blocked/merge-ready;
-9. record exact branch/SHA/PR/CI evidence;
-10. update both repos when a cross-repo contract or global product state changes.
+3. read `SEO_FINAL_COPY_PROTOCOL.md` for public/indexable pages or material public-copy changes;
+4. read `docs/ROUTE_COMPLIANCE_REGISTRY.md` before modifying or accepting any existing route;
+5. verify current `main` SHA of every repo it will change;
+6. read relevant Issue/PR/workstream evidence before repeating work;
+7. use a dedicated branch;
+8. never claim `DONE / MERGED / FROZEN` from chat memory alone;
+9. update continuity before ending even if partial/blocked/merge-ready;
+10. record exact branch/SHA/PR/CI evidence;
+11. update both repos if a cross-repo contract/global product state changes.
 
 Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKED`, `READY TO MERGE`, `DONE / MERGED / FROZEN`.
 
@@ -33,15 +30,21 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKE
 
 Repo: `sajadkhavas/turnoment`
 
-Latest accepted `main` before this closeout-only commit:
+Latest accepted `main` before current F02 SEO branch:
 
-`451633b1cd8c6a3d8b73920d02e8ff2e6165a76f`
+`ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 
-Main Quality Gate:
+Terminal main Quality Gate:
 
-`34354977487` — PASS
+`34355802846` — PASS
 
-This main includes F01, merged F02 implementation, Final Page Delivery Protocol and Final SEO & Copy Protocol.
+This main includes:
+
+- F01 Tournament Detail + Registration
+- merged technical F02 Game Detail implementation
+- Final Frontend Page Delivery Protocol
+- Final SEO & Copy Protocol
+- SEO governance closeout
 
 ### Backend
 
@@ -57,7 +60,7 @@ Latest verified main:
 
 Web auth truth: Django Session + CSRF + OTP. Do not introduce localStorage bearer-token auth.
 
-## 3. Permanent frontend architecture law
+## 3. Permanent frontend law
 
 Every accepted page is built once as the final frontend version.
 
@@ -65,18 +68,18 @@ Required boundary:
 
 `Route → validated params/search → route access policy → loader → typed repository/service contract → runtime-validated data → UI`
 
-Fixtures are only for development/test/visual QA and must implement the same permanent contract.
+Fixtures exist only for development/test/visual QA and implement the same permanent contract.
 
-Frontend is not authoritative for authentication/session, tournament lifecycle, registration eligibility, capacity, bracket truth, winner/final result, rating changes, challenge eligibility, payment/refund/settlement, moderation or disputes.
+Frontend is not authoritative for auth/session, tournament lifecycle, registration eligibility, capacity, bracket truth, winner/final result, rating change, challenge eligibility, payment/refund/settlement, moderation or disputes.
 
-No accepted page may require a later generic phase to finish:
+No accepted page may need a later generic phase to finish:
 
 - SSR/routing/URL validation
 - SEO/indexing
-- search-intent/topic research for public pages
+- public search-intent/topic research
 - final public copy
 - title/meta/canonical
-- internal links/anchor strategy
+- internal-link/anchor strategy
 - structured-data decision
 - accessibility
 - responsive behavior
@@ -84,7 +87,7 @@ No accepted page may require a later generic phase to finish:
 - runtime validation
 - production contract mapping
 
-User-visible copy must never expose implementation-stage language such as waiting for backend/server/API, mock/demo/temporary mode, or engineering internals that do not belong in the product.
+User-visible copy must never expose development/engineering-stage language such as waiting for backend/server/API, mock/demo/temporary mode, contract/adapter/UI-state jargon when natural product language is appropriate.
 
 ## 4. Mandatory page workflow
 
@@ -98,165 +101,197 @@ User-visible copy must never expose implementation-stage language such as waitin
 8. public pages: SEO/final-copy QA
 9. lint/typecheck/contracts/build
 10. PR/review/merge/post-merge CI
-11. continuity update
+11. continuity + route-registry update
 
-Mandatory files:
+Mandatory supporting files:
 
 - `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
 - `SEO_FINAL_COPY_PROTOCOL.md`
+- `docs/ROUTE_COMPLIANCE_REGISTRY.md`
 - `docs/OFFICIAL_FRONTEND_SOURCES.md`
 - `docs/DESIGN_REFERENCE_AUDIT_TEMPLATE.md`
 - `docs/SEO_CONTENT_RESEARCH_TEMPLATE.md`
 - `docs/PAGE_WORKSTREAM_EVIDENCE_TEMPLATE.md`
 
-### SEO research law
+## 5. SEO/final-copy law
 
 Before final public copy is accepted:
 
-- define page purpose/audience;
+- define purpose/audience;
 - research current search intent/SERP/content landscape;
-- choose primary topic/query cluster and supporting clusters;
+- choose primary/supporting topic clusters;
 - evaluate useful Persian/English spellings/terms/local intent;
 - identify content gaps;
 - check cannibalization;
 - finalize H1/title/meta/headings/internal anchors;
-- review all meaningful visible strings for natural language, usefulness, engineering jargon, unsupported claims and keyword stuffing;
+- audit all meaningful visible strings for natural language, usefulness, engineering jargon, unsupported claims and keyword stuffing;
 - record evidence.
 
 Do not invent search volume, keyword difficulty, rankings, popularity or authority claims.
 
-Official baseline includes current Google Search Central SEO Starter Guide, people-first content, title links, snippets, link best practices, URL structure, canonicalization, structured-data policies and spam policies.
-
-## 5. Current page truth
-
-### Homepage
-Strong visual reference. Future material changes follow Final Page + SEO Final Copy protocols.
-
-### Tournament Discovery `/tournaments`
-Merged/working with URL-driven filters, stable slugs, responsive filtering and metadata. Future material changes follow both protocols.
+## 6. Current accepted page truth
 
 ### Tournament Detail `/tournaments/$id`
-`DONE / MERGED / FROZEN`
 
-F01 accepted implementation includes SSR loader, semantic slug canonicalization, metadata/canonical/OG, authoritative lifecycle/capacity/rules/participants/bracket/registration state, final responsive IA, loading/error/notFound, single-main invariant and QA at 375/390/430/768/1024/1440.
+Status: `DONE / MERGED / FROZEN — FINAL_PRE_SEO`
 
-Event JSON-LD was omitted because detailed venue PostalAddress is not yet present in the authoritative contract.
+F01 architecture/contract/SSR/responsive acceptance is final. It was frozen before the stricter SEO final-copy protocol; material public-copy changes require SEO recertification.
 
 ### Tournament Registration `/tournaments/$id/register`
-`DONE / MERGED / FROZEN`
 
-Final private registration flow with session UX policy, solo/team modes, Ruleset acknowledgement, authoritative availability/outcome states, Django Session + CSRF boundary, `noindex,nofollow`, accessibility and responsive QA.
+Status: `DONE / MERGED / FROZEN — FINAL_PRIVATE`
+
+Final private registration flow with Django Session + CSRF boundary, authoritative availability/outcome states, accessibility/responsive QA and `noindex,nofollow`.
 
 ### Player Dashboard `/dashboard`
-`DONE / MERGED / FROZEN`
 
-Private `noindex,nofollow`; session guard/repository; Django `/api/v1/auth/me/`; typed dashboard repository; runtime validation; contract tests.
+Status: `DONE / MERGED / FROZEN — FINAL_PRIVATE`
 
-Competitive truth: Tournament Rating != Challenge Rating; challenge unlock = 30 finalized valid matches, not wins; no wager/betting/stake mechanics.
+Private noindex dashboard with session guard/repository/runtime contract/tests.
+
+Competitive truth:
+
+- Tournament Rating and Challenge Rating are separate;
+- challenge unlock = 30 finalized valid matches, not wins;
+- no wager/betting/stake mechanics.
 
 ### Game Detail `/games/$slug`
-`IN PROGRESS — IMPLEMENTATION MERGED / SEO FINAL-COPY GATE PENDING`
 
-F02 implementation evidence:
+Status: `IN PROGRESS — SEO FINAL COPY IMPLEMENTED / QUALITY + MERGE PENDING`
 
-- START_SHA: `2ea5df3ecbd3a698fa838a8023994c0fc73e18a1`
-- branch: `phase/f02-game-detail`
-- final reviewed head: `a72bdcbcba0b54674adc1e8d6eb6685818e245d4`
+Original technical implementation:
+
+- original START: `2ea5df3ecbd3a698fa8633b9a58d2a67a5195af5b`
+- implementation branch: `phase/f02-game-detail`
+- reviewed head: `a72bdcbcba0b54674adc1e8d6eb6685818e245d4`
 - PR #30
-- PR CI: `34351774310` — PASS
-- review threads: `0`
-- merge SHA: `6c36325e92dacc3eb60f895afa2b553e3046087a`
-- post-merge main CI: `34352013348` — PASS
-- browser QA: PASS at `375/390/430/768/1024/1440`
-- artifact id: `10103768778`
-- digest: `sha256:b287add1165d611a03e6a98fd35cb5baae6ae67d0bf2856019cfb851105176e8`
-
-Implemented: SSR `/games/$slug`, semantic game slugs, runtime contract, Django HTTP adapter boundary, game hero/platforms, tournament discovery, competitive formats, ranking state, supporting centers, loading/error/notFound/empty, metadata/canonical/OG and semantic links from `/games`.
-
-F02 is intentionally NOT frozen. User review found engineering-style visible copy. It must now complete current SEO/search-intent/topic research, final people-first copy, title/H1/meta/headings/anchor validation and SEO QA under `SEO_FINAL_COPY_PROTOCOL.md` before Issue #29 can close.
-
-## 6. Important completion evidence
-
-### Player Dashboard
-- final reviewed head: `8ceb861483da547b20530ec81c89a54733f78093`
-- PR #4
-- PR CI `34326017238` PASS
+- PR CI `34351774310` — PASS
 - threads `0`
-- merge `2375122848b435d052ec926626b3d1f4a9d3f107`
-- post-merge CI `34326094888` PASS
-- closeout PR #5
-- frozen main `d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
-- final CI `34326343712` PASS
+- merge `6c36325e92dacc3eb60f895afa2b553e3046087a`
+- post-merge CI `34352013348` — PASS
+- browser QA PASS at 375/390/430/768/1024/1440
+
+Current SEO/final-copy workstream:
+
+- SEO START_SHA: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
+- branch: `phase/f02-seo-final-copy`
+- tracking Issue #29 reopened intentionally
+- implementation checkpoint before continuity update: `4b810dda9990b94cd267b5d9d21ccea4ccf0adf1`
+- SEO research: `docs/workstreams/F02_GAME_DETAIL_SEO_RESEARCH.md`
+- workstream evidence: `docs/workstreams/F02_GAME_DETAIL.md`
+
+Completed on current branch:
+
+- current Iranian/regional search-intent research;
+- primary/supporting topic clusters;
+- Persian/English game-name terminology decision;
+- content-gap + cannibalization map;
+- final visible copy rewrite;
+- H1/heading/internal-anchor strategy;
+- final metadata pattern;
+- removal of visible `Ruleset`, `Rating`, contract/UI/system wording;
+- final-copy regression tests;
+- route compliance registry creation.
+
+F02 is NOT final until current branch CI, PR/review/merge, post-merge CI, documentation closeout and terminal main CI are complete.
+
+## 7. Route compliance registry
+
+Canonical inventory:
+
+`docs/ROUTE_COMPLIANCE_REGISTRY.md`
+
+Current high-level truth:
+
+### `FINAL_PRIVATE`
+- `/dashboard`
+- `/tournaments/$id/register`
+
+### `FINAL_PRE_SEO`
+- `/tournaments/$id`
+
+### `IN_PROGRESS`
+- `/games/$slug`
+
+### `NEEDS_RECERTIFICATION`
+- `/`
+- `/tournaments`
+- `/games`
+- `/centers`
+- `/centers/$id`
+- `/ranking`
+- `/players/$username`
+- `/host`
+- `/rules`
+- `/dashboard/profile`
+
+### `REBUILD`
+- `/login`
+- `/register`
+
+### `PLACEHOLDER`
+- `/dashboard/tournaments`
+- `/dashboard/matches`
+- `/dashboard/challenges`
+- `/dashboard/rivalries`
+- `/dashboard/achievements`
+- `/dashboard/notifications`
+- `/dashboard/settings`
+- `/dashboard/teams`
+
+### `LEGACY_REVIEW`
+Inherited ecommerce/service/general routes are explicitly listed in the registry and must not be used as Turnoment architecture references.
+
+## 8. Governance evidence
 
 ### Final Frontend Page Delivery Protocol
-- START `d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
-- final reviewed head `1d937cb122bdb05c1543e76c876bfe93b53cd4b4`
+
+`DONE / MERGED / FROZEN`
+
 - PR #6
 - PR CI `34328467961` PASS
-- threads `0`
 - merge `c692f900ce290d7925a16724004e47221e7518c2`
 - post-merge CI `34328618238` PASS
 
-### F01 Tournament Detail + Registration
-- START `678c436998417933ee13224754c93cfe71068210`
-- final reviewed head `ee08a067c82217db4dfe9ef0c6abc7f38d061695`
-- PR #26
-- PR CI `34347532831` PASS
-- threads `0`
-- merge `71d2382012b1042ab7667217e8691fad3303f711`
-- post-merge CI `34347780114` PASS
-- terminal closeout evidence: Issue #8
+### Final SEO & Copy Protocol
 
-## 7. Final SEO & Copy Protocol governance
+`DONE / MERGED / FROZEN`
 
-`DONE / MERGED / FROZEN` once this documentation-only closeout PR is merged; terminal closeout evidence is recorded in Issue #31.
-
-- START_SHA: `6c36325e92dacc3eb60f895afa2b553e3046087a`
-- implementation branch: `chore/seo-final-copy-protocol`
-- final reviewed head: `f1e1765b795ede96803ab314d5af616cb219fbdb`
-- tracking Issue #31
 - implementation PR #32
-- PR Quality Gate: `34354697661` — PASS
-- open review threads: `0`
-- implementation merge: `451633b1cd8c6a3d8b73920d02e8ff2e6165a76f`
-- implementation post-merge main CI: `34354977487` — PASS
-- closeout branch: `closeout/seo-final-copy-protocol`
+- PR CI `34354697661` PASS
+- threads `0`
+- implementation merge `451633b1cd8c6a3d8b73920d02e8ff2e6165a76f`
+- post-merge CI `34354977487` PASS
+- closeout PR #33
+- closeout merge / frozen main `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
+- terminal main CI `34355802846` PASS
+- Issue #31 closed completed
 
-Permanent SEO law now enforced:
+## 9. Known constraints
 
-- public SEO is not merely title/meta/canonical;
-- research search intent/topic clusters before final copy;
-- review all meaningful visible strings as final product + SEO copy;
-- prioritize people-first usefulness;
-- prohibit keyword stuffing/search-engine-first copy/hidden SEO text/unsupported claims;
-- prohibit visible engineering/backend/API/contract/mock language when natural product language is appropriate;
-- require unique H1/title/meta and meaningful heading hierarchy;
-- require descriptive crawlable internal anchors;
-- structured data must be supported and match visible authoritative content;
-- no later generic SEO-copy phase may be required to finish accepted pages.
+- `/login` and `/register` are inherited password-oriented flows and must be rebuilt to OTP/session truth.
+- dashboard placeholder routes contain prohibited future/service-connection language and must be replaced by final product pages.
+- inherited ecommerce routes remain; do not copy them into competitive flows.
+- public competitive routes predating current law remain visible in the route registry until recertified.
 
-## 8. Known constraints
+## 10. Exact NEXT
 
-- `/login` remains an inherited password-oriented prototype and must be rebuilt under final page protocol + Django Session/CSRF/OTP truth.
-- inherited ecommerce routes remain; do not copy their architecture into Turnoment competitive flows.
-- formatting debt stays separate from correctness phases.
-- explicit prototypes must be rebuilt under final protocol, not layered with another temporary implementation.
-- F02 remains open specifically for SEO final-copy completion.
+Immediate NEXT: **finish F02 SEO/final-copy terminal acceptance**.
 
-## 9. Exact NEXT
+Remaining sequence:
 
-Immediate engineering NEXT: **finish F02 Game Detail under the new SEO protocol**.
-
-Required steps:
-
-1. current search-intent/SERP/topic research;
-2. choose final Persian/English topic language;
-3. rewrite engineering-style copy into people-first SEO-aware product copy;
-4. validate H1/title/meta/headings/internal anchors/canonical/robots/structured-data decision;
-5. run technical/responsive regressions;
-6. PR/review/merge copy changes if needed;
-7. final-main CI;
-8. freeze F02 and close Issue #29.
+1. run exact-head Quality Gate on current branch;
+2. fix any lint/type/contract/build/browser issue without weakening gates;
+3. manually review representative Game Detail screenshots for Persian wrapping and final copy;
+4. update Issue #29 evidence;
+5. open PR on exact reviewed head;
+6. PR CI PASS + review threads = 0;
+7. merge with expected-head lock;
+8. post-merge main CI PASS;
+9. closeout branch: promote `/games/$slug` to `FINAL_CURRENT`, freeze F02 evidence and current main SHA;
+10. closeout PR/CI/merge;
+11. terminal main CI PASS;
+12. close Issue #29 completed.
 
 After F02:
 
@@ -269,19 +304,4 @@ After F02:
 7. Auth / OTP
 8. Notifications / Settings
 
-Next Lovable Design Master: `Live Tournament / Bracket`.
-
-Lovable output is design input only and must satisfy final route/SSR/search-intent/final-copy/indexing/accessibility/contracts/CI rules before acceptance.
-
-## 10. Latest session checkpoint
-
-- governance workstream: Final SEO & Copy Protocol
-- implementation: MERGED / post-merge green
-- closeout branch: `closeout/seo-final-copy-protocol`
-- implementation PR #32
-- PR CI `34354697661` PASS
-- implementation merge `451633b1cd8c6a3d8b73920d02e8ff2e6165a76f`
-- post-merge CI `34354977487` PASS
-- tracking Issue #31
-- exact governance NEXT: merge this closeout, verify terminal main CI, record terminal evidence in Issue #31 and close completed
-- exact engineering NEXT: F02 SEO/final-copy research and polish
+Next Lovable Design Master remains `Live Tournament / Bracket`.
