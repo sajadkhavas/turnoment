@@ -22,8 +22,11 @@ export const Route = createFileRoute("/matches/$id/result")({
       if (context.matchId !== params.id) throw new Error("Result Submission identity mismatch.");
       return { context };
     } catch (error) {
-      if (error instanceof ResultSubmissionHttpError && (error.status === 401 || error.status === 403)) {
+      if (error instanceof ResultSubmissionHttpError && error.status === 401) {
         throw redirect({ to: "/login" });
+      }
+      if (error instanceof ResultSubmissionHttpError && error.status === 403) {
+        throw notFound();
       }
       throw error;
     }
