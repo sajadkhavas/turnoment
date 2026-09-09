@@ -113,7 +113,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
 
       <nav
         aria-label="بخش‌های مسابقه"
-        className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur lg:top-[var(--header-height,0px)]"
+        className="sticky top-[66px] z-30 border-b border-border bg-background/95 backdrop-blur"
       >
         <div className="container mx-auto flex gap-5 overflow-x-auto px-4 py-3 text-xs font-bold text-muted-foreground [scrollbar-width:none]">
           <a href="#overview" className="whitespace-nowrap hover:text-primary">اطلاعات</a>
@@ -126,7 +126,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
 
       <div className="container mx-auto grid gap-8 px-4 py-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:py-10">
         <div className="min-w-0 space-y-8">
-          <section id="overview" aria-labelledby="overview-title" className="scroll-mt-24 rounded-2xl border border-border bg-card p-5 md:p-6">
+          <section id="overview" aria-labelledby="overview-title" className="scroll-mt-32 rounded-2xl border border-border bg-card p-5 md:p-6">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-bold text-primary">جزئیات رقابت</p>
@@ -144,7 +144,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
             </dl>
           </section>
 
-          <section id="rules" aria-labelledby="rules-title" className="scroll-mt-24 rounded-2xl border border-border bg-card p-5 md:p-6">
+          <section id="rules" aria-labelledby="rules-title" className="scroll-mt-32 rounded-2xl border border-border bg-card p-5 md:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-xs font-bold text-primary">قانون رقابت</p>
@@ -169,7 +169,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
             </ol>
           </section>
 
-          <section id="participants" aria-labelledby="participants-title" className="scroll-mt-24 rounded-2xl border border-border bg-card p-5 md:p-6">
+          <section id="participants" aria-labelledby="participants-title" className="scroll-mt-32 rounded-2xl border border-border bg-card p-5 md:p-6">
             <div className="flex items-end justify-between gap-3">
               <div>
                 <p className="text-xs font-bold text-secondary">Roster</p>
@@ -207,7 +207,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
             )}
           </section>
 
-          <section id="bracket" aria-labelledby="bracket-title" className="scroll-mt-24 rounded-2xl border border-border bg-card p-5 md:p-6">
+          <section id="bracket" aria-labelledby="bracket-title" className="scroll-mt-32 rounded-2xl border border-border bg-card p-5 md:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-xs font-bold text-secondary">Bracket</p>
@@ -243,7 +243,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
             )}
           </section>
 
-          <section id="venue" aria-labelledby="venue-title" className="scroll-mt-24 rounded-2xl border border-border bg-card p-5 md:p-6">
+          <section id="venue" aria-labelledby="venue-title" className="scroll-mt-32 rounded-2xl border border-border bg-card p-5 md:p-6">
             <div className="grid gap-5 sm:grid-cols-[160px_minmax(0,1fr)]">
               <div className="overflow-hidden rounded-xl border border-border bg-muted">
                 {tournament.venue.image ? (
@@ -279,7 +279,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
         </div>
 
         <aside aria-label="ثبت‌نام مسابقه" className="hidden lg:block">
-          <div className="sticky top-24 rounded-2xl border border-border bg-card p-5 shadow-xl shadow-black/10">
+          <div className="sticky top-32 rounded-2xl border border-border bg-card p-5 shadow-xl shadow-black/10">
             <RegistrationSummary tournament={tournament} registration={registration} capacityPercent={capacityPercent} />
           </div>
         </aside>
