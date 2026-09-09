@@ -6,7 +6,7 @@
 
 Last audit: `2026-09-09`
 
-Audit baseline: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
+Audit baseline: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
 
 ## Status meanings
 
@@ -24,7 +24,8 @@ Audit baseline: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
 | Route | Status | Evidence / exact next |
 |---|---|---|
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
-| `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 My Tournaments. START `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`; implementation head `98c92846b79d1d715d16b3db9ad762a54e7fa137`; PR #39 merged as `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`; post-implementation main CI `34385716082` PASS; exact QA evidence in `docs/workstreams/F03_ACCEPTANCE_EVIDENCE.md`; closeout record in `docs/workstreams/F03_CLOSEOUT.md`. Terminal closeout merge/final main CI must be confirmed in Issue #38 before reporting F03 `DONE / MERGED / FROZEN`. |
+| `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Final main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; terminal Quality Gate `34386636373` PASS; terminal evidence in Issue #38. |
+| `/dashboard/matches` | `IN_PROGRESS` | F04 My Matches — START `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; branch `phase/f04-my-matches`; Issue #41; evidence `docs/workstreams/F04_MY_MATCHES.md`. Placeholder has been replaced on the active branch, but FINAL_PRIVATE promotion requires merge + terminal closeout CI. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
@@ -50,15 +51,14 @@ Audit baseline: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
 | `/login` | `REBUILD` | Current UI is password-oriented. Final truth is phone OTP + Django Session + CSRF; no localStorage bearer auth. |
 | `/register` | `REBUILD` | Current form requests name/email/mobile/password and has no final OTP/account flow. Must be rebuilt with accepted P01 auth truth. |
 
-## D. Player dashboard routes that are explicit placeholders
+## D. Player dashboard routes that remain explicit placeholders
 
-These routes currently use `DashboardSectionPlaceholder`, including user-facing language that says the section will be enabled later / after service connection. That wording directly violates final-delivery law.
+These routes still use `DashboardSectionPlaceholder`, including user-facing future/service-connection language that violates final-delivery law.
 
-`/dashboard/tournaments` is no longer a placeholder; F03 rebuilt it and it is tracked as `FINAL_PRIVATE` in section A. Terminal freeze evidence is completed through Issue #38 only after the closeout merge and its terminal `main` Quality Gate are green.
+`/dashboard/tournaments` and active `/dashboard/matches` are no longer listed here.
 
 | Route | Status | Planned product workstream |
 |---|---|---|
-| `/dashboard/matches` | `PLACEHOLDER` | My Matches |
 | `/dashboard/challenges` | `PLACEHOLDER` | Challenge Hub |
 | `/dashboard/rivalries` | `PLACEHOLDER` | Rivalry |
 | `/dashboard/achievements` | `PLACEHOLDER` | Achievements |
@@ -77,7 +77,6 @@ These routes currently use `DashboardSectionPlaceholder`, including user-facing 
 These routes are present in the repository but are **not** approved as Turnoment competitive product architecture. Do not copy their data flow, auth assumptions, page state or UI patterns into new competitive workstreams.
 
 ### Commerce / checkout legacy
-
 - `/cart`
 - `/checkout`
 - `/products`
@@ -91,7 +90,6 @@ These routes are present in the repository but are **not** approved as Turnoment
 Status: `LEGACY_REVIEW`
 
 ### Service/ecommerce legacy
-
 - `/services`
 - `/services/request`
 - `/dashboard/services`
@@ -99,7 +97,6 @@ Status: `LEGACY_REVIEW`
 Status: `LEGACY_REVIEW`
 
 ### General-site/content legacy requiring product decision
-
 - `/about`
 - `/blog`
 - `/blog/$slug`
@@ -108,13 +105,11 @@ Status: `LEGACY_REVIEW`
 
 Status: `LEGACY_REVIEW`
 
-These paths may later be intentionally repurposed as Turnoment corporate/content routes, but only after a dedicated scope decision and the applicable final-page/SEO protocol. Their current existence is not evidence of final acceptance.
-
 ## G. Compliance priorities
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. **My Matches `/dashboard/matches`**;
+1. **complete active F04 My Matches `/dashboard/matches`**;
 2. Result Submission;
 3. Dispute;
 4. Challenge Hub / Detail;
@@ -129,5 +124,5 @@ Current exact order unless continuity records a newer accepted dependency:
 - A route cannot be promoted to `FINAL_CURRENT`, `FINAL_PRIVATE`, or `FINAL_PRE_SEO` from chat memory.
 - Promotion requires merged evidence and terminal main CI; when a closeout commit cannot contain its own future merge SHA/terminal CI, terminal evidence is recorded in the tracking Issue and must be green before the phase is reported DONE.
 - New routes must be added when their workstream begins.
-- Placeholder/legacy routes must remain visible here until rebuilt or intentionally removed.
-- If implementation truth and this registry conflict, treat the route as **not final** until the conflict is reconciled.
+- Placeholder/legacy routes must remain visible until rebuilt or intentionally removed.
+- If implementation truth and this registry conflict, treat the route as **not final** until reconciled.
