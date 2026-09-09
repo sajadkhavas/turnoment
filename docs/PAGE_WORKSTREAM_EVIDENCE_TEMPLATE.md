@@ -1,6 +1,6 @@
 # TURNOMENT — PAGE WORKSTREAM EVIDENCE TEMPLATE
 
-Every new/rebuilt frontend page should use this structure in its issue/PR/continuity evidence.
+Every new/rebuilt frontend page should use this structure in its issue/PR/continuity evidence. Public/indexable pages must also complete `docs/SEO_CONTENT_RESEARCH_TEMPLATE.md` and follow `SEO_FINAL_COPY_PROTOCOL.md`.
 
 ## Identity
 
@@ -9,6 +9,7 @@ Every new/rebuilt frontend page should use this structure in its issue/PR/contin
 - START_SHA:
 - Branch:
 - Owner chat/agent:
+- Public/indexable or private/noindex:
 
 ## Official documentation audit
 
@@ -21,6 +22,30 @@ Every new/rebuilt frontend page should use this structure in its issue/PR/contin
 - Turnoment design masters reviewed:
 - External product/interface references reviewed:
 - Selected design direction:
+
+## SEO / search-intent / final-copy audit
+
+- Page purpose:
+- Intended audience:
+- Primary search intent:
+- Primary topic/query cluster:
+- Secondary/supporting topic clusters:
+- Important entities/terms:
+- Persian/English variants evaluated:
+- SERP/content references reviewed:
+- Content gap/opportunity:
+- Cannibalization check:
+- Final H1:
+- Final title:
+- Final meta description:
+- Heading outline:
+- Internal-link/anchor strategy:
+- Structured-data decision:
+- People-first review:
+- Keyword-stuffing/search-engine-first review:
+- Visible engineering-language review:
+
+Use `docs/SEO_CONTENT_RESEARCH_TEMPLATE.md` for the detailed evidence when the page is public/indexable.
 
 ## Final production contract
 
@@ -37,9 +62,11 @@ Every new/rebuilt frontend page should use this structure in its issue/PR/contin
 - Params/search validation:
 - Loader/access policy:
 - SSR policy:
-- Title/description:
+- Semantic URL/slug:
 - Canonical:
 - Robots:
+- Open Graph/social metadata:
+- Parameter/filter indexing policy:
 - Structured data decision:
 
 ## UI state matrix
@@ -72,6 +99,7 @@ Every new/rebuilt frontend page should use this structure in its issue/PR/contin
 - contract tests:
 - production build:
 - targeted route/action tests:
+- SEO/final-copy gate:
 
 ## Closeout
 
@@ -81,5 +109,6 @@ Every new/rebuilt frontend page should use this structure in its issue/PR/contin
 - Merge SHA:
 - Post-merge CI:
 - Continuity updated:
+- SEO evidence recorded:
 - Final status:
 - Exact NEXT:
