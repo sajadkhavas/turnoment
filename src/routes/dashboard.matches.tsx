@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { MyMatchesErrorState, MyMatchesPage, MyMatchesSkeleton } from "@/components/dashboard/my-matches-page";
 import {
   myMatchKindFilters,
@@ -94,6 +94,7 @@ function MyMatchesRoute() {
   const navigate = useNavigate({ from: Route.fullPath });
   const state = search.state ?? "all";
   const kind = search.kind ?? "all";
+  const resultActions = data.items.filter((item) => item.attention === "submit-result");
 
   const navigateTo = (
     nextState: MyMatchStateFilter,
@@ -105,16 +106,39 @@ function MyMatchesRoute() {
   };
 
   return (
-    <MyMatchesPage
-      data={data}
-      state={state}
-      kind={kind}
-      gameId={search.game}
-      onStateChange={(nextState) => navigateTo(nextState, kind, search.game)}
-      onKindChange={(nextKind) => navigateTo(state, nextKind, search.game)}
-      onGameChange={(gameId) => navigateTo(state, kind, gameId)}
-      onPageChange={(page) => navigateTo(state, kind, search.game, page)}
-      onResetFilters={() => navigateTo("all", "all")}
-    />
+    <>
+      {resultActions.length ? (
+        <section aria-labelledby="result-actions-title" className="mb-5 rounded-2xl border border-warning/35 bg-warning/8 p-4 sm:p-5">
+          <h2 id="result-actions-title" className="text-sm font-black text-warning">Matchهای نیازمند ثبت نتیجه</h2>
+          <p className="mt-1 text-xs leading-6 text-muted-foreground">
+            فقط Matchهایی که وضعیت رسمی آن‌ها نیازمند ثبت نتیجه است در این بخش نمایش داده می‌شوند.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {resultActions.map((item) => (
+              <Link
+                key={item.matchId}
+                to="/matches/$id/result"
+                params={{ id: item.matchId }}
+                className="inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                ثبت نتیجه مقابل {item.opponent.displayTag}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <MyMatchesPage
+        data={data}
+        state={state}
+        kind={kind}
+        gameId={search.game}
+        onStateChange={(nextState) => navigateTo(nextState, kind, search.game)}
+        onKindChange={(nextKind) => navigateTo(state, nextKind, search.game)}
+        onGameChange={(gameId) => navigateTo(state, kind, gameId)}
+        onPageChange={(page) => navigateTo(state, kind, search.game, page)}
+        onResetFilters={() => navigateTo("all", "all")}
+      />
+    </>
   );
 }
