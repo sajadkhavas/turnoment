@@ -38,14 +38,7 @@ Latest terminal main Quality Gate:
 
 `34386636373` — PASS
 
-This frozen main includes:
-
-- F01 Tournament Detail + Registration architecture
-- Player Dashboard final private architecture
-- F02 Game Detail technical + SEO/final-copy acceptance
-- F03 My Tournaments final private implementation + closeout
-- Final Frontend Page Delivery Protocol
-- Final SEO & Copy Protocol
+This frozen main includes F01 Tournament Detail + Registration architecture, Player Dashboard final private architecture, F02 Game Detail technical + SEO/final-copy acceptance, F03 My Tournaments final private implementation + closeout, and the final frontend/SEO delivery protocols.
 
 Active frontend workstream:
 
@@ -55,7 +48,7 @@ Active frontend workstream:
 - branch: `phase/f04-my-matches`
 - tracking Issue: `#41`
 - evidence: `docs/workstreams/F04_MY_MATCHES.md`
-- initial implementation/browser gate head: `82525fb153ac129754c27c0c021f3ef8e1f10e44`
+- initial implementation/browser head: `82525fb153ac129754c27c0c021f3ef8e1f10e44`
 - initial Quality Gate `34388320768` — PASS
 - artifact `10118663030`, digest `sha256:ee20d8dc48268a8f97a11c17b14974b10b292b2aa47be157db8e0abe1470baa1`
 - manual representative responsive review `375 / 430 / 768 / 1024 / 1440` — PASS
@@ -64,15 +57,16 @@ Active frontend workstream:
 
 Repo: `sajadkhavas/turnoment-backend`
 
-Latest alignment merge currently known:
+Latest verified `main` after F04 documentation alignment:
 
 `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`
 
 - P00 → `DONE / MERGED / FROZEN`
 - P01 → `DONE / MERGED / FROZEN`
 - F03 My Tournaments contract alignment docs → merged; runtime still backend-pending
-- F04 My Matches contract alignment docs → PR #12 merged as `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`
-- F04 backend post-merge Quality Gate is the remaining alignment verification at this checkpoint
+- F04 My Matches contract alignment docs → Issue #11 completed, PR #12 merged
+- F04 backend alignment merge: `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`
+- F04 post-merge Backend Quality Gate `34388924185` — PASS on Python 3.12 and 3.14
 - F04 cross-repo runtime integration remains `FRONTEND MOCK / BACKEND PENDING`
 - Backend NEXT remains `P02 — Games / Catalog Foundation`
 
@@ -128,27 +122,18 @@ Public/indexable routes still require the full current SEO/final-copy evidence c
 ## 6. Current accepted / active route truth
 
 ### `/dashboard`
-
 `DONE / MERGED / FROZEN — FINAL_PRIVATE`
 
-Private noindex dashboard with Django Session UX guard, repository/runtime contract and tests.
-
 ### `/tournaments/$id/register`
-
 `DONE / MERGED / FROZEN — FINAL_PRIVATE`
 
 ### `/tournaments/$id`
-
 `DONE / MERGED / FROZEN — FINAL_PRE_SEO`
 
 ### `/games/$slug`
-
 `DONE / MERGED / FROZEN — FINAL_CURRENT`
 
-Terminal F02 evidence:
-- final frozen main `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
-- terminal Quality Gate `34374298544` — PASS
-- Issue #29 — completed
+F02 terminal evidence: final frozen main `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`; terminal Quality Gate `34374298544` PASS; Issue #29 completed.
 
 ### F03 — My Tournaments `/dashboard/tournaments`
 
@@ -157,15 +142,13 @@ Terminal F02 evidence:
 Terminal evidence:
 - START_SHA `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
 - final implementation/evidence head `98c92846b79d1d715d16b3db9ad762a54e7fa137`
-- implementation PR #39
-- implementation merge `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
+- implementation PR #39 / merge `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
 - post-implementation CI `34385716082` — PASS
-- closeout PR #40
-- closeout head `f50c5244929ed07f8b4224fb6e4ca4ced233b015`
+- closeout PR #40 / head `f50c5244929ed07f8b4224fb6e4ca4ced233b015`
 - final frozen main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
 - terminal Quality Gate `34386636373` — PASS
-- Issue #38 — closed completed
-- backend runtime integration still `FRONTEND MOCK / BACKEND PENDING`
+- Issue #38 closed completed
+- backend runtime integration remains `FRONTEND MOCK / BACKEND PENDING`.
 
 ### F04 — My Matches `/dashboard/matches`
 
@@ -181,7 +164,7 @@ Accepted architecture on active branch:
 - placeholder replaced by validated `state/kind/game/page` URL search;
 - parent Dashboard Session guard/shell reused;
 - dedicated `MyMatchesRepository`;
-- deterministic fixture + planned Django HTTP adapter behind the same interface;
+- deterministic fixture + Django HTTP adapter behind the same interface;
 - planned private endpoint `GET /api/v1/me/matches/` with `credentials: include`;
 - Zod runtime validation + cross-field integrity checks;
 - backend-authoritative lifecycle/check-in/result/dispute/attention/final-result/pagination states;
@@ -197,16 +180,17 @@ Initial quality evidence:
 - Quality Gate `34388320768` — PASS
 - artifact `10118663030`
 - digest `sha256:ee20d8dc48268a8f97a11c17b14974b10b292b2aa47be157db8e0abe1470baa1`
-- manual responsive review representative widths — PASS
+- manual representative responsive review — PASS
 
 Cross-repo F04 alignment:
 - backend owners: `matches / results / disputes`
-- backend Issue #11
-- backend docs PR #12
+- backend Issue #11 — completed
+- backend docs PR #12 — merged
 - alignment head `91df6a17806f6155c0abf18f6f0c9c010a5a579b`
 - PR Quality Gate `34388795695` — PASS on Python 3.12/3.14
 - PR review threads `0`
 - alignment merge `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`
+- post-merge backend Quality Gate `34388924185` — PASS on Python 3.12/3.14
 - runtime status remains `FRONTEND MOCK / BACKEND PENDING`
 - backend domain implementation was not started or reordered.
 
