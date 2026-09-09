@@ -54,7 +54,7 @@ Audit baseline: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
 
 These routes currently use `DashboardSectionPlaceholder`, including user-facing language that says the section will be enabled later / after service connection. That wording directly violates final-delivery law.
 
-`/dashboard/tournaments` is no longer a placeholder; F03 rebuilt it and it is tracked as `FINAL_PRIVATE` in section A, with terminal freeze evidence completed through Issue #38.
+`/dashboard/tournaments` is no longer a placeholder; F03 rebuilt it and it is tracked as `FINAL_PRIVATE` in section A. Terminal freeze evidence is completed through Issue #38 only after the closeout merge and its terminal `main` Quality Gate are green.
 
 | Route | Status | Planned product workstream |
 |---|---|---|
