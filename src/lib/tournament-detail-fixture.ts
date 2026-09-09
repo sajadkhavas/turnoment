@@ -182,8 +182,8 @@ function toDetail(tournament: TournamentSummary): TournamentDetail {
       registered: tournament.registered,
       remaining: Math.max(0, tournament.capacity - tournament.registered),
     },
-    entryFee: { amount: tournament.entryFee, currency: "IRR" },
-    fixedPrize: { amount: tournament.fixedPrize, currency: "IRR" },
+    entryFee: { amount: tournament.entryFee * 10, currency: "IRR" },
+    fixedPrize: { amount: tournament.fixedPrize * 10, currency: "IRR" },
     ruleset: {
       id: `ruleset-${tournament.gameId}-standard`,
       version: rulesVersion,
