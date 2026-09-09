@@ -30,13 +30,13 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKE
 
 Repo: `sajadkhavas/turnoment`
 
-Latest accepted `main` after F02 terminal closeout:
+Latest accepted `main` after F03 implementation merge:
 
-`4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
+`bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
 
-Latest terminal main Quality Gate:
+Latest post-implementation-merge main Quality Gate:
 
-`34374298544` — PASS
+`34385716082` — PASS
 
 This main includes:
 
@@ -44,17 +44,22 @@ This main includes:
 - F02 technical Game Detail implementation
 - F02 mandatory SEO/final-copy recertification
 - F02 terminal closeout / FINAL_CURRENT promotion
+- F03 final private My Tournaments implementation + acceptance evidence
 - Final Frontend Page Delivery Protocol
 - Final SEO & Copy Protocol
 
-Active frontend workstream:
+Active frontend closeout:
 
 - F03 — My Tournaments `/dashboard/tournaments`
-- status: `IN PROGRESS`
+- implementation status: `MERGED`
+- closeout status: `IN PROGRESS`
 - START_SHA: `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
-- branch: `phase/f03-my-tournaments`
-- tracking Issue: `#38`
-- evidence: `docs/workstreams/F03_MY_TOURNAMENTS.md`
+- implementation branch: `phase/f03-my-tournaments`
+- implementation PR: `#39` — merged
+- implementation merge: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
+- closeout branch: `closeout/f03-my-tournaments`
+- tracking Issue: `#38` — must remain open until terminal closeout main CI is green
+- evidence: `docs/workstreams/F03_MY_TOURNAMENTS.md`, `docs/workstreams/F03_ACCEPTANCE_EVIDENCE.md`, `docs/workstreams/F03_CLOSEOUT.md`
 
 ### Backend
 
@@ -62,10 +67,12 @@ Repo: `sajadkhavas/turnoment-backend`
 
 Latest verified main:
 
-`b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
+`cd47fff8b82359b12d86fad10735a2e9fa52472d`
 
 - P00 → `DONE / MERGED / FROZEN`
 - P01 → `DONE / MERGED / FROZEN`
+- F03 cross-repo contract alignment docs → merged; backend implementation was **not** started by F03
+- My Tournaments runtime integration remains `FRONTEND MOCK / BACKEND PENDING`
 - Backend NEXT → `P02 — Games / Catalog Foundation`
 
 Web auth truth: Django Session + CSRF + OTP. Do not introduce localStorage bearer-token auth.
@@ -207,53 +214,78 @@ Research/QA:
 
 ### F03 — My Tournaments `/dashboard/tournaments`
 
-Status: `IN PROGRESS`
+Closeout target status: `DONE / MERGED / FROZEN — FINAL_PRIVATE`
 
-Identity:
+> The closeout commit cannot contain its own future merge SHA/terminal main CI. F03 may only be reported terminally complete after Issue #38 records the closeout merge/frozen main SHA and a green terminal post-closeout main Quality Gate.
+
+Identity / implementation:
 
 - START_SHA: `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
-- branch: `phase/f03-my-tournaments`
-- Issue #38
+- implementation branch: `phase/f03-my-tournaments`
+- tracking Issue #38 — reopened after GitHub auto-closed it at implementation merge; it must remain open through terminal closeout
 - pre-implementation evidence: `docs/workstreams/F03_MY_TOURNAMENTS.md`
-- latest checkpoint before this continuity update: `915afb16d83e653865f0d49d47d60711dac25580`
+- acceptance evidence: `docs/workstreams/F03_ACCEPTANCE_EVIDENCE.md`
+- accepted implementation/evidence head: `98c92846b79d1d715d16b3db9ad762a54e7fa137`
+- implementation PR #39 — MERGED
+- implementation merge SHA: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
+- post-implementation-merge main Quality Gate `34385716082` — PASS
+- closeout branch: `closeout/f03-my-tournaments`
+- closeout record: `docs/workstreams/F03_CLOSEOUT.md`
 
-Governance / discovery:
+Governance / design / source audit:
 
-- mandatory root laws read before implementation;
-- route registry read; route moved from `PLACEHOLDER` to active `IN_PROGRESS`;
-- official TanStack Router authenticated-route/data-loading/search-param docs reviewed;
+- mandatory frontend root laws read before implementation;
+- route registry read before modifying the placeholder route;
+- TanStack authenticated-route/data-loading/search-param docs reviewed;
 - WCAG 2.2 reviewed;
-- existing `/dashboard`, `DashboardShell`, dashboard repositories/contracts and `MyTournamentsPreview` audited;
-- F01 tournament participation architecture reviewed;
-- current Battlefy joined-tournament/check-in/team tournament flows reviewed as external interaction references;
-- public SEO research is N/A because this route is authenticated `noindex,nofollow`.
+- existing Dashboard/F01 architecture audited and reused instead of duplicated;
+- external joined-tournament/check-in/team tournament patterns reviewed;
+- public SEO research correctly treated as N/A because this is authenticated `noindex,nofollow`;
+- backend root laws read before cross-repo alignment.
 
-Implementation checkpoint:
+Final architecture / product truth:
 
-- placeholder route replaced with validated URL search for state/game/page;
-- parent `/dashboard` Session guard reused; no duplicate auth architecture introduced;
-- dedicated `MyTournamentsRepository` + deterministic fixture adapter added;
-- Django production adapter maps to `GET /api/v1/me/tournaments/` with `credentials: include`;
-- Zod runtime response validation added;
-- lifecycle/registration/check-in/result/next-action states are contract-owned, not inferred by UI;
-- complete My Tournaments responsive UI added with summary, filters, individual/team participation, check-in/live/completed states, empty/error/pagination states and canonical tournament-detail actions;
-- F03 contract regression test registered in the existing quality command;
-- browser QA workflow extended to SSR-smoke F03, assert private robots + single main landmark and capture `375 / 390 / 430 / 768 / 1024 / 1440` screenshots;
-- dependency drift introduced during test registration was detected and immediately reverted; frozen dependency versions remain unchanged.
+- placeholder replaced by validated URL search for state/game/page;
+- parent `/dashboard` Session guard reused;
+- `MyTournamentsRepository` with deterministic fixture adapter and Django HTTP adapter;
+- production adapter maps to the already-planned `GET /api/v1/me/tournaments/` with `credentials: include`;
+- Zod runtime validation + cross-field integrity checks;
+- lifecycle/registration/check-in/result/next-action truth remains contract-authoritative;
+- team + individual participation supported;
+- loading/normal/empty/filtered-empty/error/pagination states implemented;
+- filter/pagination navigation preserves browser Back/Forward;
+- no engineering/mock/backend-waiting wording in player-facing UI.
 
-Quality evidence so far:
+Quality / visual evidence:
 
-- push Quality Gate `34379169895` on checkpoint `a2872265d54f76aaa375d641c7ac19d058ea0724` — PASS (frozen install, lint, build, typecheck, all contract checks, existing browser regressions);
-- F03-specific browser gate run on later head is pending/newer while implementation continues;
-- no PR/merge claim yet.
+- implementation acceptance head `66beb620ced7003b6cbc6b9447aab35ccd15d086`
+- exact-head Quality Gate `34380756688` — PASS
+- browser artifact `10115803738`
+- artifact digest `sha256:0e3a35d6d2809f39753a73b174e9fb29f0b42af2b5333a70792093bd4086841c`
+- responsive captures at `375 / 390 / 430 / 768 / 1024 / 1440`
+- manual review at `375 / 430 / 768 / 1024 / 1440` — PASS
+- final evidence head `98c92846b79d1d715d16b3db9ad762a54e7fa137`
+- evidence-head push Quality Gate `34385385299` — PASS
+- PR Quality Gate `34385390759` — PASS
+- review threads immediately before implementation merge: `0`
 
-Exact F03 next:
+Cross-repo truth:
 
-1. obtain green exact-head F03 browser QA;
-2. manually review representative F03 captures and repair any visual/accessibility issues;
-3. open/review PR, reach zero open review threads and green PR CI;
-4. merge, verify post-merge main CI;
-5. terminal closeout/registry promotion to `FINAL_PRIVATE` only after evidence is green.
+- backend owner `registrations/tournaments` and endpoint family existed before F03;
+- backend alignment PR #10 merged;
+- backend alignment main `cd47fff8b82359b12d86fad10735a2e9fa52472d`;
+- backend main Quality Gate `34380281593` — PASS;
+- runtime integration remains `FRONTEND MOCK / BACKEND PENDING` until its owning backend phase is actually implemented;
+- this does not block final frontend architecture acceptance and does not change backend phase order.
+
+Exact F03 closeout next:
+
+1. finish continuity/route-registry reconciliation on `closeout/f03-my-tournaments`;
+2. require closeout exact-head + PR Quality Gates green and review threads `0`;
+3. merge closeout;
+4. require terminal post-closeout main Quality Gate green;
+5. record closeout merge/frozen main SHA + terminal main CI in Issue #38;
+6. close Issue #38 as completed only then.
 
 ## 7. Route compliance registry
 
@@ -266,13 +298,11 @@ Canonical inventory:
 
 ### `FINAL_PRIVATE`
 - `/dashboard`
+- `/dashboard/tournaments` — F03 terminal status is confirmed by Issue #38 only after closeout merge + terminal main CI
 - `/tournaments/$id/register`
 
 ### `FINAL_PRE_SEO`
 - `/tournaments/$id`
-
-### `IN_PROGRESS`
-- `/dashboard/tournaments` — F03 / Issue #38 / `phase/f03-my-tournaments`
 
 ### `NEEDS_RECERTIFICATION`
 - `/`
@@ -333,20 +363,20 @@ Inherited ecommerce/service/general routes remain explicitly listed in the regis
 - remaining dashboard placeholder routes contain prohibited future/service-connection language and must be replaced by final product pages.
 - inherited ecommerce routes remain; do not copy them into competitive flows.
 - public competitive routes predating current law remain visible in the route registry until recertified.
-- F03 defines the permanent frontend My Tournaments contract and production adapter mapping; backend delivery remains independently governed and every private API response must authorize server-side.
+- F03 defines the permanent frontend My Tournaments contract and production adapter mapping; backend runtime delivery remains independently governed and every private API response must authorize server-side.
+- F03 cross-repo runtime status remains `FRONTEND MOCK / BACKEND PENDING`; never reinterpret frontend finality as backend domain completion.
 
 ## 10. Exact NEXT
 
-Frontend engineering NEXT is:
+After F03 terminal closeout is confirmed in Issue #38, frontend engineering NEXT is:
 
-1. **complete active F03 — My Tournaments `/dashboard/tournaments`**
-2. My Matches `/dashboard/matches`
-3. Result Submission
-4. Dispute
-5. Challenge Hub / Detail
-6. Rivalry Detail
-7. Auth / OTP
-8. Notifications / Settings
+1. **My Matches `/dashboard/matches`**
+2. Result Submission
+3. Dispute
+4. Challenge Hub / Detail
+5. Rivalry Detail
+6. Auth / OTP
+7. Notifications / Settings
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
 

@@ -1,12 +1,20 @@
 # F03 — Final My Tournaments
 
-Status: `IN PROGRESS`
+Status: `CLOSEOUT IN PROGRESS — FINAL_PRIVATE ACCEPTED / TERMINAL FREEZE PENDING`
+
+> Frontend implementation and route acceptance are complete and merged. F03 must **not** be reported as `DONE / MERGED / FROZEN` until Issue #38 records the closeout merge/frozen `main` SHA and a green terminal post-closeout `main` Quality Gate.
 
 START_SHA: `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
 
 Implementation branch: `phase/f03-my-tournaments`
 
+Closeout branch: `closeout/f03-my-tournaments`
+
 Tracking issue: `#38`
+
+Implementation PR: `#39 — MERGED`
+
+Implementation merge SHA: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
 
 Route: `/dashboard/tournaments`
 
@@ -37,6 +45,14 @@ Read before implementation at the exact START_SHA:
 - `docs/workstreams/F01_TOURNAMENT_DETAIL_REGISTRATION.md`
 
 Repository root `README.md` was also reviewed. It is the inherited IranMehrAfzar/Laravel ecommerce brief and is not used as Turnoment competitive architecture truth. Current continuity, route registry, final page protocol and accepted Turnoment workstreams take precedence for this route.
+
+Before cross-repo contract alignment, backend root governance was also read:
+
+- backend `PROJECT_CONTINUITY.md`
+- backend `PHASE_COMPLETION_PROTOCOL.md`
+- backend `docs/FRONTEND_BACKEND_CONTRACT.md`
+- backend `docs/ENGINEERING_RULES.md`
+- backend `docs/PHASE_REGISTRY.md`
 
 ## Stage A — Exact repository lock
 
@@ -188,7 +204,8 @@ My Tournaments is a private participation dashboard, not discovery.
 
 ### Mobile
 
-- single-column content;
+- single-column content flow;
+- participation summary uses two columns to reduce vertical distance to actionable tournament content;
 - filters wrap/stack without horizontal overflow;
 - action remains a full-width or easily reachable touch target;
 - long tournament/team/venue names wrap safely.
@@ -216,9 +233,9 @@ Required copy rules:
 - the page title/H1 are specific to the user's tournaments;
 - error and empty states explain user actions, not system architecture.
 
-## Final production contract — planned
+## Final production contract
 
-The full page receives a dedicated contract instead of expanding the dashboard preview contract into page-specific concerns.
+The full page uses a dedicated contract instead of expanding the dashboard preview contract into page-specific concerns.
 
 ### Query
 
@@ -254,7 +271,7 @@ The frontend may localize enum labels and format dates for presentation, but doe
 
 ### Permanent API mapping
 
-Planned production adapter:
+Production adapter mapping:
 
 `GET /api/v1/me/tournaments/?state={state}&game={gameId}&page={page}`
 
@@ -263,25 +280,25 @@ Planned production adapter:
 - fixture repository implements the same TypeScript interface for development/test/visual QA;
 - presentation components do not know which adapter is active.
 
+The endpoint family and backend owner already existed in the backend contract baseline before F03. Backend alignment PR #10 refined this projection; runtime implementation remains independently pending under the accepted backend phase order.
+
 F03 does not add withdraw, registration editing, result submission or dispute mutations. Those actions remain owned by their dedicated tournament/match workstreams.
 
-## UI state matrix
+## UI state matrix — accepted
 
-Required before final acceptance:
-
-- normal populated list
-- pending/loading
-- empty for all tournaments
-- empty for selected filter
-- request error/retry
-- unauthenticated/session-expired access policy via parent dashboard guard / private API authorization
-- upcoming registered state
-- check-in not-open/open/completed/missed states when supplied
-- live state
-- team participation state
-- completed result state
-- multi-page pagination
-- invalid URL search normalization
+- normal populated list — implemented
+- pending/loading — implemented
+- empty for all tournaments — implemented
+- empty for selected filter — implemented
+- request error/retry — implemented
+- unauthenticated/session-expired access policy via parent dashboard guard / private API authorization — preserved
+- upcoming registered state — implemented
+- check-in not-open/open/completed/missed states when supplied — implemented
+- live state — implemented
+- team participation state — implemented
+- completed result state — implemented
+- multi-page pagination — implemented
+- invalid URL search normalization — implemented
 
 ## Owned files
 
@@ -292,6 +309,8 @@ F03 owns or may modify:
 - F03 contract tests
 - `package.json` test registration
 - `docs/workstreams/F03_MY_TOURNAMENTS.md`
+- `docs/workstreams/F03_ACCEPTANCE_EVIDENCE.md`
+- `docs/workstreams/F03_CLOSEOUT.md`
 - `PROJECT_CONTINUITY.md`
 - `docs/ROUTE_COMPLIANCE_REGISTRY.md`
 - Issue/PR/CI closeout evidence
@@ -303,22 +322,86 @@ It does not own:
 - Auth / OTP rebuild;
 - backend P02 Games/Catalog implementation.
 
-## Quality / QA acceptance — pending
+## Quality / QA acceptance — completed for implementation
 
-Required:
-- frozen install / repository quality workflow
-- lint
-- TypeScript typecheck
-- F03 runtime-contract tests
-- existing dashboard/F01/F02 regression contract tests
-- production build
-- responsive browser QA at `375 / 390 / 430 / 768 / 1024 / 1440`
-- keyboard/focus review
-- no horizontal overflow
-- natural-copy/engineering-language review
-- PR review threads = 0 before merge
-- post-merge main Quality Gate green
+Implementation acceptance head:
+
+`66beb620ced7003b6cbc6b9447aab35ccd15d086`
+
+Exact-head Quality Gate:
+
+`34380756688` — PASS
+
+Verified implementation gates:
+- frozen dependency install — PASS
+- lint — PASS
+- production build and TanStack route generation — PASS
+- TypeScript typecheck — PASS
+- F03 runtime-contract/integrity checks — PASS
+- existing dashboard/F01/F02 regression checks — PASS
+- browser smoke — PASS
+- F03 private robots assertion — PASS
+- single `<main>` SSR landmark invariant — PASS
+- responsive screenshots at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS
+
+Browser QA artifact:
+- artifact id `10115803738`
+- digest `sha256:0e3a35d6d2809f39753a73b174e9fb29f0b42af2b5333a70792093bd4086841c`
+- artifact workflow head `66beb620ced7003b6cbc6b9447aab35ccd15d086`
+- representative manual review at `375 / 430 / 768 / 1024 / 1440` — PASS
+- no horizontal overflow, sidebar collision, broken CTA, clipped title/venue or blocking mobile hierarchy issue found after final repair
+
+Final evidence/documentation head:
+
+`98c92846b79d1d715d16b3db9ad762a54e7fa137`
+
+- exact-head push Quality Gate `34385385299` — PASS
+- PR Quality Gate `34385390759` — PASS
+- open review threads immediately before merge: `0`
+- implementation PR #39 — MERGED
+- implementation merge SHA `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
+- post-implementation-merge main Quality Gate `34385716082` — PASS
+
+Cross-repo evidence:
+- backend Issue #9 — completed
+- backend PR #10 — merged
+- backend alignment main SHA `cd47fff8b82359b12d86fad10735a2e9fa52472d`
+- backend post-merge Quality Gate `34380281593` — PASS
+- runtime status remains `FRONTEND MOCK / BACKEND PENDING`
+- backend NEXT remains `P02 — Games / Catalog Foundation`
+
+Self-review repairs included before implementation acceptance:
+- reverted accidental dependency-version drift;
+- removed unsupported guarantee from error copy;
+- preserved browser Back/Forward semantics for filters/pagination;
+- added cross-field result and pagination integrity validation + negative tests;
+- removed assumptions about non-existent success/warning foreground tokens;
+- changed mobile summary to two columns after visual review;
+- increased F03 screenshot height so actual tournament cards and CTAs are visible in QA evidence.
+
+## Closeout / freeze
+
+Closeout branch:
+
+`closeout/f03-my-tournaments`
+
+Created from the exact implementation merge SHA:
+
+`bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
+
+Non-recursive closeout record:
+
+`docs/workstreams/F03_CLOSEOUT.md`
+
+The route is eligible for `FINAL_PRIVATE` registry promotion because its frontend architecture/contracts/states/copy/accessibility/responsive evidence are accepted and the implementation merge plus post-merge main gate are green. This does **not** claim the backend runtime endpoint has been implemented.
 
 ## Current exact NEXT
 
-Implement the dedicated My Tournaments contract/repository/runtime schema, then rebuild `/dashboard/tournaments` on that contract without changing the accepted parent dashboard auth/shell architecture.
+1. run the closeout PR Quality Gate on the final `closeout/f03-my-tournaments` head;
+2. require all closeout PR checks to PASS and open review threads to equal `0`;
+3. merge the closeout PR with expected-head locking;
+4. require the terminal post-closeout `main` Quality Gate to PASS;
+5. record the exact closeout merge/frozen `main` SHA and terminal main Quality Gate in Issue #38;
+6. close Issue #38 as `completed` only after that terminal gate is green;
+7. only then report F03 as `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+8. frontend NEXT becomes My Matches `/dashboard/matches`.
