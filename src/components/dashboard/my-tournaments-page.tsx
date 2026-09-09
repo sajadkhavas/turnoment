@@ -137,9 +137,9 @@ function TournamentCard({ item }: { item: MyTournamentItem }) {
           params={{ id: item.tournamentSlug }}
           className={`inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl px-4 text-sm font-black transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
             item.nextAction === "check-in"
-              ? "bg-warning text-warning-foreground hover:bg-warning/90"
+              ? "bg-warning text-background hover:bg-warning/90"
               : item.nextAction === "view-bracket"
-                ? "bg-success text-success-foreground hover:bg-success/90"
+                ? "bg-success text-background hover:bg-success/90"
                 : "bg-primary text-primary-foreground hover:bg-primary/90"
           }`}
         >
