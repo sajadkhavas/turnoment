@@ -9,14 +9,15 @@ import {
 } from "./tournament-data";
 import {
   gameDetailSchema,
+  type GameCenterSummary,
   type GameCompetitiveFormat,
   type GameDetail,
 } from "./game-detail-contract";
 import type { GameDetailRepository } from "./game-detail-repository";
+import { publicGameSlug } from "./game-slugs";
 
 interface GameCatalogFixture {
   id: string;
-  slug: string;
   shortName: string;
   description: string;
   platforms: string[];
@@ -26,7 +27,6 @@ interface GameCatalogFixture {
 const GAME_CATALOG: GameCatalogFixture[] = [
   {
     id: "eafc26",
-    slug: "ea-fc-26",
     shortName: "EA FC 26",
     description:
       "EA FC 26 یکی از محورهای رقابت حضوری فوتبال در ترنومنت است؛ مسابقات تک‌نفره با فرمت‌های حذفی و لیگ گروهی در مراکز میزبان برگزار می‌شوند و نتایج رسمی در سابقه رقابتی بازیکن ثبت می‌شود.",
@@ -39,7 +39,6 @@ const GAME_CATALOG: GameCatalogFixture[] = [
   },
   {
     id: "efootball",
-    slug: "efootball",
     shortName: "eFootball",
     description:
       "eFootball در ترنومنت برای رقابت‌های حضوری سریع و لیگ‌های دوره‌ای استفاده می‌شود. صفحه هر مسابقه فرمت، قوانین، زمان حضور و وضعیت ثبت‌نام همان رویداد را به‌صورت مستقل مشخص می‌کند.",
@@ -51,7 +50,6 @@ const GAME_CATALOG: GameCatalogFixture[] = [
   },
   {
     id: "tekken8",
-    slug: "tekken-8",
     shortName: "Tekken 8",
     description:
       "Tekken 8 در ترنومنت یک بازی رقابتی مبارزه‌ای برای رویدادهای حضوری ۱ در برابر ۱ است. مسابقات می‌توانند با براکت تک‌حذفی یا دوحذفی برگزار شوند و وضعیت هر رقابت از قرارداد همان تورنمنت می‌آید.",
@@ -63,7 +61,6 @@ const GAME_CATALOG: GameCatalogFixture[] = [
   },
   {
     id: "mk",
-    slug: "mortal-kombat",
     shortName: "Mortal Kombat",
     description:
       "Mortal Kombat در ترنومنت برای رقابت‌های حضوری مبارزه‌ای ۱ در برابر ۱ استفاده می‌شود. فرمت هر رویداد، ظرفیت، Ruleset و نتیجه نهایی فقط از همان مسابقه معتبر است.",
@@ -75,7 +72,6 @@ const GAME_CATALOG: GameCatalogFixture[] = [
   },
   {
     id: "cs2",
-    slug: "counter-strike-2",
     shortName: "CS2",
     description:
       "Counter-Strike 2 در ترنومنت محور رقابت‌های تیمی حضوری است. رویدادهای ۵ در برابر ۵، لیگ و براکت حذفی با مرکز میزبان، ظرفیت تیم‌ها و Ruleset مستقل هر مسابقه مدیریت می‌شوند.",
@@ -87,7 +83,6 @@ const GAME_CATALOG: GameCatalogFixture[] = [
   },
   {
     id: "warcraft",
-    slug: "warcraft",
     shortName: "Warcraft",
     description:
       "Warcraft در ترنومنت برای رقابت‌های استراتژی حضوری تک‌نفره استفاده می‌شود. هر مسابقه Ruleset و ساختار رقابتی خود را دارد و صفحه بازی فقط مسیر کشف رقابت‌ها و وضعیت عمومی این رشته را نمایش می‌دهد.",
@@ -100,7 +95,9 @@ const GAME_CATALOG: GameCatalogFixture[] = [
 ];
 
 function gameCatalog(identifier: string) {
-  return GAME_CATALOG.find((game) => game.id === identifier || game.slug === identifier) ?? null;
+  return GAME_CATALOG.find(
+    (game) => game.id === identifier || publicGameSlug(game.id) === identifier,
+  ) ?? null;
 }
 
 function currentGameSummary(id: string) {
@@ -132,7 +129,7 @@ function rankingForGame(name: string) {
   }));
 }
 
-function fallbackCenter(tournament: TournamentSummary) {
+function fallbackCenter(tournament: TournamentSummary): GameCenterSummary {
   return {
     id: tournament.gamingCenterId,
     name: tournament.venue,
@@ -146,7 +143,7 @@ function fallbackCenter(tournament: TournamentSummary) {
   };
 }
 
-function centerProjection(center: GamingCenterSummary) {
+function centerProjection(center: GamingCenterSummary): GameCenterSummary {
   return {
     id: center.id,
     name: center.name,
@@ -161,7 +158,7 @@ function centerProjection(center: GamingCenterSummary) {
 }
 
 function centersForGame(tournaments: TournamentSummary[]) {
-  const byId = new Map<string, ReturnType<typeof fallbackCenter>>();
+  const byId = new Map<string, GameCenterSummary>();
   for (const tournament of tournaments) {
     const known = gamingCenters.find((center) => center.id === tournament.gamingCenterId);
     byId.set(
@@ -191,7 +188,7 @@ function toGameDetail(catalog: GameCatalogFixture): GameDetail | null {
 
   return gameDetailSchema.parse({
     id: catalog.id,
-    slug: catalog.slug,
+    slug: publicGameSlug(catalog.id),
     detailVersion: `${catalog.id}:2026-09-09:1`,
     publicationState: "published",
     name: summary.name,
@@ -227,5 +224,6 @@ export class FixtureGameDetailRepository implements GameDetailRepository {
 }
 
 export function canonicalGameSlug(identifier: string) {
-  return gameCatalog(identifier)?.slug ?? null;
+  const catalog = gameCatalog(identifier);
+  return catalog ? publicGameSlug(catalog.id) : null;
 }
