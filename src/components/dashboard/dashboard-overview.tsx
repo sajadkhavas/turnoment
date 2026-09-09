@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { AlertTriangle, ArrowLeft, CalendarClock, Radio, ShieldCheck, Swords, Trophy } from "lucide-react";
 import type {
   ChallengeProgress,
@@ -102,11 +101,9 @@ export function ChallengeProgressCard({ progress }: { progress: ChallengeProgres
         </span>
       </div>
       <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-elevated" role="presentation">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${percent}%` }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="h-full rounded-full bg-gradient-to-l from-primary to-secondary"
+        <div
+          style={{ width: `${percent}%` }}
+          className="h-full rounded-full bg-gradient-to-l from-primary to-secondary transition-[width] duration-700 ease-out"
         />
       </div>
       <p className="mt-3 text-xs leading-6 text-muted-foreground">
@@ -128,10 +125,7 @@ export function NextActionCard({ action }: { action: NextAction }) {
   const Icon = tone.icon;
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
+    <section
       className={`rounded-2xl border p-5 ${tone.wrap}`}
       aria-labelledby="next-action-title"
     >
@@ -161,7 +155,7 @@ export function NextActionCard({ action }: { action: NextAction }) {
           {action.ctaLabel} <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         </Link>
       )}
-    </motion.section>
+    </section>
   );
 }
 
