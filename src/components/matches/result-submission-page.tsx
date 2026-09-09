@@ -275,8 +275,16 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
             warning
             icon={<AlertTriangle className="h-7 w-7" aria-hidden="true" />}
             title="نتیجه این Match در حال بررسی است"
-            description="در وضعیت فعلی امکان ثبت نتیجه جدید وجود ندارد. وضعیت بررسی را از Matchهای من دنبال کن."
-          />
+            description="در وضعیت فعلی امکان ثبت نتیجه جدید وجود ندارد. پرونده اعتراض را برای دیدن وضعیت بررسی باز کن."
+          >
+            <Link
+              to="/matches/$id/dispute"
+              params={{ id: context.matchId }}
+              className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              مشاهده پرونده اعتراض
+            </Link>
+          </StateCard>
         ) : null}
 
         {effectiveState === "unavailable" && result?.outcome !== "unavailable" ? (
