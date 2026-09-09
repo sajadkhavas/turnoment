@@ -26,6 +26,28 @@ assert(cs2, "CS2 fixture must exist");
 assert.equal(cs2.slug, "counter-strike-2");
 assert(cs2.competitiveFormats.some((format) => format.teamSize === 5));
 
+const gameIds = ["eafc26", "efootball", "tekken8", "mk", "cs2", "warcraft"] as const;
+const forbiddenVisibleCopy = /Ruleset|Rating|رابط کاربری|قرارداد|فهرست عمومی|سیستم رتبه‌بندی عمومی|mock|demo|backend|server|api/i;
+
+for (const gameId of gameIds) {
+  const detail = await repository.getByIdentifier(gameId);
+  assert(detail, `${gameId} fixture must exist`);
+  assert.match(detail.seo.title, /مسابقات/, `${gameId} SEO title must express tournament search intent`);
+  assert.match(detail.seo.description, /مسابقات حضوری/, `${gameId} SEO description must express in-person competition intent`);
+  assert.equal(
+    forbiddenVisibleCopy.test(
+      [
+        detail.description,
+        detail.seo.title,
+        detail.seo.description,
+        ...detail.competitiveFormats.flatMap((format) => [format.label, format.description]),
+      ].join(" "),
+    ),
+    false,
+    `${gameId} final public copy must not expose engineering/system wording`,
+  );
+}
+
 const missing = await repository.getByIdentifier("unknown-game");
 assert.equal(missing, null);
 
@@ -50,4 +72,4 @@ const invalidRanking = gameDetailSchema.safeParse({
 });
 assert.equal(invalidRanking.success, false, "negative player rating must be rejected");
 
-console.log("Game detail contract checks passed.");
+console.log("Game detail contract and final-copy checks passed.");
