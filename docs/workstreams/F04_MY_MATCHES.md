@@ -1,6 +1,6 @@
 # F04 — Final My Matches
 
-Status: `IN PROGRESS`
+Status: `IN PROGRESS / IMPLEMENTED / ACCEPTANCE IN PROGRESS`
 
 START_SHA: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
 
@@ -12,165 +12,137 @@ Route: `/dashboard/matches`
 
 Indexability: `PRIVATE / NOINDEX`
 
-## Identity
+## Identity / repository lock
 
-- Workstream: `F04 — My Matches`
-- Route: `/dashboard/matches`
-- START_SHA: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
-- Branch: `phase/f04-my-matches`
-- Public/indexable: `NO — private/noindex`
-
-## Stage A — exact repository lock
-
-- frontend `main` verified at `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`;
-- F03 terminal Issue #38 evidence reviewed; frozen main and terminal CI are green;
-- `PROJECT_CONTINUITY.md` read;
-- `FRONTEND_PAGE_DELIVERY_PROTOCOL.md` read;
-- `docs/ROUTE_COMPLIANCE_REGISTRY.md` read;
+- frontend `main` verified at START: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`;
+- F03 terminal Issue #38 evidence reviewed; frozen main and terminal CI green;
 - `/dashboard/matches` verified as a real `DashboardSectionPlaceholder` and exact frontend NEXT;
 - branch searches for `f04` and `matches`: no overlap before branch creation;
 - open Issue/PR search for My Matches: none before Issue #41;
 - dedicated branch created from exact START_SHA.
 
-## Official documentation audit
+## Mandatory governance / official-source audit
 
-Reviewed before implementation on `2026-09-09`:
+Read before implementation:
 
-### TanStack Router — authenticated routes
+- `PROJECT_CONTINUITY.md`
+- `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
+- `SEO_FINAL_COPY_PROTOCOL.md`
+- `docs/ROUTE_COMPLIANCE_REGISTRY.md`
+- `docs/OFFICIAL_FRONTEND_SOURCES.md`
+- `docs/DESIGN_REFERENCE_AUDIT_TEMPLATE.md`
+- `docs/PAGE_WORKSTREAM_EVIDENCE_TEMPLATE.md`
+- F03 final private route/repository/runtime-validation implementation
 
-https://tanstack.com/router/latest/docs/guide/authenticated-routes
+Official references reviewed before implementation:
 
-Decisions:
-- keep authentication UX gating in the accepted parent `/dashboard` `beforeLoad`;
-- do not add duplicate child authentication state;
-- route guard is not API authorization, so private Django endpoints must independently authorize every request.
+### TanStack Router
 
-### TanStack Router — data loading
-
-https://tanstack.com/router/latest/docs/guide/data-loading
-
-Decisions:
-- primary page data belongs in the route loader;
-- validated search values used by the loader are declared through `loaderDeps`;
-- page component consumes typed loader data rather than starting its primary request after render.
-
-### TanStack Router — search params / navigation
-
-https://tanstack.com/router/latest/docs/guide/search-params
+- authenticated routes: https://tanstack.com/router/latest/docs/guide/authenticated-routes
+- data loading: https://tanstack.com/router/latest/docs/guide/data-loading
+- search params/navigation: https://tanstack.com/router/latest/docs/guide/search-params
 
 Decisions:
-- state, match kind, game and page are navigation-owned filter state;
-- validate/normalize search before use;
-- filters remain bookmarkable and browser Back/Forward-safe.
+- reuse accepted parent `/dashboard` `beforeLoad` Session UX gate;
+- private API authorization remains server-side;
+- primary data belongs in the route loader;
+- search used by loader is represented through validated search/`loaderDeps`;
+- state/kind/game/page are URL-owned navigation state;
+- no `replace:true`, so filter/pagination navigation remains Back/Forward-safe.
 
 ### WCAG 2.2
 
 https://www.w3.org/TR/WCAG22/
 
-Relevant acceptance:
-- semantic controls and headings;
-- visible/unobscured keyboard focus;
-- status conveyed by text and semantics, not color alone;
-- status messages exposed programmatically;
-- touch targets respect the WCAG 2.2 minimum-target principle.
+Acceptance decisions:
+- semantic native controls/headings/list structure;
+- visible focus treatment;
+- status conveyed with text/semantics, not color alone;
+- `aria-live` result-count feedback;
+- touch-friendly control sizing;
+- no horizontal overflow across required widths.
 
 ## Design reference audit
 
-### Existing Turnoment references reviewed
+Existing Turnoment references:
 
-- accepted `DashboardShell` + dashboard navigation;
-- `dashboard-activity.tsx` Upcoming Match / Recent Matches previews;
-- F03 `My Tournaments` final private page, route, repository/runtime-validation pattern;
-- existing Turnoment dark RTL card/token system;
-- current dashboard session/error/empty-state architecture.
+- `DashboardShell` + accepted dashboard navigation;
+- `dashboard-activity.tsx` Upcoming/Recent Match previews;
+- F03 `My Tournaments` final private information hierarchy and adapter boundary;
+- current dark RTL cards/tokens and dashboard state architecture.
 
 Patterns retained:
-- operational private-page hierarchy rather than marketing hero layout;
-- compact state summary + URL-backed filters + scannable cards;
-- stable IDs and backend-authoritative state enums;
-- responsive cards and native controls;
-- private `noindex,nofollow` policy.
+- operational private-page hierarchy;
+- backend-provided summary + URL-backed filters + scannable cards;
+- stable IDs and backend-authoritative competitive state enums;
+- private `noindex,nofollow`;
+- responsive/native controls.
 
-Patterns not promoted from old previews:
-- display-string-only competitive states;
-- final result/rating inference in presentation code;
-- component-local filters as navigation truth;
-- links to unfinished routes.
+Patterns deliberately not promoted from old previews:
+- display-string-only state;
+- frontend winner/rating inference;
+- component-local navigation truth;
+- links to unfinished Result/Dispute routes.
 
-### External product/interface references reviewed
+External interaction references reviewed:
 
-#### Battlefy — Match Page / tournament flow / score confirmation / match issue
+### Battlefy
 
-References:
-- https://help.battlefy.com/en/articles/4662216-game-day-guide-match-page
-- https://help.battlefy.com/en/articles/6966478-using-score-confirmation-on-battlefy
-- https://help.battlefy.com/en/articles/6925663-reporting-a-match-issue
+- Match Page / tournament flow
+- Score Confirmation
+- Reporting a Match Issue
 
-Patterns learned:
-- match state should make the player's next required attention obvious;
-- scheduled/ready/live/result-confirmation/dispute states need different emphasis;
-- score confirmation and dispute are separate authoritative workflows;
-- match identity needs competition/round/opponent context, not only a score row.
+Relevant product lessons:
+- current match/attention state needs to be immediately scannable;
+- schedule, opponent, competition/round and result context belong together;
+- score confirmation and disputes are separate authoritative workflows rather than generic list mutations.
 
-#### Challonge — participant score reporting + attachments
+### Challonge
 
-Reference:
-- https://kb.challonge.com/en/article/how-to-upload-match-attachments-report-scores-47g9zp/
+- participant score reporting / match attachments
 
-Patterns learned:
-- result reporting is a dedicated action flow that may include evidence;
-- the match list should expose state/context without embedding the full mutation workflow.
+Relevant lesson:
+- result/evidence mutation belongs to a dedicated flow; My Matches should expose authoritative state/context without embedding an unfinished mutation workflow.
 
-What will NOT be copied:
-- third-party branding, copy, visual layout or assets;
-- Battlefy/Challonge-specific tournament timers/rules;
-- automatic score-confirmation semantics not explicitly returned by Turnoment backend;
-- file/evidence upload behavior before the dedicated Result/Dispute workstreams own it.
+No third-party branding, assets, copy, visual layout or product-specific timers/rules were copied.
 
-## Selected design direction
+## Selected final design direction
 
 My Matches is the player's private match ledger and attention center.
 
-Primary hierarchy:
-1. page identity and concise final copy;
-2. backend-provided summary counts;
-3. URL-backed state/kind/game filters;
-4. ordered match cards showing competition, round, opponent, schedule/venue, lifecycle/result/dispute state and attention;
-5. finalized score/rating delta only when backend supplies a finalized result;
-6. pagination;
-7. useful empty state leading to public tournament discovery.
+Hierarchy:
+1. page identity/final copy;
+2. authoritative summary counts;
+3. state/kind/game filters;
+4. competition/round/opponent/schedule/venue Match cards;
+5. authoritative attention/status;
+6. finalized score/outcome/rating delta only when supplied;
+7. pagination/empty state.
 
 Desktop:
-- reuse `DashboardShell`;
-- five summary cells where space allows;
-- compact filters;
-- two-column card grid where readable.
+- reuse DashboardShell;
+- five compact summary cells;
+- filters in compact panel;
+- two-column match grid at wide desktop.
 
-Mobile:
-- summary becomes a compact two-column grid;
-- filters stack/wrap without horizontal overflow;
-- cards remain single-column and keep opponent/result hierarchy visible early;
-- no action depends on hover or desktop-only interaction.
+Mobile/tablet:
+- compact two-column summary grid;
+- stacked/wrapped filters without overflow;
+- single-column Match cards;
+- opponent/result/action hierarchy kept reachable without hover.
 
-## SEO / final-copy audit
+## SEO / final-copy decision
 
-Public SERP/keyword research: `N/A` because this is an authenticated private route.
+`/dashboard/matches` is authenticated/private and is permanently `noindex,nofollow`.
 
-Still mandatory:
-- explicit `noindex,nofollow`;
-- final natural Persian copy;
+Public SERP/keyword research is `N/A` under project protocol. Final-copy rules still apply:
 - no backend/API/mock/demo/temporary/waiting language;
 - no unsupported guarantee about result/dispute processing;
-- page title/H1 specific to My Matches.
-
-Selected copy direction:
-- H1: `Matchهای من`
-- title: `Matchهای من — داشبورد بازیکن`
-- supporting copy: explain that schedule, opponent, status and finalized results are collected in one place.
+- natural product wording;
+- H1 `Matchهای من`;
+- title `Matchهای من — داشبورد بازیکن`.
 
 ## Final production contract
-
-The full page gets a dedicated contract rather than expanding dashboard preview types.
 
 ### Query
 
@@ -181,113 +153,154 @@ The full page gets a dedicated contract rather than expanding dashboard preview 
 
 ### Page response
 
-- current-player display identity needed for versus presentation;
-- summary counts: `total / upcoming / actionRequired / completed / disputed`;
-- stable game filter options;
-- ordered match items;
-- backend-provided pagination truth.
+- current-player stable ID + gamer tag for versus presentation;
+- summary `total / upcoming / actionRequired / completed / disputed`;
+- stable game options;
+- ordered Match items;
+- authoritative pagination.
 
-### Match item
+### Match identity/context
 
-Stable identity/context:
-- match ID;
-- match kind (`tournament | challenge`);
+- stable `matchId`;
 - game ID/name;
+- competition discriminated as tournament/challenge;
 - competition stable ID/title;
-- tournament slug + round label when tournament-backed;
-- opponent stable participant ID + display tag/type;
+- tournament slug + round label where applicable;
+- opponent stable participant ID/type/display tag;
 - optional venue stable ID/name/city;
 - offset-aware `startsAt` + IANA timezone;
 - format label.
 
-Authoritative states:
-- lifecycle: `scheduled | ready | live | awaiting-result | awaiting-confirmation | disputed | completed | cancelled`;
-- check-in: `not-required | not-open | open | completed | missed`;
-- result state: `not-open | reportable | awaiting-opponent | disputed | finalized | void`;
-- dispute state: `none | open | under-review | resolved`;
-- attention: `none | check-in | submit-result | confirm-result | dispute`.
+### Authoritative states
+
+Lifecycle:
+`scheduled | ready | live | awaiting-result | awaiting-confirmation | disputed | completed | cancelled`
+
+Check-in:
+`not-required | not-open | open | completed | missed`
+
+Result state:
+`not-open | reportable | awaiting-confirmation | disputed | finalized | void`
+
+Dispute state:
+`none | open | under-review | resolved`
+
+Attention:
+`none | check-in | submit-result | confirm-result | dispute`
 
 Finalized result when present:
-- player score;
-- opponent score;
+- player/opponent scores;
 - outcome `win | loss | draw | void`;
-- rating delta nullable and backend-authoritative;
+- nullable backend-authoritative rating delta;
 - finalized timestamp.
 
-The list page displays attention/state but F04 does not implement Result Submission or Dispute mutations. Those remain the next dedicated workstreams. F04 intentionally does not create dead links to routes that are not accepted yet.
+Runtime integrity rejects contradictory projections, including:
+- completed without finalized result;
+- finalized result on non-finalized state;
+- cancelled without void result state;
+- disputed lifecycle without active dispute + disputed result state;
+- check-in/submit/confirm/dispute attention inconsistent with its authoritative state;
+- impossible pagination;
+- summary subcount greater than total.
 
-### Planned production API mapping
+## Permanent API mapping / cross-repo ownership
+
+Planned Django adapter:
 
 `GET /api/v1/me/matches/?state={state}&kind={kind}&game={gameId}&page={page}`
 
-- Django Session cookies with `credentials: include`;
-- private server-side authorization mandatory;
-- response runtime-validated before UI consumption;
-- fixture repository implements the exact same TypeScript interface;
-- cross-repo status remains `FRONTEND MOCK / BACKEND PENDING` until the owning matches/results backend phases are implemented and merged.
+- Session cookies via `credentials: include`;
+- server-side private authorization mandatory;
+- runtime validation before UI consumption;
+- deterministic fixture adapter implements the same permanent repository interface.
 
-## UI state matrix
+Backend owners:
+- `matches` — list membership/lifecycle/schedule/opponent/competition/venue/check-in;
+- `results` — result reporting/confirmation/final score/outcome/rating delta;
+- `disputes` — dispute state/decision projection.
 
-Required:
-- populated mixed list;
-- loading/pending;
-- empty all;
-- filtered empty;
+Backend root laws were read before alignment. Backend docs-only alignment:
+- backend START_SHA: `cd47fff8b82359b12d86fad10735a2e9fa52472d`;
+- backend branch: `docs/f04-my-matches-contract`;
+- backend Issue #11;
+- backend PR #12;
+- backend alignment head: `91df6a17806f6155c0abf18f6f0c9c010a5a579b`;
+- backend PR CI `34388795695` — PASS on Python 3.12 and 3.14;
+- backend PR review threads before merge: `0`;
+- backend alignment merge: `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`;
+- backend post-merge main CI: pending at this evidence checkpoint.
+
+Cross-repo runtime status remains explicitly:
+
+`FRONTEND MOCK / BACKEND PENDING`
+
+F04 does not start/reorder backend implementation; backend NEXT remains `P02 — Games / Catalog Foundation`.
+
+## Implemented UI/state matrix
+
+- normal populated mixed list;
+- loading skeleton;
+- all-empty and filtered-empty UX;
 - request error/retry;
-- unauthenticated/session-expired via parent guard/API 401;
-- scheduled/check-in/ready/live;
+- session-expired/401 redirect through accepted parent/API policy;
+- scheduled/open check-in;
+- ready;
+- live;
 - awaiting result;
 - awaiting confirmation;
 - disputed/under review;
-- completed win/loss/draw with backend rating delta;
-- cancelled;
+- completed finalized win/loss with backend rating delta;
+- cancelled/void;
 - tournament and challenge contexts;
-- multi-page pagination;
+- URL-backed state/kind/game/page filtering;
+- pagination;
 - invalid search normalization.
 
-## Accessibility / responsive acceptance
+Result Submission and Dispute mutation UIs remain intentionally outside F04. No dead links to unaccepted routes were created.
 
-- native buttons/selects/links;
-- visible focus states;
-- text state labels in addition to tone;
-- semantic list/card structure;
-- aria-live result-count status;
-- no horizontal overflow;
-- QA widths: `375 / 390 / 430 / 768 / 1024 / 1440`.
+## Frontend quality / browser evidence
 
-## Ownership
+Implementation checkpoint head:
 
-F04 may modify:
-- `src/routes/dashboard.matches.tsx`;
-- F04 My Matches component;
-- dedicated F04 data/repository/runtime-schema files;
-- F04 contract tests;
-- test/workflow registration;
-- `PROJECT_CONTINUITY.md`;
-- `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
-- F04 evidence/closeout docs.
+`82525fb153ac129754c27c0c021f3ef8e1f10e44`
 
-F04 does not own:
-- Result Submission mutation UI;
-- Dispute mutation/evidence UI;
-- Match Detail public/private route rebuild beyond what My Matches requires;
-- Challenge Hub;
-- backend domain implementation or backend phase ordering.
+Frontend Quality Gate:
 
-## Quality evidence — pending
+`34388320768` — PASS
 
-Required before merge:
+Passed:
 - frozen install;
 - lint;
-- production build/route generation;
-- typecheck;
-- F04 contract regression tests;
-- existing F01/F02/F03/dashboard tests;
-- F04 SSR smoke, robots and single-main checks;
-- screenshots at all six required widths;
-- representative manual visual review;
-- PR CI green and review threads `0`.
+- production build / route generation;
+- TypeScript typecheck;
+- dashboard/F01/F02/F03/F04 contract checks;
+- F04 SSR smoke;
+- `noindex,nofollow` assertion;
+- single `<main>` invariant;
+- browser screenshot regression.
+
+Browser artifact:
+- id `10118663030`
+- digest `sha256:ee20d8dc48268a8f97a11c17b14974b10b292b2aa47be157db8e0abe1470baa1`
+- workflow head explicitly `82525fb153ac129754c27c0c021f3ef8e1f10e44`
+- captures: `375 / 390 / 430 / 768 / 1024 / 1440`
+
+Manual representative visual review:
+- `375` — PASS
+- `430` — PASS
+- `768` — PASS
+- `1024` — PASS
+- `1440` — PASS
+- no horizontal overflow found;
+- no sidebar/content collision found;
+- filters/cards/attention CTA remained readable;
+- 1440 two-column card grid and pagination rendered correctly.
 
 ## Exact NEXT
 
-Implement the dedicated F04 contract + fixture/Django adapters, rebuild `/dashboard/matches` on that boundary, add regression/browser QA, then perform cross-repo contract alignment before final merge.
+1. finish backend post-merge contract-alignment gate and close backend Issue #11;
+2. reconcile frontend continuity + route registry to F04 active truth;
+3. obtain green exact-head frontend Quality Gate after evidence/governance updates;
+4. open/review frontend PR, require PR CI PASS and review threads `0`;
+5. merge implementation, require post-merge main CI PASS;
+6. perform closeout/freeze and terminal main CI before reporting `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
