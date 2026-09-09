@@ -38,13 +38,7 @@ Terminal main Quality Gate:
 
 `34355802846` — PASS
 
-This main includes:
-
-- F01 Tournament Detail + Registration
-- merged technical F02 Game Detail implementation
-- Final Frontend Page Delivery Protocol
-- Final SEO & Copy Protocol
-- SEO governance closeout
+This main includes F01 Tournament Detail + Registration, the merged technical F02 Game Detail implementation, Final Frontend Page Delivery Protocol and Final SEO & Copy Protocol.
 
 ### Backend
 
@@ -72,20 +66,7 @@ Fixtures exist only for development/test/visual QA and implement the same perman
 
 Frontend is not authoritative for auth/session, tournament lifecycle, registration eligibility, capacity, bracket truth, winner/final result, rating change, challenge eligibility, payment/refund/settlement, moderation or disputes.
 
-No accepted page may need a later generic phase to finish:
-
-- SSR/routing/URL validation
-- SEO/indexing
-- public search-intent/topic research
-- final public copy
-- title/meta/canonical
-- internal-link/anchor strategy
-- structured-data decision
-- accessibility
-- responsive behavior
-- loading/error/empty/notFound states
-- runtime validation
-- production contract mapping
+No accepted page may need a later generic phase to finish SSR/routing, SEO/indexing, public search-intent/topic research, final public copy, title/meta/canonical, internal links, structured-data decision, accessibility, responsive behavior, complete UI states, runtime validation or production contract mapping.
 
 User-visible copy must never expose development/engineering-stage language such as waiting for backend/server/API, mock/demo/temporary mode, contract/adapter/UI-state jargon when natural product language is appropriate.
 
@@ -157,11 +138,11 @@ Competitive truth:
 
 ### Game Detail `/games/$slug`
 
-Status: `IN PROGRESS — SEO FINAL COPY IMPLEMENTED / QUALITY + MERGE PENDING`
+Status: `READY TO MERGE — SEO FINAL COPY GREEN / EXACT-HEAD CI PENDING`
 
 Original technical implementation:
 
-- original START: `2ea5df3ecbd3a698fa8633b9a58d2a67a5195af5b`
+- original START: `2ea5df3ecbd3a698fa838a8023994c0fc73e18a1`
 - implementation branch: `phase/f02-game-detail`
 - reviewed head: `a72bdcbcba0b54674adc1e8d6eb6685818e245d4`
 - PR #30
@@ -169,18 +150,18 @@ Original technical implementation:
 - threads `0`
 - merge `6c36325e92dacc3eb60f895afa2b553e3046087a`
 - post-merge CI `34352013348` — PASS
-- browser QA PASS at 375/390/430/768/1024/1440
 
 Current SEO/final-copy workstream:
 
 - SEO START_SHA: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 - branch: `phase/f02-seo-final-copy`
 - tracking Issue #29 reopened intentionally
-- implementation checkpoint before continuity update: `4b810dda9990b94cd267b5d9d21ccea4ccf0adf1`
+- reviewed implementation checkpoint: `dfa43a178ab11c9607720494bcb165e003ae0691`
+- QA evidence commit: `1f069715bfb3778ea0741ec9600f2fbddba43e38`
 - SEO research: `docs/workstreams/F02_GAME_DETAIL_SEO_RESEARCH.md`
 - workstream evidence: `docs/workstreams/F02_GAME_DETAIL.md`
 
-Completed on current branch:
+Completed:
 
 - current Iranian/regional search-intent research;
 - primary/supporting topic clusters;
@@ -189,11 +170,21 @@ Completed on current branch:
 - final visible copy rewrite;
 - H1/heading/internal-anchor strategy;
 - final metadata pattern;
-- removal of visible `Ruleset`, `Rating`, contract/UI/system wording;
+- removal of visible engineering/system wording;
 - final-copy regression tests;
 - route compliance registry creation.
 
-F02 is NOT final until current branch CI, PR/review/merge, post-merge CI, documentation closeout and terminal main CI are complete.
+Quality evidence on implementation checkpoint:
+
+- Quality Gate `34358425752` — PASS on `dfa43a178ab11c9607720494bcb165e003ae0691`
+- install/lint/build/route generation/typecheck/contracts — PASS
+- browser smoke + single-main invariant — PASS
+- 18 screenshots at 375/390/430/768/1024/1440 — PASS
+- artifact `10106806417`
+- digest `sha256:2c941652f83398f8fb6cb2f328a31b5c3995104c57c04d5a3e4996ce5d6ec5c7`
+- manual Game Detail visual review at 375/430/768/1440 — PASS
+
+F02 is NOT final until exact-head CI after this continuity/evidence commit, PR/review/merge, post-merge CI, documentation closeout and terminal main CI are complete.
 
 ## 7. Route compliance registry
 
@@ -276,22 +267,20 @@ Inherited ecommerce/service/general routes are explicitly listed in the registry
 
 ## 10. Exact NEXT
 
-Immediate NEXT: **finish F02 SEO/final-copy terminal acceptance**.
+Immediate NEXT: **finish F02 terminal acceptance**.
 
 Remaining sequence:
 
-1. run exact-head Quality Gate on current branch;
-2. fix any lint/type/contract/build/browser issue without weakening gates;
-3. manually review representative Game Detail screenshots for Persian wrapping and final copy;
-4. update Issue #29 evidence;
-5. open PR on exact reviewed head;
-6. PR CI PASS + review threads = 0;
-7. merge with expected-head lock;
-8. post-merge main CI PASS;
-9. closeout branch: promote `/games/$slug` to `FINAL_CURRENT`, freeze F02 evidence and current main SHA;
-10. closeout PR/CI/merge;
-11. terminal main CI PASS;
-12. close Issue #29 completed.
+1. wait for exact-head Quality Gate on current branch after evidence/continuity commit;
+2. fix any issue without weakening gates;
+3. open SEO/final-copy PR on exact green head;
+4. PR CI PASS + review threads = 0;
+5. merge with expected-head lock;
+6. post-merge main CI PASS;
+7. closeout branch: promote `/games/$slug` to `FINAL_CURRENT`, freeze F02 evidence and main SHA;
+8. closeout PR/CI/merge;
+9. terminal main CI PASS;
+10. close Issue #29 completed.
 
 After F02:
 
