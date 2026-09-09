@@ -2,24 +2,24 @@
 
 > **MANDATORY FIRST READ FOR EVERY CHAT / AGENT / SESSION**
 >
-> This file is the current operational checkpoint for the whole Turnoment project. Read it before making changes. Update it before ending the session — even when the work is incomplete, blocked, or only partially implemented.
+> This file is the operational source of truth for continuing Turnoment without duplicate work. Read it before making changes and update it before ending every session, even when the work is incomplete or blocked.
 
-Last checkpoint update: `2026-09-07`
+Last checkpoint update: `2026-09-09`
 
 ## 1. Mandatory continuation protocol
 
-Every chat/agent working on this project MUST:
+Every working chat/agent MUST:
 
 1. Read this file before implementation.
-2. Verify the recorded `main` SHA of the repository it will change.
+2. Verify the current `main` SHA of every repository it will change.
 3. Read the relevant phase/PR/Issue evidence before repeating work.
-4. Work on a dedicated branch unless explicitly doing a documented closeout branch.
-5. Never mark work `DONE` from conversation memory alone.
-6. Before ending the session, update this file with the real current state, even if the task is unfinished.
-7. Record exact SHA / branch / PR / CI / test evidence when available.
-8. If cross-repo API contracts or global project state changed, update this file in BOTH repositories.
+4. Work on a dedicated branch for controlled changes.
+5. Never claim `DONE / MERGED / FROZEN` from conversation memory alone.
+6. Update this file before ending the session, whether work is complete, partial or blocked.
+7. Record exact branch / SHA / PR / CI evidence when available.
+8. If a cross-repo API contract or global product state changes, update continuity in both repositories.
 
-Allowed operational statuses:
+Allowed statuses:
 
 - `PLANNED`
 - `IN PROGRESS`
@@ -28,250 +28,162 @@ Allowed operational statuses:
 - `READY TO MERGE`
 - `DONE / MERGED / FROZEN`
 
-A session MUST NOT use `DONE / MERGED / FROZEN` unless the required implementation is merged and its required final gates are green.
-
-## 2. Source-of-truth repositories
+## 2. Repository truth
 
 ### Frontend
 
 Repository: `sajadkhavas/turnoment`
 
-Role: public/player/venue product UI and SSR frontend.
+Current `main` SHA before the active productionization merge:
 
-Stack:
+`91a924e38194096a26070e11d2a9ae28858d20a3`
 
-- TanStack Start
-- TanStack Router
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- Radix / shadcn-style components
+That commit is the latest Lovable Player Dashboard result (`تکمیل داشبورد بازیکن`).
 
-Current `main` SHA at this checkpoint:
+Main quality run for the Lovable result:
 
-`4d714579fc97d1400b5a2b50b680d93b090ceac5`
-
-Latest merged frontend work:
-
-- PR `#1` — Tournament Discovery completion
-- Merge SHA: `4d714579fc97d1400b5a2b50b680d93b090ceac5`
-- Post-merge Frontend Quality Gate: run `34104818438` — PASS
+`34324869851` — PASS, but the inherited workflow at that point checked build only.
 
 ### Backend
 
 Repository: `sajadkhavas/turnoment-backend`
 
-Role: domain/data/business-logic source of truth and API.
+Current verified `main` SHA:
 
-Stack:
-
-- Python
-- Django 6.1
-- Django REST Framework
-- PostgreSQL
-- Redis
-- Celery
-
-Current `main` SHA at this checkpoint:
-
-`113e597ec94aaaae02186daf09c98fc1900cb62c`
+`b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
 
 Backend phase state:
 
 - `P00 — Backend Foundation & Frontend Contract Baseline` → `DONE / MERGED / FROZEN`
 - `P01 — Accounts, Player Identity & Authentication Foundation` → `DONE / MERGED / FROZEN`
-- Next backend phase: `P02 — Games / Catalog Foundation`
+- Backend NEXT: `P02 — Games / Catalog Foundation`
 
-Backend historical phase evidence remains authoritative in:
-
-- `PHASE_COMPLETION_PROTOCOL.md`
-- `docs/PHASE_REGISTRY.md`
-- phase-specific GitHub Issues / PRs
+Backend P01 authentication truth for the web frontend is Django Session + CSRF + OTP. Do not introduce localStorage bearer-token auth.
 
 ## 3. Product architecture law
 
-Frontend is NOT the business source of truth.
+Frontend is never the source of truth for competitive/business/user state.
 
-Anything that is content, commercial data, competitive state, user state, configurable product data, operational status, SEO entity data, or an action that changes system truth must ultimately be backend-authoritative and available through an API contract.
+Required frontend direction:
 
-Frontend-owned examples:
+`Route → validated params/search → route guard where needed → loader → typed repository → active adapter → runtime-validated data → UI`
 
-- spacing
-- layout
-- visual effects
-- animation
-- design tokens
-- purely presentational component behavior
+Parallel-development adapter model:
 
-Backend-authoritative examples:
+`Mock adapter now → Django HTTP adapter later`
 
-- tournaments
-- games
-- gaming centers
-- players
-- rankings
-- registrations
-- match state/results
-- challenges
-- rivalries
-- stories/content
-- notifications
-- payments/refunds/settlements
-- configurable SEO entity metadata
+Switching adapters must not require rewriting page components.
 
-## 4. New frontend production rule
+Public important pages should be SSR-friendly and SEO-aware from day one. Private pages must be explicitly `noindex` and protected at the route UX layer while Django/API authorization remains the actual security boundary.
 
-From this checkpoint onward, pages must be built as the FINAL frontend architecture, not temporary mock-only screens that require a later SSR/router/SEO reconstruction phase.
+## 4. Current important frontend page truth
 
-Target flow:
+### Homepage
 
-`Route → validated params/search → loader/service → typed repository contract → Mock adapter now → Django HTTP adapter later → UI`
+Strong visual reference. Backend/data-contract productionization remains a later controlled task.
 
-Rules:
+### Tournament Discovery `/tournaments`
 
-- Public important pages: SSR-friendly from day one.
-- Search/filter state: URL/search params, not localStorage.
-- Dynamic public pages: loader-driven metadata where applicable.
-- Private pages: explicit `noindex` and auth boundary.
-- Every important route needs loading/error/empty/not-found handling as appropriate.
-- Business logic must not live in presentational components.
-- Mock data must be behind replaceable typed contracts before a page is considered API-ready final.
+Visual discovery page is merged and working with URL-driven filters/search, stable slugs, responsive filtering and SEO metadata.
 
-## 5. Current frontend state
+### Tournament Detail `/tournaments/$id`
 
-### Strong visual/reference pages already present
+Status: `PROTOTYPE — NOT FINAL`.
 
-- Homepage
-- Tournament Listing / Discovery
-- Ranking
-- Tournament Detail prototype
-- Gaming Center listing/profile prototype
-- Games listing prototype
-- Player Profile prototype
+Still must replace fake local registration/payment copy and complete rules/participants/bracket/registration architecture in its own workstream.
 
-### Tournament Discovery
+### Player Dashboard `/dashboard`
 
-Status: `MERGED / BUILD GREEN`, but must still be migrated through the new repository/service adapter layer before the frontend can be declared globally backend-ready.
+Lovable visual Design Master is present on `main`.
 
-Already completed:
+Active productionization workstream upgrades it to the permanent frontend architecture without redesigning the accepted visual system.
 
-- URL-driven filters
-- validated search parameters
-- game/city/date/status/format/price/verified filters
-- sorting
-- mobile filter Sheet
-- active filter chips
-- featured tournament treatment
-- stable tournament slugs
-- empty state
-- skeleton component
-- canonical metadata
-- build CI
+Implemented on the active branch:
 
-### Tournament Detail
+- private route remains `noindex,nofollow`
+- `beforeLoad` session UX guard
+- replaceable `PlayerSessionRepository`
+- mock session adapter for current design/development
+- Django P01 session adapter using `GET /api/v1/auth/me/` with `credentials: include`
+- typed Player Dashboard repository boundary
+- mock dashboard adapter retained for parallel frontend development
+- Django dashboard adapter prepared for `GET /api/v1/me/dashboard/`
+- Zod runtime validation for dashboard payloads
+- runtime dashboard contract test
+- `VITE_DATA_ADAPTER=mock|django` public adapter selection
+- `VITE_API_BASE_URL` documented as public configuration only
+- Quality Gate upgraded to lint + typecheck + dashboard contract test + production build
+- inherited legacy `catch {}` correctness error fixed without reformatting unrelated legacy ecommerce files
 
-Status: `PROTOTYPE — NOT FINAL`
+## 5. Active frontend workstream
 
-Known debt that MUST NOT be mistaken for final implementation:
+### Player Dashboard Productionization
 
-- fake registration uses local UI state (`setDone` style behavior)
-- current copy says payment is completed in person at the gaming center
-- registration should become its own real route/flow
-- data is still direct mock data
-- needs final status/rules/participant/bracket/API-ready contract architecture
-
-### Ranking
-
-Status: `VISUAL / FRONTEND PROTOTYPE — PRODUCTIONIZATION PENDING`
-
-### Player Profile
-
-Status: `VISUAL / FRONTEND PROTOTYPE — PRODUCTIONIZATION PENDING`
-
-### Legacy routes
-
-Old ecommerce routes still exist in the repository. Do not use them as product architecture for the tournament platform. They may be isolated/deprecated/removed in a later controlled phase.
-
-## 6. Current active frontend plan
-
-### F00 — Frontend Production Architecture Foundation
-
-Status: `PLANNED / BRANCH CREATED`
+Status: `READY TO MERGE`
 
 Branch:
 
-`phase/f00-frontend-production-foundation`
+`phase/player-dashboard-productionization`
 
 START_SHA:
 
-`4d714579fc97d1400b5a2b50b680d93b090ceac5`
+`91a924e38194096a26070e11d2a9ae28858d20a3`
 
-Required scope:
+Reviewed implementation head before this continuity documentation commit:
 
-- typed API/domain contract boundary
-- repository/service interface layer
-- mock adapters behind those interfaces
-- future Django HTTP adapter boundary
-- centralized API client/environment configuration
-- loader-first data access rules
-- SEO/head helper conventions
-- public/private route conventions
-- noindex/auth-route conventions
-- loading/error/not-found conventions
-- improve frontend CI toward lint + typecheck + build + tests
-- document frontend engineering rules
-- migrate at least one important route as reference implementation
+`022256dd71e84914b44bc2c748107aaee5eb8137`
 
-Do NOT create more large pages on top of direct mock imports before this foundation is established, unless the session explicitly records a justified exception here.
+Green branch Quality Gate:
 
-### After F00
+`34325863864` — PASS
 
-1. Final Tournament Detail
-2. Game Detail
+Passed steps:
+
+- frozen dependency install
+- full-repo ESLint correctness
+- TypeScript `tsc --noEmit`
+- Player Dashboard runtime contract checks
+- production build
+
+The route guard is intentionally not treated as the security boundary. Django/API endpoints must authorize private requests independently.
+
+## 6. Known constraints / debt
+
+- Player Dashboard still uses the mock adapter by default until the corresponding Django dashboard endpoint exists and is accepted.
+- `/login` is still the old visual/password prototype and does not represent the final OTP UX; Auth/OTP frontend productionization remains a separate workstream.
+- Several inherited ecommerce routes remain in the repository. Do not copy their architecture into Turnoment competitive flows.
+- Formatting debt remains separate from correctness lint; do not create a massive unrelated formatting diff inside feature phases.
+
+## 7. Next frontend work
+
+After Player Dashboard productionization is merged and post-merge CI is green:
+
+1. Final Tournament Detail + Registration Contract
+2. Game Detail productionization
 3. My Tournaments
 4. Result Submission
 5. Dispute
 6. Challenge Hub / Detail
 7. Rivalry Detail
-8. Auth / OTP frontend integration shell
+8. Auth / OTP frontend integration
 9. Notifications / Settings
 
-## 7. Lovable usage plan
+Lovable credits should be reserved for high-value visual Design Masters. The next strong Lovable candidate after Player Dashboard is:
 
-Lovable is optional and is used only when rapid high-value visual exploration is worth the credit cost.
+`Live Tournament / Bracket`
 
-Credits should be reserved primarily for design-master screens such as:
+Lovable output is never automatically production-final; it must pass the same architecture/quality process.
 
-- Player Dashboard
-- Live Tournament / Bracket
-- Match Room
-- Gaming Center Dashboard
-- Gaming Center Tournament Operations
+## 8. Latest session checkpoint
 
-Any Lovable output is a design/code input, NOT automatically production-final. It must still satisfy the production frontend rules in this file.
-
-## 8. Exact NEXT
-
-Frontend NEXT:
-
-`Start and complete F00 — Frontend Production Architecture Foundation from main SHA 4d714579fc97d1400b5a2b50b680d93b090ceac5.`
-
-Backend NEXT, independently in parallel:
-
-`Start P02 — Games / Catalog Foundation from backend main SHA 113e597ec94aaaae02186daf09c98fc1900cb62c.`
-
-## 9. End-of-session update template
-
-Every working chat must replace/update the relevant sections above and append a concise checkpoint below.
-
-### Latest session checkpoint
-
-- Date: `2026-09-07`
-- Repo changed: `none yet — continuity bootstrap only`
-- Phase/workstream: `Project continuity bootstrap`
-- Status: `IN PROGRESS until continuity PR is merged`
-- START_SHA frontend: `4d714579fc97d1400b5a2b50b680d93b090ceac5`
-- START_SHA backend: `113e597ec94aaaae02186daf09c98fc1900cb62c`
-- Active frontend branch: `phase/f00-frontend-production-foundation`
+- Date: `2026-09-09`
+- Repo: `sajadkhavas/turnoment`
+- Workstream: `Player Dashboard Productionization`
+- Status: `READY TO MERGE`
+- Frontend main before merge: `91a924e38194096a26070e11d2a9ae28858d20a3`
+- Active branch: `phase/player-dashboard-productionization`
+- Green implementation head: `022256dd71e84914b44bc2c748107aaee5eb8137`
+- Green CI: `34325863864`
+- Backend main: `b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
 - Blockers: `none`
-- Exact NEXT: `merge continuity bootstrap, then implement F00`
+- Exact NEXT: `run the continuity-head quality gate, open/review/merge the productionization PR, verify post-merge main CI, then update this file with the final merged SHA and begin the next page workstream.`

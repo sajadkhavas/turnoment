@@ -9,6 +9,9 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "bun run src/lib/dashboard-contract.spec.ts",
+    "quality": "bun run lint && bun run typecheck && bun run test && bun run build",
     "format": "prettier --write ."
   },
   "dependencies": {

@@ -1,14 +1,24 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { DashboardErrorState } from "@/components/dashboard/dashboard-states";
+import { playerSessionRepository } from "@/lib/player-session";
 
 /**
  * Authenticated player area.
- * Auth is currently a mock session shell. When the Django OTP/session adapter
- * lands, resolve the session in `beforeLoad` here and redirect
- * unauthenticated / session-expired users to the OTP login flow.
+ *
+ * The route guard is a UX boundary only. Django must still authorize every
+ * private API response independently. During parallel development the mock
+ * session adapter keeps the design preview accessible; switching
+ * VITE_DATA_ADAPTER=django activates the real P01 session lookup.
  */
 export const Route = createFileRoute("/dashboard")({
+  beforeLoad: async () => {
+    const session = await playerSessionRepository.getSession();
+    if (session.state !== "authenticated") {
+      throw redirect({ to: "/login" });
+    }
+    return { session };
+  },
   head: () => ({
     meta: [
       { title: "داشبورد بازیکن — ایران مهر افزار" },

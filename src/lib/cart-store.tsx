@@ -31,7 +31,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setItems(JSON.parse(raw));
-    } catch {}
+    } catch {
+      // Legacy ecommerce state is non-critical; ignore malformed local data.
+    }
   }, []);
 
   useEffect(() => {

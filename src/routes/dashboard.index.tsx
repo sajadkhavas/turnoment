@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { playerDashboardRepository } from "@/lib/dashboard-data";
+import { playerDashboardRepository } from "@/lib/dashboard-repository";
 import {
   ChallengeProgressCard,
   CompetitiveSnapshotCards,
