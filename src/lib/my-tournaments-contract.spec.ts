@@ -49,15 +49,37 @@ if (myTournamentsPageSchema.safeParse(invalidSummary).success) {
   throw new Error("My Tournaments runtime contract accepted an impossible negative summary count.");
 }
 
-const invalidResult = {
+const invalidPlacement = {
   ...firstPage,
   items: firstPage.items.map((item, index) =>
     index === 3 && item.result ? { ...item, result: { ...item.result, placement: 0 } } : item,
   ),
 };
 
-if (myTournamentsPageSchema.safeParse(invalidResult).success) {
+if (myTournamentsPageSchema.safeParse(invalidPlacement).success) {
   throw new Error("My Tournaments runtime contract accepted placement zero.");
+}
+
+const impossibleWins = {
+  ...firstPage,
+  items: firstPage.items.map((item, index) =>
+    index === 3 && item.result
+      ? { ...item, result: { ...item.result, matchesPlayed: 4, wins: 5 } }
+      : item,
+  ),
+};
+
+if (myTournamentsPageSchema.safeParse(impossibleWins).success) {
+  throw new Error("My Tournaments runtime contract accepted more wins than matches played.");
+}
+
+const impossiblePagination = {
+  ...firstPage,
+  pagination: { ...firstPage.pagination, currentPage: 3, totalPages: 2 },
+};
+
+if (myTournamentsPageSchema.safeParse(impossiblePagination).success) {
+  throw new Error("My Tournaments runtime contract accepted currentPage greater than totalPages.");
 }
 
 console.log("My Tournaments runtime contract checks passed.");
