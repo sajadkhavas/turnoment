@@ -19,6 +19,7 @@ import {
   type SubmitResultAction,
   validateScoreDraft,
 } from "@/lib/result-submission-contract";
+import { ResultSubmissionHttpError } from "@/lib/result-submission-http-repository";
 import { resultSubmissionRepository } from "@/lib/result-submission-repository";
 
 function formatDateTime(value: string, timezone: string) {
@@ -70,6 +71,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
 
   const playerScore = Number(playerScoreText);
   const opponentScore = Number(opponentScoreText);
+  const staleResult = result?.outcome === "stale";
 
   const effectiveState = useMemo(() => {
     if (result?.outcome === "accepted") return result.status;
@@ -102,7 +104,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
 
   const review = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (submitting || context.submissionState !== "reportable") return;
+    if (submitting || context.submissionState !== "reportable" || staleResult) return;
 
     const errors: Record<string, string> = {};
     if (playerScoreText.trim() === "") errors.playerScore = "امتیاز خودت را وارد کن.";
@@ -124,7 +126,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
   };
 
   const submit = async () => {
-    if (!reviewing || submitting || context.submissionState !== "reportable") return;
+    if (!reviewing || submitting || context.submissionState !== "reportable" || staleResult) return;
     const key = attemptKey ?? createIdempotencyKey();
     setAttemptKey(key);
     setSubmitting(true);
@@ -140,7 +142,16 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
       });
       setResult(response);
       setReviewing(false);
-    } catch {
+    } catch (error) {
+      if (error instanceof ResultSubmissionHttpError && error.status === 401) {
+        void router.navigate({ to: "/login" });
+        return;
+      }
+      if (error instanceof ResultSubmissionHttpError && error.status === 403) {
+        setReviewing(false);
+        setRequestError("اجازه ثبت نتیجه برای این Match تأیید نشد. وضعیت Match را تازه کن و دوباره بررسی کن.");
+        return;
+      }
       setRequestError(
         "وضعیت ثبت نتیجه مشخص نشد. بدون تغییر امتیازها دوباره تلاش کن تا همان درخواست با شناسه قبلی بررسی شود.",
       );
@@ -152,7 +163,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
   return (
     <ResultSubmissionShell context={context}>
       <div className="space-y-5">
-        {effectiveState === "reportable" ? (
+        {effectiveState === "reportable" && !staleResult ? (
           <form onSubmit={review} noValidate className="space-y-5">
             <section aria-labelledby="score-title" className="rounded-2xl border border-border bg-card p-5 md:p-6">
               <div>
@@ -285,7 +296,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
           />
         ) : null}
 
-        {result?.outcome === "stale" ? (
+        {staleResult ? (
           <div role="status" className="rounded-2xl border border-warning/30 bg-warning/10 p-5 text-sm leading-7">
             وضعیت Match هنگام ارسال تغییر کرده است. اطلاعات صفحه را تازه کن و بر اساس وضعیت جدید ادامه بده.
             <Button type="button" variant="outline" className="mt-4 w-full sm:w-auto" onClick={() => void router.invalidate()}>
