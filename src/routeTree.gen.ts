@@ -34,10 +34,18 @@ import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
 import { Route as PlayersUsernameRouteImport } from './routes/players.$username'
 import { Route as PaymentResultRouteImport } from './routes/payment.result'
 import { Route as DashboardWishlistRouteImport } from './routes/dashboard.wishlist'
+import { Route as DashboardTournamentsRouteImport } from './routes/dashboard.tournaments'
+import { Route as DashboardTeamsRouteImport } from './routes/dashboard.teams'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
 import { Route as DashboardServicesRouteImport } from './routes/dashboard.services'
+import { Route as DashboardRivalriesRouteImport } from './routes/dashboard.rivalries'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
 import { Route as DashboardOrdersRouteImport } from './routes/dashboard.orders'
+import { Route as DashboardNotificationsRouteImport } from './routes/dashboard.notifications'
+import { Route as DashboardMatchesRouteImport } from './routes/dashboard.matches'
+import { Route as DashboardChallengesRouteImport } from './routes/dashboard.challenges'
 import { Route as DashboardAddressesRouteImport } from './routes/dashboard.addresses'
+import { Route as DashboardAchievementsRouteImport } from './routes/dashboard.achievements'
 import { Route as CentersIdRouteImport } from './routes/centers.$id'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -167,9 +175,29 @@ const DashboardWishlistRoute = DashboardWishlistRouteImport.update({
   path: '/wishlist',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardTournamentsRoute = DashboardTournamentsRouteImport.update({
+  id: '/tournaments',
+  path: '/tournaments',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardTeamsRoute = DashboardTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardServicesRoute = DashboardServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardRivalriesRoute = DashboardRivalriesRouteImport.update({
+  id: '/rivalries',
+  path: '/rivalries',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardProfileRoute = DashboardProfileRouteImport.update({
@@ -182,9 +210,29 @@ const DashboardOrdersRoute = DashboardOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardNotificationsRoute = DashboardNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardMatchesRoute = DashboardMatchesRouteImport.update({
+  id: '/matches',
+  path: '/matches',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardChallengesRoute = DashboardChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAddressesRoute = DashboardAddressesRouteImport.update({
   id: '/addresses',
   path: '/addresses',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAchievementsRoute = DashboardAchievementsRouteImport.update({
+  id: '/achievements',
+  path: '/achievements',
   getParentRoute: () => DashboardRoute,
 } as any)
 const CentersIdRoute = CentersIdRouteImport.update({
@@ -219,10 +267,18 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/centers/$id': typeof CentersIdRoute
+  '/dashboard/achievements': typeof DashboardAchievementsRoute
   '/dashboard/addresses': typeof DashboardAddressesRoute
+  '/dashboard/challenges': typeof DashboardChallengesRoute
+  '/dashboard/matches': typeof DashboardMatchesRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/rivalries': typeof DashboardRivalriesRoute
   '/dashboard/services': typeof DashboardServicesRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/teams': typeof DashboardTeamsRoute
+  '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
   '/payment/result': typeof PaymentResultRoute
   '/players/$username': typeof PlayersUsernameRoute
@@ -252,10 +308,18 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/centers/$id': typeof CentersIdRoute
+  '/dashboard/achievements': typeof DashboardAchievementsRoute
   '/dashboard/addresses': typeof DashboardAddressesRoute
+  '/dashboard/challenges': typeof DashboardChallengesRoute
+  '/dashboard/matches': typeof DashboardMatchesRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/rivalries': typeof DashboardRivalriesRoute
   '/dashboard/services': typeof DashboardServicesRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/teams': typeof DashboardTeamsRoute
+  '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
   '/payment/result': typeof PaymentResultRoute
   '/players/$username': typeof PlayersUsernameRoute
@@ -287,10 +351,18 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/centers/$id': typeof CentersIdRoute
+  '/dashboard/achievements': typeof DashboardAchievementsRoute
   '/dashboard/addresses': typeof DashboardAddressesRoute
+  '/dashboard/challenges': typeof DashboardChallengesRoute
+  '/dashboard/matches': typeof DashboardMatchesRoute
+  '/dashboard/notifications': typeof DashboardNotificationsRoute
   '/dashboard/orders': typeof DashboardOrdersRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/rivalries': typeof DashboardRivalriesRoute
   '/dashboard/services': typeof DashboardServicesRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/teams': typeof DashboardTeamsRoute
+  '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
   '/payment/result': typeof PaymentResultRoute
   '/players/$username': typeof PlayersUsernameRoute
@@ -323,10 +395,18 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/category/$slug'
     | '/centers/$id'
+    | '/dashboard/achievements'
     | '/dashboard/addresses'
+    | '/dashboard/challenges'
+    | '/dashboard/matches'
+    | '/dashboard/notifications'
     | '/dashboard/orders'
     | '/dashboard/profile'
+    | '/dashboard/rivalries'
     | '/dashboard/services'
+    | '/dashboard/settings'
+    | '/dashboard/teams'
+    | '/dashboard/tournaments'
     | '/dashboard/wishlist'
     | '/payment/result'
     | '/players/$username'
@@ -356,10 +436,18 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/category/$slug'
     | '/centers/$id'
+    | '/dashboard/achievements'
     | '/dashboard/addresses'
+    | '/dashboard/challenges'
+    | '/dashboard/matches'
+    | '/dashboard/notifications'
     | '/dashboard/orders'
     | '/dashboard/profile'
+    | '/dashboard/rivalries'
     | '/dashboard/services'
+    | '/dashboard/settings'
+    | '/dashboard/teams'
+    | '/dashboard/tournaments'
     | '/dashboard/wishlist'
     | '/payment/result'
     | '/players/$username'
@@ -390,10 +478,18 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/category/$slug'
     | '/centers/$id'
+    | '/dashboard/achievements'
     | '/dashboard/addresses'
+    | '/dashboard/challenges'
+    | '/dashboard/matches'
+    | '/dashboard/notifications'
     | '/dashboard/orders'
     | '/dashboard/profile'
+    | '/dashboard/rivalries'
     | '/dashboard/services'
+    | '/dashboard/settings'
+    | '/dashboard/teams'
+    | '/dashboard/tournaments'
     | '/dashboard/wishlist'
     | '/payment/result'
     | '/players/$username'
@@ -615,11 +711,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardWishlistRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/tournaments': {
+      id: '/dashboard/tournaments'
+      path: '/tournaments'
+      fullPath: '/dashboard/tournaments'
+      preLoaderRoute: typeof DashboardTournamentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/teams': {
+      id: '/dashboard/teams'
+      path: '/teams'
+      fullPath: '/dashboard/teams'
+      preLoaderRoute: typeof DashboardTeamsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/services': {
       id: '/dashboard/services'
       path: '/services'
       fullPath: '/dashboard/services'
       preLoaderRoute: typeof DashboardServicesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/rivalries': {
+      id: '/dashboard/rivalries'
+      path: '/rivalries'
+      fullPath: '/dashboard/rivalries'
+      preLoaderRoute: typeof DashboardRivalriesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/profile': {
@@ -636,11 +760,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardOrdersRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/notifications': {
+      id: '/dashboard/notifications'
+      path: '/notifications'
+      fullPath: '/dashboard/notifications'
+      preLoaderRoute: typeof DashboardNotificationsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/matches': {
+      id: '/dashboard/matches'
+      path: '/matches'
+      fullPath: '/dashboard/matches'
+      preLoaderRoute: typeof DashboardMatchesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/challenges': {
+      id: '/dashboard/challenges'
+      path: '/challenges'
+      fullPath: '/dashboard/challenges'
+      preLoaderRoute: typeof DashboardChallengesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/addresses': {
       id: '/dashboard/addresses'
       path: '/addresses'
       fullPath: '/dashboard/addresses'
       preLoaderRoute: typeof DashboardAddressesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/achievements': {
+      id: '/dashboard/achievements'
+      path: '/achievements'
+      fullPath: '/dashboard/achievements'
+      preLoaderRoute: typeof DashboardAchievementsRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/centers/$id': {
@@ -668,19 +820,35 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteChildren {
+  DashboardAchievementsRoute: typeof DashboardAchievementsRoute
   DashboardAddressesRoute: typeof DashboardAddressesRoute
+  DashboardChallengesRoute: typeof DashboardChallengesRoute
+  DashboardMatchesRoute: typeof DashboardMatchesRoute
+  DashboardNotificationsRoute: typeof DashboardNotificationsRoute
   DashboardOrdersRoute: typeof DashboardOrdersRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardRivalriesRoute: typeof DashboardRivalriesRoute
   DashboardServicesRoute: typeof DashboardServicesRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardTeamsRoute: typeof DashboardTeamsRoute
+  DashboardTournamentsRoute: typeof DashboardTournamentsRoute
   DashboardWishlistRoute: typeof DashboardWishlistRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAchievementsRoute: DashboardAchievementsRoute,
   DashboardAddressesRoute: DashboardAddressesRoute,
+  DashboardChallengesRoute: DashboardChallengesRoute,
+  DashboardMatchesRoute: DashboardMatchesRoute,
+  DashboardNotificationsRoute: DashboardNotificationsRoute,
   DashboardOrdersRoute: DashboardOrdersRoute,
   DashboardProfileRoute: DashboardProfileRoute,
+  DashboardRivalriesRoute: DashboardRivalriesRoute,
   DashboardServicesRoute: DashboardServicesRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardTeamsRoute: DashboardTeamsRoute,
+  DashboardTournamentsRoute: DashboardTournamentsRoute,
   DashboardWishlistRoute: DashboardWishlistRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
