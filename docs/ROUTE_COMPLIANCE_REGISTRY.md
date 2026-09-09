@@ -6,7 +6,7 @@
 
 Last audit: `2026-09-10`
 
-Audit baseline: `80b0f00860741f352208c41f79edaae5fd1872ac` — F05 implementation merge with post-implementation `main` Quality Gate `34406381160` PASS. Terminal F05 workstream completion still requires closeout merge + terminal main CI recorded in Issue #44.
+Audit baseline: `0407a925974d50b4a75af292231bacb48c66eb38` — F05 terminal frozen `main`; terminal Quality Gate `34407220433` PASS; Issue #44 closed completed.
 
 ## Status meanings
 
@@ -24,9 +24,10 @@ Audit baseline: `80b0f00860741f352208c41f79edaae5fd1872ac` — F05 implementatio
 | Route | Status | Evidence / exact next |
 |---|---|---|
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
-| `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Final main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; terminal Quality Gate `34386636373` PASS; terminal evidence in Issue #38. |
-| `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen. Final main `864fe1491739b06c763be487a73a589c7e0f3609`; terminal Quality Gate `34391019079` PASS; terminal evidence in Issue #41. Runtime integration remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/matches/$id/result` | `FINAL_PRIVATE` | F05 implementation accepted and merged. START `864fe1491739b06c763be487a73a589c7e0f3609`; final evidence head `8daa47c2e12f548a9a4d2c0c39d4a5b653aeb8bc`; implementation PR #45; PR CI `34406070865` PASS; implementation merge `80b0f00860741f352208c41f79edaae5fd1872ac`; post-implementation main CI `34406381160` PASS. Closeout branch `closeout/f05-result-submission`; terminal frozen-main evidence belongs in Issue #44 after closeout. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Final main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; terminal Quality Gate `34386636373` PASS; Issue #38 completed. |
+| `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen. Final main `864fe1491739b06c763be487a73a589c7e0f3609`; terminal Quality Gate `34391019079` PASS; Issue #41 completed. F06 includes a bounded navigation correction restoring `submit-result` and adding `dispute` action links under full regression coverage. |
+| `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen. Final main `0407a925974d50b4a75af292231bacb48c66eb38`; terminal Quality Gate `34407220433` PASS; Issue #44 completed. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. F06 adds the accepted disputed-state link to the dedicated Dispute route under regression coverage. |
+| `/matches/$id/dispute` | `IN_PROGRESS` | F06 Match Dispute — START `0407a925974d50b4a75af292231bacb48c66eb38`; branch `phase/f06-dispute`; Issue #47; evidence `docs/workstreams/F06_DISPUTE.md`. New private route; final promotion requires implementation merge + closeout + terminal main CI. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
@@ -54,8 +55,6 @@ Audit baseline: `80b0f00860741f352208c41f79edaae5fd1872ac` — F05 implementatio
 
 ## D. Player dashboard routes that remain explicit placeholders
 
-These routes still use `DashboardSectionPlaceholder`, including user-facing future/service-connection language that violates final-delivery law.
-
 `/dashboard/tournaments` and `/dashboard/matches` are no longer placeholders.
 
 | Route | Status | Planned product workstream |
@@ -75,7 +74,7 @@ These routes still use `DashboardSectionPlaceholder`, including user-facing futu
 
 ## F. Inherited legacy / ecommerce / non-competitive routes
 
-These routes are present in the repository but are **not** approved as Turnoment competitive product architecture. Do not copy their data flow, auth assumptions, page state or UI patterns into new competitive workstreams.
+These routes remain present but are not approved as Turnoment competitive architecture.
 
 ### Commerce / checkout legacy
 - `/cart`
@@ -88,14 +87,10 @@ These routes are present in the repository but are **not** approved as Turnoment
 - `/dashboard/addresses`
 - `/dashboard/wishlist`
 
-Status: `LEGACY_REVIEW`
-
 ### Service/ecommerce legacy
 - `/services`
 - `/services/request`
 - `/dashboard/services`
-
-Status: `LEGACY_REVIEW`
 
 ### General-site/content legacy requiring product decision
 - `/about`
@@ -104,13 +99,13 @@ Status: `LEGACY_REVIEW`
 - `/contact`
 - `/faq`
 
-Status: `LEGACY_REVIEW`
+All above: `LEGACY_REVIEW`.
 
 ## G. Compliance priorities
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. **Dispute**;
+1. **complete active F06 Match Dispute `/matches/$id/dispute`**;
 2. Challenge Hub / Detail;
 3. Rivalry Detail;
 4. Auth / OTP (`/login`, `/register`);
