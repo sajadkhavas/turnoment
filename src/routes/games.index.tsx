@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { TournamentLayout } from "@/components/tournament/tournament-layout";
 import { popularGames, allTournaments } from "@/lib/tournament-data";
 import { formatNumber } from "@/lib/format";
+import { publicGameSlug } from "@/lib/game-slugs";
 
 const TITLE = "بازی‌های مسابقات | ایران مهر افزار";
 const DESCRIPTION = "بازی‌هایی که مسابقات حضوری آن‌ها در گیم‌نت‌های تأییدشده برگزار می‌شود؛ از EA FC 26 و Tekken 8 تا Counter-Strike 2.";
@@ -33,19 +34,20 @@ function GamesPage() {
 
       <div className="container mx-auto grid gap-5 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3">
         {popularGames.map((g) => {
-          const count = allTournaments.filter((t) => t.game === g.name).length;
+          const count = allTournaments.filter((t) => t.gameId === g.id).length;
           return (
             <article key={g.id} className="overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/60">
               <img src={g.image} alt={g.name} loading="lazy" width={768} height={432} className="h-40 w-full object-cover" />
               <div className="p-5">
                 <h2 className="truncate text-base font-bold">{g.name}</h2>
                 <p className="mt-1 text-xs text-muted-foreground">{g.platform}</p>
-                <p className="mt-3 font-mono-num text-xs text-secondary">{formatNumber(count)} مسابقه فعال</p>
+                <p className="mt-3 font-mono-num text-xs text-secondary">{formatNumber(count)} مسابقه در فهرست</p>
                 <Link
-                  to="/tournaments"
-                  className="mt-4 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:glow-violet-strong"
+                  to="/games/$slug"
+                  params={{ slug: publicGameSlug(g.id) }}
+                  className="mt-4 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:glow-violet-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  مشاهده مسابقات
+                  صفحه بازی
                 </Link>
               </div>
             </article>
