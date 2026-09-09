@@ -1,271 +1,243 @@
 # F05 — Final Result Submission
 
-Status: `IN PROGRESS / PRE-IMPLEMENTATION ACCEPTED`
+Status: `MERGED / CLOSEOUT IN PROGRESS`
 
 START_SHA: `864fe1491739b06c763be487a73a589c7e0f3609`
 
 Implementation branch: `phase/f05-result-submission`
 
-Tracking Issue: `#44`
+Tracking Issue: `#44` — remains open until terminal closeout main CI is green.
 
 Route: `/matches/$id/result`
 
 Indexability: `PRIVATE / NOINDEX`
 
-## Identity / repository lock
+## Repository / governance lock
 
-- frontend frozen `main` verified at START: `864fe1491739b06c763be487a73a589c7e0f3609`;
+Before implementation:
+
+- frontend frozen `main` verified at `864fe1491739b06c763be487a73a589c7e0f3609`;
 - F04 terminal Quality Gate `34391019079` — PASS;
-- F04 Issue #41 reviewed and closed `completed`; exact frontend NEXT is Result Submission;
-- `/matches/$id/result` does not exist in frontend at START;
-- backend contract already reserves `/matches/{id}/result` under owner `results`;
-- overlapping F05/Result Submission branch, open Issue and open PR: none before creation;
-- dedicated branch created from exact START_SHA.
+- F04 Issue #41 — completed;
+- `/matches/$id/result` did not exist;
+- backend contract already reserved `/matches/{id}/result` under owner `results`;
+- overlapping F05 branch, Issue or PR: none;
+- dedicated branch created from the exact START_SHA.
 
-## Mandatory governance / official-source audit
-
-Read before implementation:
+Mandatory sources read before implementation:
 
 - `PROJECT_CONTINUITY.md`
 - `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
 - `SEO_FINAL_COPY_PROTOCOL.md`
 - `docs/ROUTE_COMPLIANCE_REGISTRY.md`
 - `docs/OFFICIAL_FRONTEND_SOURCES.md`
-- `docs/DESIGN_REFERENCE_AUDIT_TEMPLATE.md`
-- `docs/PAGE_WORKSTREAM_EVIDENCE_TEMPLATE.md`
-- F04 My Matches final contract/evidence and terminal Issue #41
+- design/workstream evidence templates
+- F04 My Matches accepted evidence
 - backend `docs/FRONTEND_BACKEND_CONTRACT.md`
-- accepted F01 Registration Session/CSRF mutation pattern
+- accepted F01 Django Session + CSRF mutation implementation
 
-Official references reviewed before implementation:
+## Official / design decisions
 
-### TanStack Router — data mutations
+Reviewed:
 
-https://tanstack.com/router/latest/docs/guide/data-mutations
+- TanStack Router data-mutation guidance;
+- WCAG 2.2 input assistance/error identification;
+- accepted Turnoment Session/CSRF pattern;
+- F04 My Matches hierarchy;
+- F01 Registration form/mutation/error/success structure;
+- Battlefy Match score-reporting / score-confirmation / issue separation patterns;
+- Challonge participant score-reporting patterns.
 
-Decisions:
-- route loader owns the authoritative read projection;
-- form mutation state is explicit in the Result Submission UI/repository layer;
-- after a successful or stale mutation, authoritative data may be reloaded deliberately rather than mutated optimistically;
-- no client-side winner/final-state calculation is introduced.
+Decisions retained:
 
-### W3C WCAG 2.2 — Input Assistance / Error Identification
+- Result Submission is a focused private action page, not Match Detail;
+- reporting a score is distinct from Result Confirmation and Dispute;
+- user reviews exact entered scores before the irreversible command;
+- loader/repository data remains authoritative; no optimistic winner/final-result calculation;
+- third-party branding/assets/copy/layout/rules were not copied.
 
-https://www.w3.org/TR/WCAG22/
-
-Decisions:
-- every score input has a persistent label;
-- validation errors are textual and associated with the relevant field;
-- error/status feedback is announced through semantic alert/status regions;
-- focus remains usable after validation/submission failure;
-- controls satisfy keyboard and touch-target expectations.
-
-### Django Session / CSRF project pattern
-
-Accepted F01 registration implementation was reviewed:
-- Session UX lookup through `playerSessionRepository`;
-- CSRF bootstrap through `GET /api/v1/auth/csrf/`;
-- unsafe request uses `credentials: include` + `X-CSRFToken`;
-- response is runtime-validated before UI use.
-
-F05 reuses this boundary rather than inventing another auth mechanism.
-
-## Design reference audit
-
-Existing Turnoment references reviewed:
-
-- F04 My Matches cards/state hierarchy;
-- F01 Tournament Registration form/mutation/error/success structure;
-- current dark RTL cards, spacing, focus rings, status tokens and responsive conventions.
-
-External product/interface references reviewed:
-
-### Battlefy
-
-Flows reviewed:
-- Match Page / report score;
-- score confirmation;
-- reporting a Match issue.
-
-Patterns learned:
-- reporting a score is a distinct action from opponent confirmation;
-- entered score should be reviewed before final submit;
-- incorrect/contested score moves into a separate dispute/issue flow.
-
-### Challonge
-
-Flows reviewed:
-- participant score reporting;
-- report-scores workflow and optional evidence patterns.
-
-Patterns learned:
-- match identity/opponents and score controls should remain together;
-- evidence/dispute capabilities must not be silently implied when the product contract does not yet own them.
-
-No third-party branding, copy, assets, score rules or visual layout will be copied.
-
-## Selected final design direction
-
-Result Submission is a focused private action page, not a generic Match Detail page.
-
-Primary hierarchy:
-1. breadcrumb/back link to My Matches;
-2. page identity + authoritative Match context;
-3. current result-submission state;
-4. player vs opponent score inputs when state is `reportable`;
-5. review step showing the exact values before the command is sent;
-6. authoritative submission receipt or stale/unavailable state;
-7. safe return to My Matches.
-
-Desktop:
-- centered content shell with a primary form column and compact sticky Match summary;
-- score inputs presented symmetrically around `VS`;
-- review card before irreversible submit.
-
-Mobile/tablet:
-- single-column flow;
-- score fields remain large and easy to tap;
-- no horizontal dependence for understanding the score;
-- Match summary follows the action hierarchy without hiding the submit state.
-
-## SEO / final-copy decision
-
-`/matches/$id/result` is authenticated/private and permanently `noindex,nofollow`.
-
-Public SERP/keyword research is `N/A` under project protocol. Final-copy requirements remain mandatory:
-- no backend/API/mock/demo/temporary/waiting language;
-- no unsupported guarantee about confirmation/finalization;
-- no wording that labels a winner before the server finalizes one;
-- natural Persian product copy.
+Public SERP research is `N/A` because the route is authenticated and permanently `noindex,nofollow`.
 
 Final H1: `ثبت نتیجه Match`
 
 Final title: `ثبت نتیجه Match — ایران مهر افزار`
 
-Structured data: omitted because this is a private noindex action route.
+## Accepted permanent architecture
 
-## Final production contract
+`validated matchId → private Session UX access policy → loader → typed ResultSubmissionRepository → runtime-validated authoritative state → validated review/submit form → CSRF/session result command → runtime-validated receipt/conflict state → UI`
 
-### Stable identity
+Accepted properties:
 
-- route param `matchId`: non-empty safe stable identifier;
-- client validates route shape only; backend authorizes membership/eligibility independently.
+- safe stable route-param validation;
+- unauthenticated Session UX redirects to `/login`;
+- server-side Match/participant authorization remains independent and authoritative;
+- private `noindex,nofollow`;
+- deterministic fixture adapter and Django HTTP adapter behind one permanent contract;
+- planned production read/write mapping under `api/v1/matches/{matchId}/result/`;
+- browser requests use `credentials: include`;
+- POST bootstraps CSRF through `/api/v1/auth/csrf/` and sends `X-CSRFToken`;
+- one `Idempotency-Key` per logical submit attempt;
+- opaque backend revision controls stale-state detection;
+- score policy/eligibility/result state/final result/rating remain backend-authoritative;
+- frontend never infers winner, final outcome or rating delta from entered scores;
+- backend-supplied IANA timezone is used for civil-time rendering;
+- F04 `attention=submit-result` links to this accepted route using stable `matchId`;
+- Result Confirmation and Dispute remain separate workstreams with no dead links.
 
-### Read operation
+## Production contract
 
-Planned endpoint:
+Planned read:
 
 `GET /api/v1/matches/{matchId}/result/`
 
-Returns an authoritative `ResultSubmissionPageData` projection:
-- `matchId`;
-- opaque `revision` for stale-state detection;
+Authoritative projection includes:
+
+- stable `matchId`;
+- opaque `revision`;
 - `submissionState`: `reportable | awaiting-confirmation | finalized | disputed | unavailable`;
-- current player identity;
-- opponent stable identity/kind/display tag;
-- game stable ID/name;
-- competition stable identity/title/kind/round context;
+- current player / opponent / game / competition identity;
 - optional venue;
 - offset-aware `startsAt` + IANA timezone;
-- `formatLabel`;
-- authoritative score policy: minimum score, nullable maximum score, `allowDraw`;
-- optional previously reported score only when state allows it;
-- optional finalized result only when state is `finalized`.
+- format label;
+- score policy (`minimum`, nullable `maximum`, `allowDraw`);
+- previously reported score only in compatible states;
+- finalized result only in finalized state.
 
-### Write operation
-
-Planned endpoint:
+Planned write:
 
 `POST /api/v1/matches/{matchId}/result/`
 
-Command:
-- `revision` from the read projection;
+Command carries:
+
+- read projection `revision`;
 - non-negative integer `playerScore`;
 - non-negative integer `opponentScore`.
 
-Request boundary:
-- Django Session cookie through `credentials: include`;
-- CSRF bootstrap through `/api/v1/auth/csrf/`;
-- `X-CSRFToken` on POST;
-- `Idempotency-Key` generated once per user submit attempt and reused for transport retry of that attempt;
-- backend remains authoritative for idempotency collision semantics and stale revision handling.
+Runtime-validated outcomes:
 
-### Write outcomes
+- `accepted`;
+- `validation_error`;
+- `stale`;
+- `unavailable`;
+- `already_submitted`.
 
-Runtime-validated action result is one of:
-- `accepted` — report stored; returned state is `awaiting-confirmation` or `finalized`;
-- `validation_error` — field/form errors from authoritative validation;
-- `stale` — revision/state changed and page must reload authoritative truth;
-- `unavailable` — result can no longer be submitted;
-- `already_submitted` — server reports an existing submission/receipt state.
+## State / integrity acceptance
 
-No frontend winner/outcome/rating calculation is allowed. A final outcome/rating delta may render only when returned as a finalized result.
+UI handles:
 
-## Runtime integrity rules
+- reportable;
+- submitting;
+- client field/form validation;
+- authoritative backend validation;
+- retry-safe transport error;
+- stale revision;
+- awaiting confirmation;
+- finalized result;
+- disputed result;
+- unavailable submission;
+- private not-found;
+- unauthenticated/session-expired;
+- accepted authoritative receipt.
 
-Reject contradictory projections/results, including:
-- `reportable` with a previously reported score or finalized result;
-- `awaiting-confirmation` without a reported score;
-- `finalized` without a finalized result;
-- finalized result exposed outside `finalized` state;
-- `disputed` state presented as submit-eligible;
-- score outside authoritative min/max policy;
-- equal score submitted while `allowDraw=false`;
-- accepted receipt whose `matchId` differs from route identity;
-- accepted `finalized` receipt without finalized result.
+Runtime validation rejects contradictory data including:
 
-## UI state matrix
+- reportable state with an existing reported/finalized result;
+- awaiting-confirmation without reported score;
+- finalized without finalized result;
+- finalized result exposed outside finalized state;
+- disputed state represented as submit-eligible;
+- score outside supplied min/max policy;
+- equal scores when `allowDraw=false`;
+- accepted receipt with a `matchId` different from the route;
+- accepted finalized receipt without final result.
 
-- `reportable` — editable score form + review confirmation;
-- `submitting` — locked controls + busy state;
-- client validation errors — field-specific text;
-- backend validation error — field/form text;
-- transport error — retry-safe message without claiming whether the command succeeded;
-- `stale` — refresh authoritative Match state;
-- `awaiting-confirmation` — show reported score, no duplicate submit;
-- `finalized` — show authoritative final score/outcome/rating delta if supplied;
-- `disputed` — show that result is under review; no F06 dead link;
-- `unavailable` — submission form absent;
-- `not found` — clear private not-found state;
-- unauthenticated/session-expired — redirect to `/login`;
-- success receipt — show only returned authoritative status and score.
+Hardening completed during self-review:
 
-## Integration with F04 My Matches
+- project-style executable contract test replaced unsupported `bun:test` type import;
+- unavailable action closes the form;
+- stale action prevents resubmission with the old revision;
+- POST 401 routes to login while loader 403 is not conflated with authentication;
+- receipt route identity is enforced;
+- time formatting uses supplied IANA timezone.
 
-After F05 route exists:
-- `attention === "submit-result"` gets a real link to `/matches/$id/result` using stable `matchId`;
-- `confirm-result` and `dispute` remain non-linked until their dedicated accepted workstreams exist;
-- no other F04 state semantics change.
+## Frontend implementation evidence
 
-## QA plan
+Accepted implementation/browser head:
 
-Required before implementation acceptance:
-- frozen install;
-- lint;
-- production build / route generation;
-- TypeScript typecheck;
-- F05 read/write runtime-contract tests including negative invariants;
-- SSR smoke for `/matches/m-204/result`;
-- private `noindex,nofollow` assertion;
-- exactly one `<main>`;
-- responsive browser screenshots at `375 / 390 / 430 / 768 / 1024 / 1440`;
-- representative manual visual review;
-- review threads `0` before merge.
+`5961e7b986b6e8751c137434d00472e17e1e1376`
 
-## Cross-repo rule
+Quality Gate:
 
-F05 may refine the planned `results` API contract in backend documentation, but must not start/reorder the backend domain implementation phase. Until the backend Result endpoints are implemented and tested:
+`34394538199` — PASS
+
+Artifact:
+
+- ID `10121043332`
+- digest `sha256:78d409ade10ef50124a374cd50475b139749221acc3c51332690b253c36cc860`
+- exact workflow head `5961e7b986b6e8751c137434d00472e17e1e1376`
+- captures `375 / 390 / 430 / 768 / 1024 / 1440`
+- representative manual visual review at `375 / 430 / 768 / 1024 / 1440` — PASS
+- no overflow, clipped primary CTA, form/summary collision or broken responsive hierarchy found.
+
+Acceptance evidence file:
+
+`docs/workstreams/F05_ACCEPTANCE_EVIDENCE.md`
+
+Final implementation/evidence head:
+
+`8daa47c2e12f548a9a4d2c0c39d4a5b653aeb8bc`
+
+- exact-head push Quality Gate `34405746632` — PASS;
+- implementation PR #45 — MERGED;
+- PR-triggered Quality Gate `34406070865` — PASS;
+- review threads immediately before merge: `0`;
+- pre-merge main remained exact F04 frozen `864fe1491739b06c763be487a73a589c7e0f3609`;
+- implementation merged with expected-head lock;
+- implementation merge SHA `80b0f00860741f352208c41f79edaae5fd1872ac`;
+- post-implementation main Quality Gate `34406381160` — PASS.
+
+## Cross-repo evidence
+
+Backend owner: `results`.
+
+F05 documentation-only alignment:
+
+- backend START_SHA `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`;
+- backend Issue #13 — `CLOSED / COMPLETED`;
+- backend PR #14 — MERGED;
+- docs head `4e1826d7be562e3cecef3d61070fe7ab8baa2379`;
+- PR Quality Gate `34394337599` — PASS on Python 3.12/3.14;
+- review threads `0`;
+- merge/main `93d4158e55ebe5d4cb0e724c84104ddd9fbf0c17`;
+- post-merge Quality Gate `34394628782` — PASS on Python 3.12/3.14;
+- Python result/match implementation: `NONE`;
+- models/migrations/phase-registry/order changes: `NONE`.
+
+Runtime status remains:
 
 `FRONTEND MOCK / BACKEND PENDING`
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
 
-## Exact NEXT
+## Closeout state
 
-1. register `/matches/$id/result` as active `IN_PROGRESS` route;
-2. implement read/write contract, fixture + Django adapters, route and UI;
-3. wire only F04 `submit-result` attention to F05;
-4. add contract/browser regression gates;
-5. align the exact results endpoint/idempotency/stale contract cross-repo as documentation only;
-6. obtain exact-head QA, PR/review/merge/post-merge CI;
-7. documentation-only closeout/freeze + terminal main CI before reporting DONE.
+Closeout branch:
+
+`closeout/f05-result-submission`
+
+Created exactly from implementation merge:
+
+`80b0f00860741f352208c41f79edaae5fd1872ac`
+
+The closeout registry promotes `/matches/$id/result` to `FINAL_PRIVATE` because final architecture, implementation QA, PR merge, post-implementation main CI and cross-repo ownership are all accepted without falsely claiming live backend integration.
+
+F05 itself is still not terminally `DONE / MERGED / FROZEN` until:
+
+1. final closeout head Quality Gate is green;
+2. closeout PR Quality Gate is green and review threads are `0`;
+3. closeout PR is merged with exact-head lock;
+4. terminal post-closeout `main` Quality Gate is green;
+5. closeout merge/frozen main SHA and terminal CI are recorded in Issue #44;
+6. Issue #44 is closed as `completed`.
+
+Frontend NEXT after terminal F05 closeout is **Dispute**.
