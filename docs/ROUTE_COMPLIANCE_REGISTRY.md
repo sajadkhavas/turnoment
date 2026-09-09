@@ -6,14 +6,14 @@
 
 Last audit: `2026-09-09`
 
-Audit baseline: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
+Audit baseline: `79330a95c05161d5896fb9328134caf814528036` — F04 implementation merge with post-merge `main` Quality Gate `34390091802` PASS.
 
 ## Status meanings
 
 - `FINAL_CURRENT` — accepted under the current applicable protocol set, including current SEO/final-copy law for public/indexable pages.
 - `FINAL_PRIVATE` — final private/noindex route; public SEO research is not applicable, but final page architecture/UX/contracts are accepted.
 - `FINAL_PRE_SEO` — technically/factually final under the page protocol but frozen before the stricter SEO final-copy law; material public-copy work requires SEO recertification.
-- `IN_PROGRESS` — active controlled workstream exists; not final until merge + terminal CI + continuity closeout.
+- `IN_PROGRESS` — active controlled workstream exists; not final until its required acceptance/closeout chain is complete.
 - `NEEDS_RECERTIFICATION` — competitive/product route exists but has not passed the full current-law evidence chain.
 - `PLACEHOLDER` — intentionally incomplete or user-visible temporary state; must be rebuilt before product acceptance.
 - `REBUILD` — known product/architecture truth is wrong for Turnoment and the route must be rebuilt rather than patched as-is.
@@ -25,7 +25,7 @@ Audit baseline: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
 |---|---|---|
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Final main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; terminal Quality Gate `34386636373` PASS; terminal evidence in Issue #38. |
-| `/dashboard/matches` | `IN_PROGRESS` | F04 My Matches — START `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; branch `phase/f04-my-matches`; Issue #41; evidence `docs/workstreams/F04_MY_MATCHES.md`. Placeholder has been replaced on the active branch, but FINAL_PRIVATE promotion requires merge + terminal closeout CI. |
+| `/dashboard/matches` | `FINAL_PRIVATE` | F04 My Matches. START `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; final implementation head `c5dce2302b3f33f990b529bb723543c70477be5d`; PR #42 merged as `79330a95c05161d5896fb9328134caf814528036`; PR CI `34389760407` PASS; post-implementation `main` CI `34390091802` PASS; exact QA in `docs/workstreams/F04_MY_MATCHES.md`; closeout record in `docs/workstreams/F04_CLOSEOUT.md`. F04 may only be reported `DONE / MERGED / FROZEN` after Issue #41 records closeout merge/frozen main + green terminal main CI. Runtime integration remains `FRONTEND MOCK / BACKEND PENDING`. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
@@ -55,7 +55,7 @@ Audit baseline: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
 
 These routes still use `DashboardSectionPlaceholder`, including user-facing future/service-connection language that violates final-delivery law.
 
-`/dashboard/tournaments` and active `/dashboard/matches` are no longer listed here.
+`/dashboard/tournaments` and `/dashboard/matches` are no longer placeholders.
 
 | Route | Status | Planned product workstream |
 |---|---|---|
@@ -109,20 +109,21 @@ Status: `LEGACY_REVIEW`
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. **complete active F04 My Matches `/dashboard/matches`**;
-2. Result Submission;
-3. Dispute;
-4. Challenge Hub / Detail;
-5. Rivalry Detail;
-6. Auth / OTP (`/login`, `/register`);
-7. Notifications / Settings;
-8. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
-9. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
+1. **Result Submission**;
+2. **Dispute**;
+3. Challenge Hub / Detail;
+4. Rivalry Detail;
+5. Auth / OTP (`/login`, `/register`);
+6. Notifications / Settings;
+7. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
+8. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
+
+Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
 ## H. Registry maintenance law
 
 - A route cannot be promoted to `FINAL_CURRENT`, `FINAL_PRIVATE`, or `FINAL_PRE_SEO` from chat memory.
-- Promotion requires merged evidence and terminal main CI; when a closeout commit cannot contain its own future merge SHA/terminal CI, terminal evidence is recorded in the tracking Issue and must be green before the phase is reported DONE.
+- Promotion requires merged implementation evidence and required green acceptance gates; terminal workstream `DONE / MERGED / FROZEN` additionally requires closeout merge and terminal main CI recorded in the tracking Issue.
 - New routes must be added when their workstream begins.
 - Placeholder/legacy routes must remain visible until rebuilt or intentionally removed.
 - If implementation truth and this registry conflict, treat the route as **not final** until reconciled.
