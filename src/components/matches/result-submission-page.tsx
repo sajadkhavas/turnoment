@@ -21,11 +21,16 @@ import {
 } from "@/lib/result-submission-contract";
 import { resultSubmissionRepository } from "@/lib/result-submission-repository";
 
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("fa-IR", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
+function formatDateTime(value: string, timezone: string) {
+  try {
+    return new Intl.DateTimeFormat("fa-IR", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: timezone,
+    }).format(new Date(value));
+  } catch {
+    return value;
+  }
 }
 
 function createIdempotencyKey() {
@@ -69,6 +74,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
   const effectiveState = useMemo(() => {
     if (result?.outcome === "accepted") return result.status;
     if (result?.outcome === "already_submitted") return result.status;
+    if (result?.outcome === "unavailable") return "unavailable" as const;
     return context.submissionState;
   }, [context.submissionState, result]);
 
@@ -82,8 +88,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
       ? result.finalResult
       : context.finalResult;
 
-  const backendFieldErrors =
-    result?.outcome === "validation_error" ? result.fields : {};
+  const backendFieldErrors = result?.outcome === "validation_error" ? result.fields : {};
   const fieldErrors = { ...backendFieldErrors, ...localErrors };
 
   const editScore = (setter: (value: string) => void, value: string) => {
@@ -134,7 +139,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
         idempotencyKey: key,
       });
       setResult(response);
-      if (response.outcome !== "validation_error") setReviewing(false);
+      setReviewing(false);
     } catch {
       setRequestError(
         "وضعیت ثبت نتیجه مشخص نشد. بدون تغییر امتیازها دوباره تلاش کن تا همان درخواست با شناسه قبلی بررسی شود.",
@@ -166,6 +171,8 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
                   error={fieldErrors.playerScore}
                   onChange={(value) => editScore(setPlayerScoreText, value)}
                   disabled={submitting}
+                  minScore={context.scorePolicy.minScore}
+                  maxScore={context.scorePolicy.maxScore}
                 />
                 <div className="hidden pb-3 text-center text-xs font-black text-muted-foreground sm:block" aria-hidden="true">VS</div>
                 <ScoreField
@@ -175,6 +182,8 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
                   error={fieldErrors.opponentScore}
                   onChange={(value) => editScore(setOpponentScoreText, value)}
                   disabled={submitting}
+                  minScore={context.scorePolicy.minScore}
+                  maxScore={context.scorePolicy.maxScore}
                 />
               </div>
 
@@ -259,7 +268,7 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
           />
         ) : null}
 
-        {effectiveState === "unavailable" ? (
+        {effectiveState === "unavailable" && result?.outcome !== "unavailable" ? (
           <StateCard
             icon={<ShieldCheck className="h-7 w-7" aria-hidden="true" />}
             title="ثبت نتیجه برای این Match در دسترس نیست"
@@ -316,7 +325,7 @@ function ResultSubmissionShell({ context, children }: { context: ResultSubmissio
       <div className="mx-auto mt-6 grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
         <div className="min-w-0">
           <div className="mb-6">
-            <p className="text-sm font-bold text-primary">Result Submission</p>
+            <p className="text-sm font-bold text-primary">ثبت نتیجه</p>
             <h1 className="mt-1 text-3xl font-black">ثبت نتیجه Match</h1>
             <p className="mt-2 text-sm leading-7 text-muted-foreground">
               {context.game.name} · {context.competition.title}
@@ -334,7 +343,7 @@ function ResultSubmissionShell({ context, children }: { context: ResultSubmissio
           <dl className="mt-5 space-y-4 text-xs">
             <SummaryRow icon={<Gamepad2 className="h-4 w-4" />} label="بازی" value={context.game.name} />
             <SummaryRow icon={<Swords className="h-4 w-4" />} label="حریف" value={context.opponent.displayTag} />
-            <SummaryRow icon={<Clock3 className="h-4 w-4" />} label="زمان" value={formatDateTime(context.startsAt)} />
+            <SummaryRow icon={<Clock3 className="h-4 w-4" />} label="زمان" value={formatDateTime(context.startsAt, context.timezone)} />
             {context.venue ? <SummaryRow icon={<MapPin className="h-4 w-4" />} label="محل" value={`${context.venue.name}، ${context.venue.city}`} /> : null}
             <SummaryRow icon={<ShieldCheck className="h-4 w-4" />} label="فرمت" value={context.formatLabel} />
           </dl>
@@ -351,6 +360,8 @@ function ScoreField({
   error,
   onChange,
   disabled,
+  minScore,
+  maxScore,
 }: {
   id: string;
   label: string;
@@ -358,6 +369,8 @@ function ScoreField({
   error?: string;
   onChange: (value: string) => void;
   disabled: boolean;
+  minScore: number;
+  maxScore: number | null;
 }) {
   const errorId = `${id}-error`;
   return (
@@ -366,7 +379,8 @@ function ScoreField({
       <Input
         id={id}
         type="number"
-        min={0}
+        min={minScore}
+        max={maxScore ?? undefined}
         step={1}
         inputMode="numeric"
         value={value}
