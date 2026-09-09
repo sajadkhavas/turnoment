@@ -28,17 +28,15 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKE
 
 Repository: `sajadkhavas/turnoment`
 
-Verified `main` SHA before the active protocol branch:
+Latest accepted implementation `main` SHA before this closeout-only continuity commit:
 
-`d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
+`c692f900ce290d7925a16724004e47221e7518c2`
 
-Final main Quality Gate for the Player Dashboard closeout:
+Post-merge Frontend Quality Gate:
 
-`34326343712` — PASS
+`34328618238` — PASS
 
-Current protocol branch:
-
-`chore/final-page-delivery-protocol`
+This SHA includes the mandatory final frontend page delivery protocol and all protocol templates/sources.
 
 ### Backend
 
@@ -99,6 +97,12 @@ Every frontend page workstream follows this order:
 9. continuity update
 
 Full requirements are in `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`.
+
+Mandatory supporting files:
+
+- `docs/OFFICIAL_FRONTEND_SOURCES.md`
+- `docs/DESIGN_REFERENCE_AUDIT_TEMPLATE.md`
+- `docs/PAGE_WORKSTREAM_EVIDENCE_TEMPLATE.md`
 
 ### Official-source baseline verified for this rule
 
@@ -214,14 +218,71 @@ Final main Quality Gate:
 
 `34326343712` — PASS
 
-## 7. Known constraints / debt
+## 7. Final Frontend Page Delivery Protocol evidence
+
+Status: `DONE / MERGED / FROZEN`
+
+START_SHA:
+
+`d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
+
+Implementation branch:
+
+`chore/final-page-delivery-protocol`
+
+Final reviewed branch head:
+
+`1d937cb122bdb05c1543e76c876bfe93b53cd4b4`
+
+Created/updated:
+
+- `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
+- `docs/OFFICIAL_FRONTEND_SOURCES.md`
+- `docs/DESIGN_REFERENCE_AUDIT_TEMPLATE.md`
+- `docs/PAGE_WORKSTREAM_EVIDENCE_TEMPLATE.md`
+- `PROJECT_CONTINUITY.md`
+
+PR:
+
+`#6 — Enforce final frontend page delivery protocol`
+
+PR Quality Gate:
+
+`34328467961` — PASS
+
+Open review threads before merge:
+
+`0`
+
+Implementation merge SHA:
+
+`c692f900ce290d7925a16724004e47221e7518c2`
+
+Post-merge main Quality Gate:
+
+`34328618238` — PASS
+
+Closeout branch:
+
+`chore/final-page-delivery-protocol-closeout`
+
+Purpose now enforced for all future page workstreams:
+
+- official documentation audit before implementation
+- design reference audit before implementation
+- one-pass final frontend architecture
+- no user-facing engineering/waiting/temporary language
+- SSR/routing/SEO/accessibility/contracts/states/CI included in page completion
+- exact continuity evidence after every complete or incomplete session
+
+## 8. Known constraints / debt
 
 - `/login` is an inherited password-oriented prototype and is not accepted as the final Turnoment auth page. Its replacement must follow the final page protocol and the existing Django Session + CSRF + OTP contract.
 - Several inherited ecommerce routes remain in the repository. Do not copy their architecture into Turnoment competitive flows.
 - Formatting debt remains separate from correctness lint; avoid massive unrelated formatting diffs inside feature phases.
 - Any page explicitly marked `PROTOTYPE — NOT FINAL` must be rebuilt under `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`; do not patch it incrementally into a second temporary layer.
 
-## 8. Exact NEXT
+## 9. Exact NEXT
 
 Independent engineering workstreams that may proceed under the final page protocol:
 
@@ -242,33 +303,16 @@ Next Lovable Design Master:
 
 Lovable output is a design input, not an automatic acceptance. Its final merge must satisfy the same route/SSR/SEO/indexing/accessibility/contract/CI rules.
 
-## 9. Active protocol-registration workstream
+## 10. Latest session checkpoint
 
-Workstream: `Final Frontend Page Delivery Protocol`
-
-Status: `IN PROGRESS`
-
-START_SHA:
-
-`d5e1eadf294211630dacb2f5adfc96ad7bd4d6e3`
-
-Branch:
-
-`chore/final-page-delivery-protocol`
-
-Created:
-
-`FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
-
-Purpose:
-
-- make official-document review mandatory before implementation
-- make design-reference research mandatory before implementation
-- make every new page a one-pass final frontend implementation
-- prohibit user-facing engineering/waiting/temporary language
-- make SSR/routing/SEO/accessibility/contracts/states/CI part of page completion
-- ensure every chat leaves exact continuity evidence
-
-Blockers: `none`
-
-Exact NEXT: `run Quality Gate for this documentation branch, open/review/merge the protocol PR, verify post-merge main CI, update continuity closeout if required, then start page workstreams only under this protocol.`
+- Date: `2026-09-09`
+- Repo: `sajadkhavas/turnoment`
+- Completed workstream: `Final Frontend Page Delivery Protocol`
+- Status: `DONE / MERGED / FROZEN`
+- Accepted implementation main SHA before closeout: `c692f900ce290d7925a16724004e47221e7518c2`
+- Post-merge CI: `34328618238` — PASS
+- Closeout branch: `chore/final-page-delivery-protocol-closeout`
+- Backend main: `b92213436c5acbc8cb40ce22d2d6e7dbe2b82f86`
+- Blockers: `none`
+- Exact NEXT for Lovable: `Live Tournament / Bracket`
+- Exact NEXT for engineering: start any independent page workstream above only after reading `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`, performing the official-source audit, performing the design-reference audit, and locking the verified current main SHA.
