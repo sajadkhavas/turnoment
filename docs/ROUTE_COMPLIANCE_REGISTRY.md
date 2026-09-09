@@ -6,7 +6,7 @@
 
 Last audit: `2026-09-09`
 
-Audit baseline: `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
+Audit baseline: `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
 
 ## Status meanings
 
@@ -24,7 +24,7 @@ Audit baseline: `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
 | Route | Status | Evidence / exact next |
 |---|---|---|
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
-| `/dashboard/tournaments` | `IN_PROGRESS` | F03 My Tournaments — START `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`; branch `phase/f03-my-tournaments`; Issue #38. Placeholder replacement, dedicated contract/repository and final private QA are active. |
+| `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 My Tournaments. START `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`; implementation head `98c92846b79d1d715d16b3db9ad762a54e7fa137`; PR #39 merged as `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`; post-implementation main CI `34385716082` PASS; exact QA evidence in `docs/workstreams/F03_ACCEPTANCE_EVIDENCE.md`; closeout record in `docs/workstreams/F03_CLOSEOUT.md`. Terminal closeout merge/final main CI must be confirmed in Issue #38 before reporting F03 `DONE / MERGED / FROZEN`. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
@@ -54,7 +54,7 @@ Audit baseline: `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
 
 These routes currently use `DashboardSectionPlaceholder`, including user-facing language that says the section will be enabled later / after service connection. That wording directly violates final-delivery law.
 
-`/dashboard/tournaments` left this list when F03 started and is tracked as `IN_PROGRESS` in section A.
+`/dashboard/tournaments` is no longer a placeholder; F03 rebuilt it and it is tracked as `FINAL_PRIVATE` in section A, with terminal freeze evidence completed through Issue #38.
 
 | Route | Status | Planned product workstream |
 |---|---|---|
@@ -114,16 +114,15 @@ These paths may later be intentionally repurposed as Turnoment corporate/content
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. **complete active F03 My Tournaments `/dashboard/tournaments`**;
-2. My Matches `/dashboard/matches`;
-3. Result Submission;
-4. Dispute;
-5. Challenge Hub / Detail;
-6. Rivalry Detail;
-7. Auth / OTP (`/login`, `/register`);
-8. Notifications / Settings;
-9. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
-10. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
+1. **My Matches `/dashboard/matches`**;
+2. Result Submission;
+3. Dispute;
+4. Challenge Hub / Detail;
+5. Rivalry Detail;
+6. Auth / OTP (`/login`, `/register`);
+7. Notifications / Settings;
+8. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
+9. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
 
 ## H. Registry maintenance law
 
