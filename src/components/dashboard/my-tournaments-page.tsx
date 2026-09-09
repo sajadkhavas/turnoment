@@ -88,7 +88,7 @@ function SummaryCard({ label, value, icon: Icon }: { label: string; value: numbe
     <div className="rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center justify-between gap-3">
         <span className="text-xs font-bold text-muted-foreground">{label}</span>
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary" aria-hidden="true">
           <Icon className="h-4 w-4" />
         </span>
       </div>
@@ -210,7 +210,7 @@ export function MyTournamentsSkeleton() {
   return (
     <div className="space-y-6" aria-busy="true" aria-live="polite" aria-label="در حال بارگذاری مسابقات من">
       <div className="h-28 animate-pulse rounded-2xl bg-elevated" />
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="h-28 animate-pulse rounded-2xl bg-elevated" />
         ))}
@@ -274,7 +274,7 @@ export function MyTournamentsPage({
 
       <section aria-labelledby="my-tournaments-summary-heading">
         <h2 id="my-tournaments-summary-heading" className="sr-only">خلاصه مسابقات من</h2>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           <SummaryCard label="همه مسابقات" value={data.summary.total} icon={Trophy} />
           <SummaryCard label="پیش رو" value={data.summary.upcoming} icon={CalendarDays} />
           <SummaryCard label="در حال برگزاری" value={data.summary.live} icon={Swords} />
