@@ -4,7 +4,7 @@
 >
 > Operational source of truth for continuing Turnoment without duplicate work.
 
-Last update: `2026-09-09`
+Last update: `2026-09-10`
 
 ## 1. Mandatory continuation law
 
@@ -22,7 +22,7 @@ Every chat/agent MUST:
 10. record exact branch/SHA/PR/CI evidence;
 11. update both repos if a cross-repo contract/global product state changes.
 
-Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKED`, `READY TO MERGE`, `DONE / MERGED / FROZEN`.
+Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKED`, `READY TO MERGE`, `MERGED / CLOSEOUT IN PROGRESS`, `DONE / MERGED / FROZEN`.
 
 ## 2. Repository truth
 
@@ -30,55 +30,75 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKE
 
 Repo: `sajadkhavas/turnoment`
 
-Latest accepted implementation `main` before F04 closeout:
+Latest implementation `main` before F05 closeout:
 
-`79330a95c05161d5896fb9328134caf814528036`
+`80b0f00860741f352208c41f79edaae5fd1872ac`
 
-Post-F04-implementation `main` Quality Gate:
+Post-F05-implementation `main` Quality Gate:
 
-`34390091802` — PASS
+`34406381160` — PASS
 
 This main includes:
 
 - F01 Tournament Detail + Registration architecture;
 - Player Dashboard final private architecture;
 - F02 Game Detail technical + SEO/final-copy acceptance;
-- F03 My Tournaments final private implementation + terminal closeout;
-- F04 My Matches final private implementation through implementation merge;
-- final frontend/SEO delivery protocols.
+- F03 My Tournaments terminal closeout;
+- F04 My Matches terminal closeout;
+- F05 Result Submission final private implementation through implementation merge;
+- current frontend/SEO delivery protocols and F05 acceptance evidence.
 
 Active frontend closeout:
 
-- F04 — My Matches `/dashboard/matches`
+- workstream: `F05 — Result Submission`
+- route: `/matches/$id/result`
 - implementation status: `MERGED`
 - closeout status: `IN PROGRESS`
-- START_SHA: `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
-- implementation branch: `phase/f04-my-matches`
-- tracking Issue: `#41` — must remain open until terminal closeout main CI is green
-- final implementation/evidence head: `c5dce2302b3f33f990b529bb723543c70477be5d`
-- implementation PR: `#42` — merged
-- implementation merge: `79330a95c05161d5896fb9328134caf814528036`
-- post-implementation main Quality Gate: `34390091802` — PASS
-- closeout branch: `closeout/f04-my-matches`
-- implementation evidence: `docs/workstreams/F04_MY_MATCHES.md`
-- closeout record: `docs/workstreams/F04_CLOSEOUT.md`
+- START_SHA: `864fe1491739b06c763be487a73a589c7e0f3609`
+- implementation branch: `phase/f05-result-submission`
+- tracking Issue: `#44` — MUST remain open until closeout merge/frozen main and terminal post-closeout `main` Quality Gate are recorded green
+- accepted implementation/browser head: `5961e7b986b6e8751c137434d00472e17e1e1376`
+- final implementation/evidence head: `8daa47c2e12f548a9a4d2c0c39d4a5b653aeb8bc`
+- implementation PR: `#45` — MERGED
+- implementation PR CI: `34406070865` — PASS
+- implementation review threads before merge: `0`
+- implementation merge: `80b0f00860741f352208c41f79edaae5fd1872ac`
+- post-implementation main Quality Gate: `34406381160` — PASS
+- closeout branch: `closeout/f05-result-submission`, created exactly from implementation merge
+- implementation evidence: `docs/workstreams/F05_ACCEPTANCE_EVIDENCE.md`
+- closeout record: `docs/workstreams/F05_CLOSEOUT.md` once committed on the closeout branch
 
 ### Backend
 
 Repo: `sajadkhavas/turnoment-backend`
 
-Latest verified `main` after F04 documentation alignment:
+Latest verified backend `main` after F05 documentation alignment:
 
-`baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`
+`93d4158e55ebe5d4cb0e724c84104ddd9fbf0c17`
+
+Backend phase truth:
 
 - P00 → `DONE / MERGED / FROZEN`
 - P01 → `DONE / MERGED / FROZEN`
-- F03 My Tournaments cross-repo contract alignment → merged; runtime backend-pending
-- F04 My Matches cross-repo contract alignment → Issue #11 completed, PR #12 merged
-- F04 backend alignment merge: `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`
-- F04 backend post-merge Quality Gate `34388924185` — PASS on Python 3.12 and 3.14
-- My Matches runtime integration remains `FRONTEND MOCK / BACKEND PENDING`
-- Backend NEXT remains `P02 — Games / Catalog Foundation`
+- backend NEXT → `P02 — Games / Catalog Foundation`
+
+F05 Result Submission cross-repo documentation alignment:
+
+- backend owner: `results`
+- Issue #13 → `CLOSED / COMPLETED`
+- docs PR #14 → MERGED
+- docs head `4e1826d7be562e3cecef3d61070fe7ab8baa2379`
+- PR Quality Gate `34394337599` — PASS on Python 3.12 and 3.14
+- review threads before merge: `0`
+- merge/main `93d4158e55ebe5d4cb0e724c84104ddd9fbf0c17`
+- post-merge Quality Gate `34394628782` — PASS on Python 3.12 and 3.14
+- Python/models/migrations/phase-registry changes from this alignment: `NONE`
+
+F05 runtime integration remains:
+
+`FRONTEND MOCK / BACKEND PENDING`
+
+The planned Result Submission endpoints are documented but not claimed implemented/live.
 
 Web auth truth: Django Session + CSRF + OTP. Never introduce localStorage bearer-token auth.
 
@@ -125,11 +145,11 @@ Mandatory supporting files:
 
 ## 5. SEO/final-copy law
 
-Private/noindex account pages do not require public SERP/keyword research, but final natural copy, accessibility, production-contract mapping and explicit `noindex,nofollow` remain mandatory.
+Private/noindex account/action pages do not require public SERP/keyword research, but final natural copy, accessibility, production-contract mapping and explicit `noindex,nofollow` remain mandatory.
 
 Public/indexable routes require the full current SEO/final-copy evidence chain before `FINAL_CURRENT` acceptance.
 
-## 6. Current accepted / active route truth
+## 6. Accepted / active competitive route truth
 
 ### `/dashboard`
 `DONE / MERGED / FROZEN — FINAL_PRIVATE`
@@ -143,88 +163,100 @@ Public/indexable routes require the full current SEO/final-copy evidence chain b
 ### `/games/$slug`
 `DONE / MERGED / FROZEN — FINAL_CURRENT`
 
-Terminal F02 evidence: frozen main `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`; terminal Quality Gate `34374298544` PASS; Issue #29 completed.
+F02 terminal evidence: frozen main `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`; terminal Quality Gate `34374298544` PASS; Issue #29 completed.
 
 ### F03 — My Tournaments `/dashboard/tournaments`
 
 `DONE / MERGED / FROZEN — FINAL_PRIVATE`
 
-Terminal evidence:
-
-- START_SHA `4afb49e913d5fd7e2420031ae957fde2e79e3e8a`
-- final implementation/evidence head `98c92846b79d1d715d16b3db9ad762a54e7fa137`
-- implementation PR #39 / merge `bc294e8dbdd6c1d61f11203b8c4e0cfe96094d30`
-- post-implementation CI `34385716082` — PASS
-- closeout PR #40 / closeout head `f50c5244929ed07f8b4224fb6e4ca4ced233b015`
-- final frozen main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
+- frozen main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
 - terminal Quality Gate `34386636373` — PASS
-- Issue #38 closed completed
-- runtime integration remains `FRONTEND MOCK / BACKEND PENDING`.
+- Issue #38 — completed
+- runtime remains `FRONTEND MOCK / BACKEND PENDING`.
 
 ### F04 — My Matches `/dashboard/matches`
 
-Closeout target: `DONE / MERGED / FROZEN — FINAL_PRIVATE`
-
-> Repository closeout may promote the route to `FINAL_PRIVATE`, but F04 itself is only terminally complete after Issue #41 records the closeout merge/frozen main SHA and green terminal post-closeout main Quality Gate.
-
-Identity / implementation:
+`DONE / MERGED / FROZEN — FINAL_PRIVATE`
 
 - START_SHA `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`
-- implementation branch `phase/f04-my-matches`
-- tracking Issue #41 — remains open through terminal closeout
-- evidence `docs/workstreams/F04_MY_MATCHES.md`
 - final implementation/evidence head `c5dce2302b3f33f990b529bb723543c70477be5d`
-- implementation PR #42 — MERGED
-- PR-triggered Quality Gate `34389760407` — PASS
-- implementation review threads before merge: `0`
-- implementation merge SHA `79330a95c05161d5896fb9328134caf814528036`
-- post-implementation `main` Quality Gate `34390091802` — PASS
-- closeout branch `closeout/f04-my-matches`
-- closeout record `docs/workstreams/F04_CLOSEOUT.md`
+- implementation PR #42
+- implementation merge `79330a95c05161d5896fb9328134caf814528036`
+- final frozen main `864fe1491739b06c763be487a73a589c7e0f3609`
+- terminal Quality Gate `34391019079` — PASS
+- Issue #41 — completed
+- runtime remains `FRONTEND MOCK / BACKEND PENDING`.
 
-Final architecture / product truth:
+### F05 — Result Submission `/matches/$id/result`
 
-- inherited placeholder replaced;
-- parent Dashboard Session guard/shell reused;
-- validated URL-owned `state/kind/game/page` navigation;
-- `MyMatchesRepository` with deterministic fixture and Django HTTP adapters;
-- planned endpoint `GET /api/v1/me/matches/` with `credentials: include`;
-- Zod runtime validation + cross-field integrity checks;
-- match lifecycle/check-in/result/dispute/attention/final-result/pagination remain backend-authoritative;
-- tournament + challenge contexts supported;
-- finalized score/outcome/rating delta rendered only from finalized contract data;
-- loading/populated/all-empty/filtered-empty/error/retry/pagination states implemented;
-- no dead Result Submission/Dispute links;
-- private `noindex,nofollow`;
-- responsive QA at `375 / 390 / 430 / 768 / 1024 / 1440`.
+Repository route status in the closeout registry: `FINAL_PRIVATE`.
+
+Workstream status at this checkpoint: `MERGED / CLOSEOUT IN PROGRESS`.
+
+> The route may be promoted in the non-recursive closeout registry after its final implementation is merged and post-implementation main CI is green. The F05 workstream itself is NOT terminally `DONE / MERGED / FROZEN` until Issue #44 records the closeout merge/frozen main SHA and terminal green post-closeout main Quality Gate.
+
+Identity:
+
+- START_SHA `864fe1491739b06c763be487a73a589c7e0f3609`
+- implementation branch `phase/f05-result-submission`
+- tracking Issue #44 — open through terminal closeout
+- accepted implementation/browser head `5961e7b986b6e8751c137434d00472e17e1e1376`
+- final implementation/evidence head `8daa47c2e12f548a9a4d2c0c39d4a5b653aeb8bc`
+- implementation PR #45 — MERGED
+- implementation merge `80b0f00860741f352208c41f79edaae5fd1872ac`
+- closeout branch `closeout/f05-result-submission`
+
+Accepted architecture/product truth:
+
+- safe stable Match route-param validation;
+- private Session UX access policy and separate server authorization contract;
+- `noindex,nofollow`;
+- typed `ResultSubmissionRepository` with deterministic fixture and Django HTTP adapters;
+- planned `GET/POST /api/v1/matches/{matchId}/result/` mapping;
+- `credentials: include`, P01 CSRF bootstrap and `X-CSRFToken`;
+- one `Idempotency-Key` per logical submit attempt;
+- opaque backend revision/stale-state contract;
+- backend-authoritative score policy, eligibility, submitted/final state and rating delta;
+- reportable/submitting/validation-error/transport-error/stale/awaiting-confirmation/finalized/disputed/unavailable/not-found/session-expired states;
+- explicit review-before-submit;
+- stale state blocks reuse of old revision;
+- unavailable action removes the stale submit surface;
+- accepted receipt route-identity invariant;
+- supplied IANA timezone used for civil-time rendering;
+- frontend never infers winner/final outcome/rating from submitted scores;
+- F04 My Matches links only `attention=submit-result` to F05;
+- confirmation/dispute remain separate governed workstreams with no dead links.
 
 Frontend QA evidence:
 
-- initial implementation/browser head `82525fb153ac129754c27c0c021f3ef8e1f10e44`
-- initial Quality Gate `34388320768` — PASS
-- initial artifact `10118663030`, digest `sha256:ee20d8dc48268a8f97a11c17b14974b10b292b2aa47be157db8e0abe1470baa1`
-- representative manual review `375 / 430 / 768 / 1024 / 1440` — PASS
-- final exact-head Quality Gate `34389469019` — PASS on `c5dce2302b3f33f990b529bb723543c70477be5d`
-- final artifact `10119103403`, digest `sha256:b210905e780219b3425ec84c54167e679c36d2f08789daabc05efd45a6aef33f`
-- PR CI `34389760407` — PASS
-- post-implementation main CI `34390091802` — PASS
+- accepted implementation/browser head `5961e7b986b6e8751c137434d00472e17e1e1376`
+- Quality Gate `34394538199` — PASS
+- artifact `10121043332`
+- digest `sha256:78d409ade10ef50124a374cd50475b139749221acc3c51332690b253c36cc860`
+- responsive captures `375 / 390 / 430 / 768 / 1024 / 1440`
+- representative manual visual review `375 / 430 / 768 / 1024 / 1440` — PASS
+- final evidence head `8daa47c2e12f548a9a4d2c0c39d4a5b653aeb8bc`
+- exact-head push Quality Gate `34405746632` — PASS
+- implementation PR CI `34406070865` — PASS
+- review threads immediately before implementation merge: `0`
+- main verified unchanged at F04 frozen `864fe1491739b06c763be487a73a589c7e0f3609` before merge
+- implementation merge `80b0f00860741f352208c41f79edaae5fd1872ac`
+- post-implementation main Quality Gate `34406381160` — PASS
 
-Cross-repo F04 alignment:
+Cross-repo F05 alignment:
 
-- backend owners `matches / results / disputes`
-- planned endpoint `GET /api/v1/me/matches/`
-- backend Issue #11 — completed
-- backend docs PR #12 — merged
-- alignment head `91df6a17806f6155c0abf18f6f0c9c010a5a579b`
-- backend PR Quality Gate `34388795695` — PASS on Python 3.12/3.14
+- backend owner `results`
+- planned `GET/POST /api/v1/matches/{matchId}/result/`
+- backend Issue #13 — completed
+- backend docs PR #14 — merged
+- backend docs head `4e1826d7be562e3cecef3d61070fe7ab8baa2379`
+- backend PR Quality Gate `34394337599` — PASS on Python 3.12/3.14
 - backend review threads `0`
-- backend alignment merge `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`
-- backend post-merge Quality Gate `34388924185` — PASS on Python 3.12/3.14
-- no Python/model/migration/phase-order implementation changed by alignment
+- backend alignment merge/current main `93d4158e55ebe5d4cb0e724c84104ddd9fbf0c17`
+- backend post-merge Quality Gate `34394628782` — PASS on Python 3.12/3.14
+- no backend result-domain implementation, models, migrations or phase-order change is claimed
 - runtime remains `FRONTEND MOCK / BACKEND PENDING`
 - backend NEXT remains `P02 — Games / Catalog Foundation`.
-
-F04 does not own Result Submission or Dispute mutation flows. They are the next separately governed frontend workstreams.
 
 ## 7. Route compliance registry
 
@@ -233,13 +265,13 @@ Canonical inventory: `docs/ROUTE_COMPLIANCE_REGISTRY.md`
 Current closeout highlights:
 
 - `FINAL_CURRENT`: `/games/$slug`
-- `FINAL_PRIVATE`: `/dashboard`, `/dashboard/tournaments`, `/dashboard/matches`, `/tournaments/$id/register`
+- `FINAL_PRIVATE`: `/dashboard`, `/dashboard/tournaments`, `/dashboard/matches`, `/matches/$id/result`, `/tournaments/$id/register`
 - `FINAL_PRE_SEO`: `/tournaments/$id`
 - `REBUILD`: `/login`, `/register`
 - remaining dashboard challenge/rivalry/achievement/notification/settings/team routes remain explicit placeholders
 - inherited ecommerce/service routes remain `LEGACY_REVIEW` and are not competitive architecture references.
 
-F04 terminal workstream status is confirmed only by Issue #41 after the closeout merge and terminal green main CI.
+F05 terminal workstream status is confirmed only by Issue #44 after closeout merge and terminal green main CI.
 
 ## 8. Competitive truth retained
 
@@ -250,30 +282,31 @@ F04 terminal workstream status is confirmed only by Issue #41 after the closeout
 
 ## 9. Known constraints
 
-- `/login` and `/register` remain inherited password-oriented flows and must later be rebuilt to OTP/session truth.
-- remaining dashboard placeholders must be rebuilt before product acceptance.
+- backend Result Submission runtime is still pending its accepted backend phase; frontend finality does not mean live API integration;
+- `/login` and `/register` remain inherited password-oriented flows and must later be rebuilt to OTP/session truth;
+- remaining dashboard placeholders must be rebuilt before product acceptance;
 - public competitive routes predating current law remain subject to registry recertification.
-- F04 frontend architecture may be final while backend runtime remains pending; never equate frontend finality with live backend integration.
 
 ## 10. Exact NEXT
 
-F04 closeout NEXT:
+F05 closeout NEXT:
 
-1. require closeout exact-head Quality Gate green;
-2. open/review closeout PR and require PR Quality Gate PASS + review threads `0`;
-3. verify `main` is still `79330a95c05161d5896fb9328134caf814528036` before merge;
-4. merge closeout with expected-head lock;
-5. require terminal post-closeout `main` Quality Gate PASS;
-6. record closeout merge/frozen main SHA + terminal CI in Issue #41;
-7. close Issue #41 as completed only then.
+1. finish non-recursive closeout/governance docs on `closeout/f05-result-submission`;
+2. require final closeout exact-head Quality Gate PASS;
+3. open closeout PR without auto-closing Issue #44;
+4. require closeout PR Quality Gate PASS + review threads `0` + exact head lock;
+5. verify `main` remains exact implementation merge `80b0f00860741f352208c41f79edaae5fd1872ac` before merge;
+6. merge closeout with expected-head lock;
+7. require terminal post-closeout `main` Quality Gate PASS;
+8. record closeout merge/frozen main SHA + terminal CI in Issue #44;
+9. close Issue #44 as completed only then.
 
-Frontend NEXT after terminal F04 closeout:
+Frontend NEXT after terminal F05 closeout:
 
-1. **Result Submission**;
-2. **Dispute**;
-3. Challenge Hub / Detail;
-4. Rivalry Detail;
-5. Auth / OTP;
-6. Notifications / Settings.
+1. **Dispute**;
+2. Challenge Hub / Detail;
+3. Rivalry Detail;
+4. Auth / OTP;
+5. Notifications / Settings.
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
