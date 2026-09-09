@@ -1,6 +1,6 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { CheckCircle2, ChevronLeft, ShieldCheck, TicketCheck, Trophy, Users } from "lucide-react";
-import { useMemo, useState } from "react";
+import { CheckCircle2, ChevronLeft, ShieldCheck, TicketCheck, Users } from "lucide-react";
+import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import type {
   RegistrationActionResult,
   TournamentRegistrationContext,
@@ -35,6 +35,12 @@ const unavailableCopy = {
   },
 } as const;
 
+type UnavailableState = keyof typeof unavailableCopy;
+
+function copyForAvailability(value: TournamentRegistrationContext["availability"]) {
+  return value === "available" ? null : unavailableCopy[value as UnavailableState];
+}
+
 export function TournamentRegistrationPage({
   context,
   identifier,
@@ -50,8 +56,9 @@ export function TournamentRegistrationPage({
   const [requestError, setRequestError] = useState<string | null>(null);
 
   const formUnavailable = context.availability !== "available";
-  const unavailable = formUnavailable ? unavailableCopy[context.availability] : null;
-  const fieldErrors = result?.outcome === "validation_error" ? result.fields : {};
+  const unavailable = copyForAvailability(context.availability);
+  const fieldErrors: Record<string, string> =
+    result?.outcome === "validation_error" ? result.fields : {};
   const teamRequired = context.mode === "team";
   const canSubmit = !submitting && acceptedRules && (!teamRequired || Boolean(teamId));
 
@@ -60,7 +67,7 @@ export function TournamentRegistrationPage({
     return context.tournament.entryFee.amount > 0 ? "تأیید و ادامه ثبت‌نام" : "تأیید ثبت‌نام";
   }, [context.tournament.entryFee.amount, submitting]);
 
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!canSubmit) return;
     setSubmitting(true);
@@ -123,7 +130,11 @@ export function TournamentRegistrationPage({
   }
 
   if (formUnavailable || result?.outcome === "already_registered" || result?.outcome === "unavailable") {
-    const state = result?.outcome === "unavailable" ? unavailableCopy[result.reason] : result?.outcome === "already_registered" ? unavailableCopy.already_registered : unavailable;
+    const state = result?.outcome === "unavailable"
+      ? unavailableCopy[result.reason]
+      : result?.outcome === "already_registered"
+        ? unavailableCopy.already_registered
+        : unavailable;
     return (
       <RegistrationShell context={context}>
         <div role="status" className="rounded-2xl border border-border bg-card p-6 text-center">
@@ -224,7 +235,7 @@ export function TournamentRegistrationPage({
           type="submit"
           disabled={!canSubmit}
           aria-busy={submitting}
-          className="h-13 w-full rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-12 w-full rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitLabel}
         </button>
@@ -233,7 +244,7 @@ export function TournamentRegistrationPage({
   );
 }
 
-function RegistrationShell({ context, children }: { context: TournamentRegistrationContext; children: React.ReactNode }) {
+function RegistrationShell({ context, children }: { context: TournamentRegistrationContext; children: ReactNode }) {
   return (
     <main className="container mx-auto px-4 py-8 md:py-10">
       <nav aria-label="مسیر صفحه" className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
