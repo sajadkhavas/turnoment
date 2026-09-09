@@ -4,9 +4,9 @@
 >
 > Every chat/agent modifying an existing route MUST read this registry together with `PROJECT_CONTINUITY.md`, `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`, and when applicable `SEO_FINAL_COPY_PROTOCOL.md`.
 
-Last audit: `2026-09-09`
+Last audit: `2026-09-10`
 
-Audit baseline: `864fe1491739b06c763be487a73a589c7e0f3609` — F04 terminal frozen main with Quality Gate `34391019079` PASS and Issue #41 completed.
+Audit baseline: `80b0f00860741f352208c41f79edaae5fd1872ac` — F05 implementation merge with post-implementation `main` Quality Gate `34406381160` PASS. Terminal F05 workstream completion still requires closeout merge + terminal main CI recorded in Issue #44.
 
 ## Status meanings
 
@@ -26,7 +26,7 @@ Audit baseline: `864fe1491739b06c763be487a73a589c7e0f3609` — F04 terminal froz
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Final main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; terminal Quality Gate `34386636373` PASS; terminal evidence in Issue #38. |
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen. Final main `864fe1491739b06c763be487a73a589c7e0f3609`; terminal Quality Gate `34391019079` PASS; terminal evidence in Issue #41. Runtime integration remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/matches/$id/result` | `IN_PROGRESS` | F05 Result Submission — START `864fe1491739b06c763be487a73a589c7e0f3609`; branch `phase/f05-result-submission`; Issue #44; evidence `docs/workstreams/F05_RESULT_SUBMISSION.md`. New private route; final promotion requires implementation merge + closeout + terminal main CI. |
+| `/matches/$id/result` | `FINAL_PRIVATE` | F05 implementation accepted and merged. START `864fe1491739b06c763be487a73a589c7e0f3609`; final evidence head `8daa47c2e12f548a9a4d2c0c39d4a5b653aeb8bc`; implementation PR #45; PR CI `34406070865` PASS; implementation merge `80b0f00860741f352208c41f79edaae5fd1872ac`; post-implementation main CI `34406381160` PASS. Closeout branch `closeout/f05-result-submission`; terminal frozen-main evidence belongs in Issue #44 after closeout. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
@@ -110,14 +110,13 @@ Status: `LEGACY_REVIEW`
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. **complete active F05 Result Submission `/matches/$id/result`**;
-2. **Dispute**;
-3. Challenge Hub / Detail;
-4. Rivalry Detail;
-5. Auth / OTP (`/login`, `/register`);
-6. Notifications / Settings;
-7. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
-8. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
+1. **Dispute**;
+2. Challenge Hub / Detail;
+3. Rivalry Detail;
+4. Auth / OTP (`/login`, `/register`);
+5. Notifications / Settings;
+6. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
+7. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
