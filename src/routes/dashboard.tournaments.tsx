@@ -86,7 +86,6 @@ function MyTournamentsRoute() {
   const navigateTo = (nextState: MyTournamentStateFilter, gameId?: string, page = 1) => {
     void navigate({
       search: compactSearch(nextState, gameId, page),
-      replace: true,
     });
   };
 
