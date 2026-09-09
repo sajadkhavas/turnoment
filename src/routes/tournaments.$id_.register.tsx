@@ -53,7 +53,7 @@ export const Route = createFileRoute("/tournaments/$id/register")({
 function RegistrationRoute() {
   const { registration } = Route.useLoaderData();
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <TournamentRegistrationPage
         context={registration}
         identifier={registration.tournament.slug}
@@ -64,7 +64,7 @@ function RegistrationRoute() {
 
 function RegistrationPending() {
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <TournamentRegistrationSkeleton />
     </TournamentLayout>
   );
@@ -73,7 +73,7 @@ function RegistrationPending() {
 function RegistrationError() {
   const router = useRouter();
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <main className="container mx-auto px-4 py-24 text-center">
         <h1 className="text-2xl font-black">اطلاعات ثبت‌نام بارگذاری نشد</h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-muted-foreground">
@@ -93,7 +93,7 @@ function RegistrationError() {
 
 function RegistrationNotFound() {
   return (
-    <TournamentLayout>
+    <TournamentLayout pageOwnsMain>
       <main className="container mx-auto px-4 py-24 text-center">
         <h1 className="text-2xl font-black">مسابقه برای ثبت‌نام پیدا نشد</h1>
         <Link to="/tournaments" className="mt-6 inline-flex h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground">
