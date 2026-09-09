@@ -53,6 +53,7 @@ jobs:
           DETAIL_URL="http://127.0.0.1:4173/tournaments/fc26-karaj-champions-cup"
           REGISTER_URL="http://127.0.0.1:4173/tournaments/fc26-karaj-champions-cup/register"
           GAME_URL="http://127.0.0.1:4173/games/ea-fc-26"
+          MY_TOURNAMENTS_URL="http://127.0.0.1:4173/dashboard/tournaments"
 
           READY=0
           for _ in $(seq 1 30); do
@@ -69,17 +70,22 @@ jobs:
 
           curl -fsS "$REGISTER_URL" > /tmp/f01-register.html
           curl -fsS "$GAME_URL" > /tmp/f02-game.html
+          curl -fsS "$MY_TOURNAMENTS_URL" > /tmp/f03-my-tournaments.html
           grep -a -q "جام قهرمانان کرج" /tmp/f01-detail.html
           grep -a -q "ثبت‌نام مسابقه" /tmp/f01-register.html
           grep -a -q "EA FC 26" /tmp/f02-game.html
           grep -a -q "فرمت‌های مسابقات EA FC 26" /tmp/f02-game.html
+          grep -a -q "مسابقات من" /tmp/f03-my-tournaments.html
+          grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f03-my-tournaments.html
 
           DETAIL_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-detail.html | wc -l | tr -d ' ')"
           REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-register.html | wc -l | tr -d ' ')"
           GAME_MAIN_COUNT="$(grep -a -o '<main' /tmp/f02-game.html | wc -l | tr -d ' ')"
+          MY_TOURNAMENTS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f03-my-tournaments.html | wc -l | tr -d ' ')"
           test "$DETAIL_MAIN_COUNT" -eq 1
           test "$REGISTER_MAIN_COUNT" -eq 1
           test "$GAME_MAIN_COUNT" -eq 1
+          test "$MY_TOURNAMENTS_MAIN_COUNT" -eq 1
 
           for WIDTH in 375 390 430 768 1024 1440; do
             "$CHROME" \
@@ -108,9 +114,18 @@ jobs:
               --window-size="${WIDTH},1200" \
               --screenshot="artifacts/browser-qa/game-${WIDTH}.png" \
               "$GAME_URL" >/dev/null 2>&1
+
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1800" \
+              --screenshot="artifacts/browser-qa/my-tournaments-${WIDTH}.png" \
+              "$MY_TOURNAMENTS_URL" >/dev/null 2>&1
           done
 
-          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 18
+          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 24
       - name: Upload browser QA evidence
         if: always()
         uses: actions/upload-artifact@v4
