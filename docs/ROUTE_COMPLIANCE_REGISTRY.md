@@ -6,7 +6,7 @@
 
 Last audit: `2026-09-10`
 
-Audit baseline: `0407a925974d50b4a75af292231bacb48c66eb38` — F05 terminal frozen `main`; terminal Quality Gate `34407220433` PASS; Issue #44 closed completed.
+Audit baseline: `e5e39ea2db0dadae3a9acb75c64dcf8ecb6dba4d` — F06 implementation merge; post-implementation main Quality Gate `34411457787` PASS. Terminal F06 workstream completion still requires closeout merge + terminal main CI recorded in Issue #47.
 
 ## Status meanings
 
@@ -25,9 +25,9 @@ Audit baseline: `0407a925974d50b4a75af292231bacb48c66eb38` — F05 terminal froz
 |---|---|---|
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Final main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; terminal Quality Gate `34386636373` PASS; Issue #38 completed. |
-| `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen. Final main `864fe1491739b06c763be487a73a589c7e0f3609`; terminal Quality Gate `34391019079` PASS; Issue #41 completed. F06 includes a bounded navigation correction restoring `submit-result` and adding `dispute` action links under full regression coverage. |
-| `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen. Final main `0407a925974d50b4a75af292231bacb48c66eb38`; terminal Quality Gate `34407220433` PASS; Issue #44 completed. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. F06 adds the accepted disputed-state link to the dedicated Dispute route under regression coverage. |
-| `/matches/$id/dispute` | `IN_PROGRESS` | F06 Match Dispute — START `0407a925974d50b4a75af292231bacb48c66eb38`; branch `phase/f06-dispute`; Issue #47; evidence `docs/workstreams/F06_DISPUTE.md`. New private route; final promotion requires implementation merge + closeout + terminal main CI. |
+| `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen. Final pre-F06 freeze `864fe1491739b06c763be487a73a589c7e0f3609`; terminal Quality Gate `34391019079` PASS; Issue #41 completed. F06 additionally corrected `submit-result` and `dispute` action navigation under full regression coverage; implementation merge `e5e39ea2db0dadae3a9acb75c64dcf8ecb6dba4d`, post-main gate `34411457787` PASS. |
+| `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen at main `0407a925974d50b4a75af292231bacb48c66eb38`; terminal Quality Gate `34407220433` PASS; Issue #44 completed. F06 adds the dedicated disputed-state link under full regression coverage. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 implementation accepted and merged. START `0407a925974d50b4a75af292231bacb48c66eb38`; accepted code/browser head `1a1bf97da61ce9f4845c7ed78262519f54e1a3f3`; final implementation/evidence head `d4579c811f87e415747a44ae1c213ba71cf86030`; implementation PR #48; PR CI `34411147988` PASS; implementation merge `e5e39ea2db0dadae3a9acb75c64dcf8ecb6dba4d`; post-implementation main CI `34411457787` PASS. Closeout branch `closeout/f06-dispute`; terminal frozen-main evidence belongs in Issue #47 after closeout. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged; final terminal evidence is recorded in Issue #29. |
@@ -105,7 +105,7 @@ All above: `LEGACY_REVIEW`.
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. **complete active F06 Match Dispute `/matches/$id/dispute`**;
+1. **complete F06 terminal closeout/freeze** — closeout PR, merge and terminal main CI recorded in Issue #47;
 2. Challenge Hub / Detail;
 3. Rivalry Detail;
 4. Auth / OTP (`/login`, `/register`);
@@ -118,7 +118,8 @@ Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 ## H. Registry maintenance law
 
 - A route cannot be promoted to `FINAL_CURRENT`, `FINAL_PRIVATE`, or `FINAL_PRE_SEO` from chat memory.
-- Promotion requires merged implementation evidence and required green acceptance gates; terminal workstream `DONE / MERGED / FROZEN` additionally requires closeout merge and terminal main CI recorded in the tracking Issue.
+- A merged implementation with its required green post-implementation main gate may be promoted non-recursively in a closeout registry when the final frontend architecture is accepted.
+- Terminal workstream `DONE / MERGED / FROZEN` additionally requires closeout merge and terminal main CI recorded in the tracking Issue.
 - New routes must be added when their workstream begins.
 - Placeholder/legacy routes must remain visible until rebuilt or intentionally removed.
-- If implementation truth and this registry conflict, treat the route as **not final** until reconciled.
+- If implementation truth and this registry conflict, treat the route as not final until reconciled.
