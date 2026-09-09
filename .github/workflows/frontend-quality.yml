@@ -120,7 +120,7 @@ jobs:
               --no-sandbox \
               --disable-gpu \
               --hide-scrollbars \
-              --window-size="${WIDTH},1200" \
+              --window-size="${WIDTH},1800" \
               --screenshot="artifacts/browser-qa/my-tournaments-${WIDTH}.png" \
               "$MY_TOURNAMENTS_URL" >/dev/null 2>&1
           done
