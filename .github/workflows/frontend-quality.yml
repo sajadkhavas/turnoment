@@ -31,7 +31,7 @@ jobs:
         run: bun run typecheck
       - name: Contract checks
         run: bun run test
-      - name: Production browser smoke and responsive screenshots
+      - name: Browser smoke and responsive screenshots
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -43,10 +43,10 @@ jobs:
           fi
 
           mkdir -p artifacts/browser-qa
-          bun run preview -- --host 127.0.0.1 --port 4173 > /tmp/turnoment-preview.log 2>&1 &
-          PREVIEW_PID=$!
+          bun run dev -- --host 127.0.0.1 --port 4173 > /tmp/turnoment-browser-qa.log 2>&1 &
+          SERVER_PID=$!
           cleanup() {
-            kill "$PREVIEW_PID" 2>/dev/null || true
+            kill "$SERVER_PID" 2>/dev/null || true
           }
           trap cleanup EXIT
 
@@ -62,7 +62,7 @@ jobs:
             sleep 1
           done
           if [[ "$READY" != "1" ]]; then
-            cat /tmp/turnoment-preview.log || true
+            cat /tmp/turnoment-browser-qa.log || true
             exit 1
           fi
 
