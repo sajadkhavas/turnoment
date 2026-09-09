@@ -1,6 +1,6 @@
 # F02 — Final Game Detail
 
-Status: `IN PROGRESS`
+Status: `READY TO MERGE`
 
 START_SHA: `2ea5df3ecbd3a698fa838a8023994c0fc73e18a1`
 
@@ -28,7 +28,7 @@ Reviewed on 2026-09-09 before implementation:
    - Stable semantic game slug is the canonical public URL.
 5. Google Breadcrumb structured data — https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
    - A visible Games → Game hierarchy is appropriate for the page.
-   - F02 may emit BreadcrumbList only when it matches the visible breadcrumb path.
+   - F02 evaluated BreadcrumbList but intentionally does not emit it until the application has a stable absolute public-origin contract for structured-data item URLs.
 6. Google structured data general policies — https://developers.google.com/search/docs/appearance/structured-data/sd-policies
    - Do not invent unsupported game rich-result markup. F02 intentionally avoids speculative VideoGame schema for search features Google does not document as supported rich results.
 7. W3C WCAG 2.2 — https://www.w3.org/TR/WCAG22/
@@ -90,7 +90,7 @@ The page does not claim universal rules for the game. Tournament-specific rules 
 
 ## Permanent frontend contract
 
-Proposed production endpoint:
+Production endpoint mapping:
 
 `GET /api/v1/games/{slug}/`
 
@@ -98,14 +98,14 @@ Contract domains:
 - stable game id + slug
 - publication state
 - name + short label + public description
-- hero/media key or URL projection
+- hero/media projection
 - supported platform labels
-- competitive format summaries supplied by backend
-- public aggregate counts supplied by backend
+- competitive format summaries supplied by the domain contract
+- public aggregate counts supplied by the domain contract
 - open/upcoming tournament summaries
 - official Turnoment ranking preview/state
 - gaming-center summaries supporting the game
-- SEO projection where content management later needs it
+- SEO projection
 
 The frontend does not calculate authoritative publication state, supported competition formats, official ranking eligibility or venue support truth.
 
@@ -114,10 +114,23 @@ Deterministic fixtures implement the exact same repository interface for develop
 ## SEO decision
 
 - canonical: `/games/{slug}`
-- robots: `index,follow` for published games
-- dynamic title/description/OG from runtime-validated loader data
-- visible breadcrumb + matching BreadcrumbList JSON-LD
+- robots: `index,follow` for published games; archived games are `noindex,follow`
+- dynamic title/description/Open Graph from runtime-validated loader data
+- visible Games → Game breadcrumb hierarchy
+- BreadcrumbList JSON-LD evaluated and intentionally omitted until stable absolute public-origin URLs are available for structured-data item values
 - no speculative VideoGame rich-result schema
+
+## Final implementation
+
+- stable public slugs are centralized independently from internal game IDs (`eafc26 → ea-fc-26`, `cs2 → counter-strike-2`, etc.)
+- legacy/internal identifiers resolve and redirect to the canonical semantic slug
+- public content is SSR-first through the route loader
+- production network payloads are validated by Zod before entering UI
+- `/games` cards now link to semantic Game Detail URLs
+- the page includes game/platform identity, public aggregate stats, open/upcoming tournaments, competitive-format capabilities, ranking state/preview and hosting-center state
+- loading, retry/error, notFound and domain empty/inactive states are final product states
+- user-facing copy contains no backend/server/API/mock/demo/temporary engineering-status language
+- existing F01 Tournament Detail/Registration browser checks remain active as regressions
 
 ## Owned files
 
@@ -125,10 +138,42 @@ F02 owns:
 - `src/routes/games.$slug.tsx`
 - material update to `src/routes/games.index.tsx` for semantic detail links
 - `src/components/games/game-detail-page.tsx`
+- `src/lib/game-slugs.ts`
 - F02 Game Detail contract/repository/fixture/http adapter/data selector/test files
 - F02-specific quality/browser QA additions
 - F02 workstream/continuity evidence
 
-## Acceptance law
+## Acceptance evidence — implementation head
 
-Do not mark `DONE / MERGED / FROZEN` until responsive browser QA, exact-head CI, PR review, implementation merge, post-merge main CI, documentation closeout and continuity freeze are all verified.
+Implementation acceptance head:
+
+`5bc2c2498ed8ed79713c4e5b9827d7066dba1962`
+
+Frontend Quality Gate:
+
+`34351078060` — PASS
+
+Verified gates:
+- frozen dependency install — PASS
+- lint correctness — PASS
+- production build and TanStack route generation — PASS
+- TypeScript typecheck — PASS
+- Player Dashboard regression contract checks — PASS
+- F01 Tournament Detail / Registration regression contract checks — PASS
+- F02 Game Detail contract checks — PASS
+- browser smoke — PASS
+- exactly one `<main>` on F01 Detail, F01 Registration and F02 Game Detail — PASS
+- F01 responsive screenshot regression retained — PASS
+- F02 Game Detail screenshots at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS
+
+Browser QA artifact:
+- artifact: `browser-qa-5bc2c2498ed8ed79713c4e5b9827d7066dba1962`
+- artifact id: `10103768778`
+- digest: `sha256:b287add1165d611a03e6a98fd35cb5baae6ae67d0bf2856019cfb851105176e8`
+- 18 screenshots total across F01 regression routes + F02 Game Detail
+- F02 representative captures at 375/430/768/1440 manually reviewed — PASS
+- no visible horizontal clipping; Persian copy wraps safely; hero/actions/stats/tournament cards remain usable across reviewed widths
+
+Open implementation blocker: `none`.
+
+This evidence commit changes documentation only. An exact-head quality run must pass on the resulting branch SHA before PR creation. F02 remains `READY TO MERGE`, not `DONE`, until PR/review/merge/post-merge CI and continuity closeout are complete.
