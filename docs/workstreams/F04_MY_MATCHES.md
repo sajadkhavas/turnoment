@@ -222,13 +222,13 @@ Backend owners:
 Backend root laws were read before alignment. Backend docs-only alignment:
 - backend START_SHA: `cd47fff8b82359b12d86fad10735a2e9fa52472d`;
 - backend branch: `docs/f04-my-matches-contract`;
-- backend Issue #11;
-- backend PR #12;
+- backend Issue #11 — completed;
+- backend PR #12 — merged;
 - backend alignment head: `91df6a17806f6155c0abf18f6f0c9c010a5a579b`;
 - backend PR CI `34388795695` — PASS on Python 3.12 and 3.14;
 - backend PR review threads before merge: `0`;
-- backend alignment merge: `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`;
-- backend post-merge main CI: pending at this evidence checkpoint.
+- backend alignment merge/current main: `baeffe042f4dc6ab6d2cbd0433eca4f8404daff6`;
+- backend post-merge main Quality Gate `34388924185` — PASS on Python 3.12 and 3.14.
 
 Cross-repo runtime status remains explicitly:
 
@@ -298,9 +298,9 @@ Manual representative visual review:
 
 ## Exact NEXT
 
-1. finish backend post-merge contract-alignment gate and close backend Issue #11;
-2. reconcile frontend continuity + route registry to F04 active truth;
-3. obtain green exact-head frontend Quality Gate after evidence/governance updates;
-4. open/review frontend PR, require PR CI PASS and review threads `0`;
-5. merge implementation, require post-merge main CI PASS;
-6. perform closeout/freeze and terminal main CI before reporting `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
+1. obtain green final exact-head frontend Quality Gate after this evidence/governance update;
+2. open/review frontend implementation PR, require PR CI PASS and review threads `0`;
+3. merge implementation and require post-merge main CI PASS;
+4. perform documentation-only closeout/freeze from exact implementation merge SHA;
+5. require closeout PR CI PASS, review threads `0`, closeout merge and terminal main CI PASS;
+6. record terminal evidence in Issue #41 and only then report `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
