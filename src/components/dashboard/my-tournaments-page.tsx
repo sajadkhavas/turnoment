@@ -229,7 +229,7 @@ export function MyTournamentsErrorState() {
       <CircleAlert className="h-9 w-9 text-warning" aria-hidden="true" />
       <h1 className="mt-4 text-xl font-black">مسابقاتت نمایش داده نشد</h1>
       <p className="mt-2 max-w-md text-sm leading-7 text-muted-foreground">
-        بارگذاری اطلاعات این صفحه کامل نشد. دوباره تلاش کن؛ ثبت‌نام‌ها و نتایجت تغییری نمی‌کنند.
+        بارگذاری اطلاعات این صفحه کامل نشد. چند لحظه بعد دوباره تلاش کن.
       </p>
       <button
         type="button"
