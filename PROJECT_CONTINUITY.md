@@ -30,15 +30,21 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `BLOCKE
 
 Repo: `sajadkhavas/turnoment`
 
-Latest accepted `main` before current F02 SEO branch:
+Latest accepted `main` before F02 closeout:
 
-`ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
+`21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`
 
-Terminal main Quality Gate:
+Latest main Quality Gate:
 
-`34355802846` — PASS
+`34373382549` — PASS
 
-This main includes F01 Tournament Detail + Registration, the merged technical F02 Game Detail implementation, Final Frontend Page Delivery Protocol and Final SEO & Copy Protocol.
+This main includes:
+
+- F01 Tournament Detail + Registration
+- F02 technical Game Detail implementation
+- F02 mandatory SEO/final-copy recertification
+- Final Frontend Page Delivery Protocol
+- Final SEO & Copy Protocol
 
 ### Backend
 
@@ -66,7 +72,7 @@ Fixtures exist only for development/test/visual QA and implement the same perman
 
 Frontend is not authoritative for auth/session, tournament lifecycle, registration eligibility, capacity, bracket truth, winner/final result, rating change, challenge eligibility, payment/refund/settlement, moderation or disputes.
 
-No accepted page may need a later generic phase to finish SSR/routing, SEO/indexing, public search-intent/topic research, final public copy, title/meta/canonical, internal links, structured-data decision, accessibility, responsive behavior, complete UI states, runtime validation or production contract mapping.
+No accepted page may need a later generic phase to finish SSR/routing, SEO/indexing, search-intent/topic research, final copy, title/meta/canonical, internal links, structured-data decision, accessibility, responsive behavior, complete states, runtime validation or production contract mapping.
 
 User-visible copy must never expose development/engineering-stage language such as waiting for backend/server/API, mock/demo/temporary mode, contract/adapter/UI-state jargon when natural product language is appropriate.
 
@@ -105,7 +111,7 @@ Before final public copy is accepted:
 - identify content gaps;
 - check cannibalization;
 - finalize H1/title/meta/headings/internal anchors;
-- audit all meaningful visible strings for natural language, usefulness, engineering jargon, unsupported claims and keyword stuffing;
+- audit visible strings for natural language, usefulness, engineering jargon, unsupported claims and keyword stuffing;
 - record evidence.
 
 Do not invent search volume, keyword difficulty, rankings, popularity or authority claims.
@@ -122,7 +128,7 @@ F01 architecture/contract/SSR/responsive acceptance is final. It was frozen befo
 
 Status: `DONE / MERGED / FROZEN — FINAL_PRIVATE`
 
-Final private registration flow with Django Session + CSRF boundary, authoritative availability/outcome states, accessibility/responsive QA and `noindex,nofollow`.
+Final private registration flow with Django Session + CSRF boundary, authoritative states, accessibility/responsive QA and `noindex,nofollow`.
 
 ### Player Dashboard `/dashboard`
 
@@ -138,12 +144,14 @@ Competitive truth:
 
 ### Game Detail `/games/$slug`
 
-Status: `READY TO MERGE — SEO FINAL COPY GREEN / EXACT-HEAD CI PENDING`
+Status: `DONE / MERGED / FROZEN — FINAL_CURRENT`
+
+> The closeout commit cannot contain its own future merge SHA/terminal main CI. Those terminal self-referential values are recorded in Issue #29, and no chat may claim final completion until they are green.
 
 Original technical implementation:
 
 - original START: `2ea5df3ecbd3a698fa838a8023994c0fc73e18a1`
-- implementation branch: `phase/f02-game-detail`
+- branch: `phase/f02-game-detail`
 - reviewed head: `a72bdcbcba0b54674adc1e8d6eb6685818e245d4`
 - PR #30
 - PR CI `34351774310` — PASS
@@ -151,40 +159,34 @@ Original technical implementation:
 - merge `6c36325e92dacc3eb60f895afa2b553e3046087a`
 - post-merge CI `34352013348` — PASS
 
-Current SEO/final-copy workstream:
+SEO/final-copy recertification:
 
 - SEO START_SHA: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 - branch: `phase/f02-seo-final-copy`
-- tracking Issue #29 reopened intentionally
-- reviewed implementation checkpoint: `dfa43a178ab11c9607720494bcb165e003ae0691`
-- QA evidence commit: `1f069715bfb3778ea0741ec9600f2fbddba43e38`
-- SEO research: `docs/workstreams/F02_GAME_DETAIL_SEO_RESEARCH.md`
-- workstream evidence: `docs/workstreams/F02_GAME_DETAIL.md`
+- final reviewed head: `0558e0ef9290c3d84429e65df06dd4e1ab1a74fa`
+- exact-head branch CI `34372783510` — PASS
+- SEO PR #34
+- PR CI `34373132933` — PASS
+- review threads `0`
+- SEO/copy merge `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`
+- post-merge main CI `34373382549` — PASS
+- closeout branch: `closeout/f02-game-detail-seo-final-copy`
+- tracking Issue #29
 
-Completed:
+Research/QA:
 
-- current Iranian/regional search-intent research;
-- primary/supporting topic clusters;
-- Persian/English game-name terminology decision;
-- content-gap + cannibalization map;
-- final visible copy rewrite;
-- H1/heading/internal-anchor strategy;
-- final metadata pattern;
-- removal of visible engineering/system wording;
-- final-copy regression tests;
-- route compliance registry creation.
-
-Quality evidence on implementation checkpoint:
-
-- Quality Gate `34358425752` — PASS on `dfa43a178ab11c9607720494bcb165e003ae0691`
-- install/lint/build/route generation/typecheck/contracts — PASS
-- browser smoke + single-main invariant — PASS
-- 18 screenshots at 375/390/430/768/1024/1440 — PASS
-- artifact `10106806417`
+- `docs/workstreams/F02_GAME_DETAIL_SEO_RESEARCH.md`
+- `docs/workstreams/F02_GAME_DETAIL.md`
+- current Iranian/regional search-intent/topic research completed
+- content-gap + cannibalization map completed
+- final visible copy and metadata completed
+- final-copy regression tests completed
+- responsive/browser QA completed at `375 / 390 / 430 / 768 / 1024 / 1440`
+- manually reviewed Game Detail captures at `375 / 430 / 768 / 1440` — PASS
+- reviewed artifact `10106806417`
 - digest `sha256:2c941652f83398f8fb6cb2f328a31b5c3995104c57c04d5a3e4996ce5d6ec5c7`
-- manual Game Detail visual review at 375/430/768/1440 — PASS
 
-F02 is NOT final until exact-head CI after this continuity/evidence commit, PR/review/merge, post-merge CI, documentation closeout and terminal main CI are complete.
+The closeout promotes `/games/$slug` to `FINAL_CURRENT`. Exact closeout PR/merge/terminal main CI are recorded in Issue #29 once they exist.
 
 ## 7. Route compliance registry
 
@@ -192,7 +194,8 @@ Canonical inventory:
 
 `docs/ROUTE_COMPLIANCE_REGISTRY.md`
 
-Current high-level truth:
+### `FINAL_CURRENT`
+- `/games/$slug`
 
 ### `FINAL_PRIVATE`
 - `/dashboard`
@@ -200,9 +203,6 @@ Current high-level truth:
 
 ### `FINAL_PRE_SEO`
 - `/tournaments/$id`
-
-### `IN_PROGRESS`
-- `/games/$slug`
 
 ### `NEEDS_RECERTIFICATION`
 - `/`
@@ -231,7 +231,7 @@ Current high-level truth:
 - `/dashboard/teams`
 
 ### `LEGACY_REVIEW`
-Inherited ecommerce/service/general routes are explicitly listed in the registry and must not be used as Turnoment architecture references.
+Inherited ecommerce/service/general routes remain explicitly listed in the registry and must not be used as Turnoment architecture references.
 
 ## 8. Governance evidence
 
@@ -267,24 +267,9 @@ Inherited ecommerce/service/general routes are explicitly listed in the registry
 
 ## 10. Exact NEXT
 
-Immediate NEXT: **finish F02 terminal acceptance**.
+After terminal F02 closeout, frontend engineering NEXT is:
 
-Remaining sequence:
-
-1. wait for exact-head Quality Gate on current branch after evidence/continuity commit;
-2. fix any issue without weakening gates;
-3. open SEO/final-copy PR on exact green head;
-4. PR CI PASS + review threads = 0;
-5. merge with expected-head lock;
-6. post-merge main CI PASS;
-7. closeout branch: promote `/games/$slug` to `FINAL_CURRENT`, freeze F02 evidence and main SHA;
-8. closeout PR/CI/merge;
-9. terminal main CI PASS;
-10. close Issue #29 completed.
-
-After F02:
-
-1. My Tournaments
+1. **My Tournaments** `/dashboard/tournaments`
 2. My Matches
 3. Result Submission
 4. Dispute
@@ -292,5 +277,7 @@ After F02:
 6. Rivalry Detail
 7. Auth / OTP
 8. Notifications / Settings
+
+Backend NEXT remains `P02 — Games / Catalog Foundation`.
 
 Next Lovable Design Master remains `Live Tournament / Bracket`.

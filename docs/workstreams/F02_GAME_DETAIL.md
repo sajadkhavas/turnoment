@@ -1,186 +1,142 @@
 # F02 — Final Game Detail
 
-Status: `READY TO MERGE — SEO FINAL COPY GREEN / EXACT-HEAD CI REQUIRED`
+Status: `DONE / MERGED / FROZEN — terminal self-referential evidence recorded in Issue #29`
+
+> This file freezes all evidence knowable before the closeout PR merges. The closeout PR's own future merge SHA and terminal `main` CI cannot be embedded in the commit that creates them; those terminal values are recorded in tracking Issue #29. Do not make a user-facing DONE claim until that terminal evidence is green.
 
 Original F02 START_SHA: `2ea5df3ecbd3a698fa838a8023994c0fc73e18a1`
 
 SEO/final-copy START_SHA: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 
-Current branch: `phase/f02-seo-final-copy`
-
-Tracking issue: `#29` — intentionally reopened after the stricter SEO/final-copy protocol became mandatory.
+Tracking issue: `#29`
 
 ## 1. Goal
 
-Deliver `/games/$slug` as a final public competitive game hub under both:
+Deliver `/games/$slug` as a final public competitive game hub under:
 
 - `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`
 - `SEO_FINAL_COPY_PROTOCOL.md`
 
-No later generic SEO/copy phase may be required for this route after F02 terminal closeout.
+No later generic SEO/copy phase is required for this route after terminal closeout.
 
-## 2. Original implementation truth
+## 2. Original technical implementation
 
-The technical F02 implementation was already merged and green before the stricter SEO protocol was introduced.
-
-Evidence:
-
-- implementation branch: `phase/f02-game-detail`
-- final reviewed head: `a72bdcbcba0b54674adc1e8d6eb6685818e245d4`
+- branch: `phase/f02-game-detail`
+- reviewed head: `a72bdcbcba0b54674adc1e8d6eb6685818e245d4`
 - PR `#30 — F02 — Final Game Detail`
 - PR CI `34351774310` — PASS
 - open review threads: `0`
 - implementation merge SHA: `6c36325e92dacc3eb60f895afa2b553e3046087a`
 - post-merge main CI: `34352013348` — PASS
-- browser QA: PASS at `375 / 390 / 430 / 768 / 1024 / 1440`
-- browser artifact id: `10103768778`
-- artifact digest: `sha256:b287add1165d611a03e6a98fd35cb5baae6ae67d0bf2856019cfb851105176e8`
+- responsive/browser QA at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS
 
-The issue was reopened because final visible copy had engineering/system language that is not acceptable under the newer mandatory SEO/final-copy law.
+The issue was intentionally reopened after the stricter SEO/final-copy protocol became mandatory.
 
-## 3. Official documentation baseline
+## 3. SEO/final-copy recertification
 
-Reviewed and applicable:
+SEO branch: `phase/f02-seo-final-copy`
 
-- TanStack Start
-- TanStack Start selective SSR
-- TanStack Router document head
-- Google canonicalization
-- Google Breadcrumb structured data
-- Google structured-data policies
-- W3C WCAG 2.2
-- Google Search sources recorded in `SEO_FINAL_COPY_PROTOCOL.md` and `docs/OFFICIAL_FRONTEND_SOURCES.md`
+SEO evidence:
 
-## 4. Design direction
+- research: `docs/workstreams/F02_GAME_DETAIL_SEO_RESEARCH.md`
+- primary intent: find tournaments/competitions for one game in Iran and understand how to participate
+- primary/supporting topic clusters researched and recorded
+- Persian/English terminology/local intent evaluated
+- content-gap and cannibalization map recorded
+- visible engineering/system wording removed from final copy
+- H1/title/meta/headings/internal anchors finalized
+- canonical/robots/structured-data decision revalidated
+- final-copy regression checks added
 
-Game Detail is a competitive game hub, not an encyclopedia or ecommerce product page. Existing Turnoment visual DNA is preserved; BLAST, Liquipedia, Battlefy and Toornament were used only for IA/interaction/reference research.
+Final reviewed SEO branch head:
 
-## 5. SEO/search-intent research
+`0558e0ef9290c3d84429e65df06dd4e1ab1a74fa`
 
-Full evidence: `docs/workstreams/F02_GAME_DETAIL_SEO_RESEARCH.md`
+Exact-head branch Quality Gate:
 
-Primary intent:
+`34372783510` — PASS
 
-**Find tournaments/competitions for one game in Iran and understand how to participate.**
+SEO/final-copy PR:
 
-Primary topic cluster:
+- PR `#34 — F02 — Finalize Game Detail SEO and public copy`
+- PR CI `34373132933` — PASS
+- open review threads: `0`
+- expected-head merge SHA: `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`
+- post-merge main CI `34373382549` — PASS
 
-- `مسابقات {game}`
-- `تورنمنت {game}`
-- `مسابقات حضوری {game}`
-- `مسابقات {game} در ایران`
+## 4. Final information architecture
 
-Supporting cluster:
-
-- `ثبت نام مسابقات {game}`
-- `گیم نت {game}`
-- `براکت {game}`
-- `لیگ {game}`
-- `فرمت مسابقات {game}`
-- `رتبه بندی بازیکنان {game}`
-
-No search-volume, difficulty, ranking or popularity figures are invented.
-
-## 6. Final information architecture
-
-1. visible breadcrumb: Games → current game
-2. game identity + supported platforms + people-first competitive summary
+1. Games → current-game breadcrumb
+2. game identity + platforms + people-first competitive summary
 3. aggregate competition stats
 4. current/open/upcoming tournaments
 5. competition formats
-6. player ranking state/preview
+6. ranking state/preview
 7. gaming centers hosting/supporting the game
-8. descriptive internal links to tournament discovery, rankings and centers
+8. descriptive internal links to tournaments, rankings and centers
 
-## 7. Permanent contract
+## 5. Permanent contract
 
 Production mapping:
 
 `GET /api/v1/games/{slug}/`
 
-Contract domains include stable id/semantic slug, publication state, final public description, media, platforms, competition-format summaries, aggregate counts, tournament summaries, ranking projection, gaming-center summaries and SEO projection.
-
 Frontend does not authoritatively calculate publication state, tournament lifecycle, ranking eligibility, venue support or competition-format truth.
 
-## 8. SEO/final-copy implementation
+## 6. Final SEO/copy decisions
 
-Implemented on `phase/f02-seo-final-copy`:
+- page is a competitive game hub, not an encyclopedia/ecommerce product page;
+- final metadata pattern: `مسابقات {game} در ایران | تورنمنت حضوری | ایران مهر افزار`;
+- natural Persian query language includes tournaments, registration, formats, ranking and gaming centers without keyword stuffing;
+- no search volume/difficulty/ranking/popularity figures are invented;
+- `/games/$slug` owns one-game competitive intent;
+- `/games`, `/tournaments`, `/ranking`, `/centers` retain their adjacent distinct intents;
+- visible breadcrumb is retained;
+- `BreadcrumbList` JSON-LD remains intentionally omitted until stable absolute public-origin URLs are available;
+- speculative `VideoGame` rich-result markup remains omitted.
 
-- final game descriptions rewritten around tournament/registration/venue/format/ranking user intent;
-- visible engineering/system wording removed;
-- section headings changed to explicit natural Persian search-aware wording;
-- visible `Rating` label changed to `امتیاز`;
-- ambiguous internal anchors replaced with descriptive anchors;
-- no-tournament/no-ranking/no-center states rewritten as user-facing product states;
-- metadata pattern changed to `مسابقات {game} در ایران | تورنمنت حضوری | ایران مهر افزار`;
-- targeted final-copy regression checks added so prohibited engineering/system wording cannot silently return.
+## 7. Final QA evidence
 
-## 9. Cannibalization decision
+Reviewed visual/checkpoint artifact:
 
-- `/games` → browse games
-- `/games/$slug` → one-game competitive hub
-- `/tournaments` → full tournament discovery/registration
-- `/ranking` → full rankings
-- `/centers` → center discovery
+- Quality Gate `34358425752` — PASS on `dfa43a178ab11c9607720494bcb165e003ae0691`
+- 18 captures at `375 / 390 / 430 / 768 / 1024 / 1440`
+- artifact `10106806417`
+- digest `sha256:2c941652f83398f8fb6cb2f328a31b5c3995104c57c04d5a3e4996ce5d6ec5c7`
+- manual Game Detail review at `375 / 430 / 768 / 1440` — PASS
+- no clipping/horizontal overflow/broken Persian wrapping/hidden primary CTA observed
 
-Game Detail summarizes adjacent information and links to the authoritative route instead of duplicating full experiences.
+Final SEO reviewed head gate:
 
-## 10. Structured data decision
+- exact-head CI `34372783510` — PASS
+- PR CI `34373132933` — PASS
+- post-merge main CI `34373382549` — PASS
 
-- visible breadcrumb remains shipped;
-- `BreadcrumbList` JSON-LD remains intentionally omitted until stable absolute public-origin URLs are available for item URLs;
-- unsupported/speculative `VideoGame` rich-result markup remains omitted.
+All gates retained frozen install, lint, production build/route generation, typecheck, contract/final-copy tests, browser smoke, single-`<main>` invariant and responsive screenshots.
 
-## 11. Current pre-PR quality evidence
+## 8. Closeout
 
-Reviewed implementation checkpoint:
+Closeout branch:
 
-`dfa43a178ab11c9607720494bcb165e003ae0691`
+`closeout/f02-game-detail-seo-final-copy`
 
-Quality Gate:
+The route registry is promoted in this closeout to:
 
-`34358425752` — PASS
+`/games/$slug` → `FINAL_CURRENT`
 
-Evidence:
+No production code changes are part of closeout.
 
-- frozen dependency install — PASS
-- lint — PASS (`0` errors; inherited warnings only)
-- production build + route generation — PASS
-- TypeScript — PASS
-- dashboard/F01/F02 contract checks — PASS
-- F02 final-copy regression checks — PASS
-- browser smoke — PASS
-- exactly one `<main>` for F01 detail, F01 registration and F02 Game Detail — PASS
-- 18 browser captures at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS
-- artifact id: `10106806417`
-- artifact digest: `sha256:2c941652f83398f8fb6cb2f328a31b5c3995104c57c04d5a3e4996ce5d6ec5c7`
+Terminal closeout PR number, closeout merge SHA and terminal main Quality Gate are recorded in Issue #29 after they actually exist.
 
-Manual visual review of Game Detail at `375 / 430 / 768 / 1440` — PASS:
+## 9. Next workstream
 
-- no horizontal clipping/overflow observed;
-- Persian copy wraps naturally in reviewed captures;
-- hero, stats, tournament cards and primary CTAs remain visible;
-- desktop/tablet/mobile hierarchy remains consistent with Turnoment design DNA.
+After terminal F02 acceptance:
 
-## 12. Route compliance registry
-
-`docs/ROUTE_COMPLIANCE_REGISTRY.md` is the canonical route inventory.
-
-`/games/$slug` remains `IN_PROGRESS` until terminal merge + closeout evidence exists. Promotion to `FINAL_CURRENT` is reserved for the closeout branch after real post-merge evidence.
-
-## 13. Remaining terminal gates
-
-- [x] SEO research and final copy
-- [x] current implementation checkpoint Quality Gate
-- [x] representative manual visual QA
-- [ ] exact-head Quality Gate after this evidence commit
-- [ ] SEO/final-copy PR CI PASS
-- [ ] review threads = 0
-- [ ] expected-head merge
-- [ ] post-merge main CI PASS
-- [ ] closeout continuity + registry promotion to `FINAL_CURRENT`
-- [ ] closeout PR/CI/merge
-- [ ] terminal main CI PASS
-- [ ] Issue #29 close with completed evidence
-
-F02 must remain open until every unchecked item above has real evidence.
+1. My Tournaments
+2. My Matches
+3. Result Submission
+4. Dispute
+5. Challenge Hub / Detail
+6. Rivalry Detail
+7. Auth / OTP
+8. Notifications / Settings

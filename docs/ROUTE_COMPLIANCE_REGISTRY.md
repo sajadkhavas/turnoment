@@ -6,7 +6,7 @@
 
 Last audit: `2026-09-09`
 
-Audit baseline: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
+Audit baseline: `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`
 
 ## Status meanings
 
@@ -17,7 +17,7 @@ Audit baseline: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 - `NEEDS_RECERTIFICATION` — competitive/product route exists but has not passed the full current-law evidence chain.
 - `PLACEHOLDER` — intentionally incomplete or user-visible temporary state; must be rebuilt before product acceptance.
 - `REBUILD` — known product/architecture truth is wrong for Turnoment and the route must be rebuilt rather than patched as-is.
-- `LEGACY_REVIEW` — inherited non-Turnoment/ecommerce/general-site route; not an approved competitive architecture reference. Keep/remove/repurpose only through a dedicated decision/workstream.
+- `LEGACY_REVIEW` — inherited non-Turnoment/ecommerce/general-site route; not an approved competitive architecture reference.
 
 ## A. Accepted / active competitive routes
 
@@ -26,7 +26,7 @@ Audit baseline: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout merged; private `noindex,nofollow`, session/repository/runtime contract accepted. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 `DONE / MERGED / FROZEN`; architecture final, but frozen before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration route; Django Session + CSRF boundary, authoritative states, private noindex. |
-| `/games/$slug` | `IN_PROGRESS` | F02 implementation merged previously; `phase/f02-seo-final-copy` is completing current SEO/final-copy gate. |
+| `/games/$slug` | `FINAL_CURRENT` | F02 technical implementation + mandatory SEO/final-copy recertification merged. SEO PR #34 merge `21c16a95eb6dd31e2f23d8bf1b15ec50d168d3b2`; PR CI `34373132933` PASS; post-merge main CI `34373382549` PASS; final route freeze is completed by this closeout branch and terminal evidence is recorded in Issue #29. |
 
 ## B. Public competitive routes requiring current-law recertification
 
@@ -47,7 +47,7 @@ Audit baseline: `ad6daedaa900e3b79969295e6ed16e7cb8302e9f`
 | Route | Status | Required truth |
 |---|---|---|
 | `/login` | `REBUILD` | Current UI is password-oriented. Final truth is phone OTP + Django Session + CSRF; no localStorage bearer auth. |
-| `/register` | `REBUILD` | Current form requests name/email/mobile/password and has no final OTP/account flow. Must be rebuilt with the accepted P01 auth truth. |
+| `/register` | `REBUILD` | Current form requests name/email/mobile/password and has no final OTP/account flow. Must be rebuilt with accepted P01 auth truth. |
 
 ## D. Player dashboard routes that are explicit placeholders
 
@@ -112,22 +112,21 @@ These paths may later be intentionally repurposed as Turnoment corporate/content
 
 Current exact order unless continuity records a newer accepted dependency:
 
-1. finish F02 `/games/$slug` SEO/final-copy gate → `FINAL_CURRENT`;
-2. My Tournaments `/dashboard/tournaments`;
-3. My Matches `/dashboard/matches`;
-4. Result Submission;
-5. Dispute;
-6. Challenge Hub / Detail;
-7. Rivalry Detail;
-8. Auth / OTP (`/login`, `/register`);
-9. Notifications / Settings;
-10. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
-11. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
+1. My Tournaments `/dashboard/tournaments`;
+2. My Matches `/dashboard/matches`;
+3. Result Submission;
+4. Dispute;
+5. Challenge Hub / Detail;
+6. Rivalry Detail;
+7. Auth / OTP (`/login`, `/register`);
+8. Notifications / Settings;
+9. recertify remaining public competitive routes (`/`, `/tournaments`, `/games`, `/centers*`, `/ranking`, `/players/$username`, `/host`, `/rules`) in controlled workstreams;
+10. make explicit keep/remove/repurpose decisions for `LEGACY_REVIEW` routes before production delivery.
 
 ## H. Registry maintenance law
 
 - A route cannot be promoted to `FINAL_CURRENT`, `FINAL_PRIVATE`, or `FINAL_PRE_SEO` from chat memory.
-- Promotion requires merged evidence and terminal main CI.
+- Promotion requires merged evidence and terminal main CI; when a closeout commit cannot contain its own future merge SHA/terminal CI, terminal evidence is recorded in the tracking Issue and must be green before the phase is reported DONE.
 - New routes must be added when their workstream begins.
 - Placeholder/legacy routes must remain visible here until rebuilt or intentionally removed.
 - If implementation truth and this registry conflict, treat the route as **not final** until the conflict is reconciled.
