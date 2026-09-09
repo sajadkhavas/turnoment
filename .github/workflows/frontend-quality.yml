@@ -25,9 +25,9 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Lint
         run: bun run lint
+      - name: Production build and route generation
+        run: bun run build
       - name: Typecheck
         run: bun run typecheck
-      - name: Dashboard contract checks
+      - name: Contract checks
         run: bun run test
-      - name: Build
-        run: bun run build
