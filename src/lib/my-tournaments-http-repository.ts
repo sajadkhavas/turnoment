@@ -26,11 +26,16 @@ const participationSchema = z.discriminatedUnion("kind", [
   }),
 ]);
 
-const resultSchema = z.object({
-  placement: z.number().int().positive().nullable(),
-  matchesPlayed: z.number().int().nonnegative(),
-  wins: z.number().int().nonnegative(),
-});
+const resultSchema = z
+  .object({
+    placement: z.number().int().positive().nullable(),
+    matchesPlayed: z.number().int().nonnegative(),
+    wins: z.number().int().nonnegative(),
+  })
+  .refine((result) => result.wins <= result.matchesPlayed, {
+    message: "Tournament wins cannot exceed matches played.",
+    path: ["wins"],
+  });
 
 export const myTournamentItemSchema = z.object({
   tournamentId: z.string().min(1),
@@ -49,6 +54,17 @@ export const myTournamentItemSchema = z.object({
   nextAction: z.enum(["view", "check-in", "view-bracket", "view-results"]),
 });
 
+const paginationSchema = z
+  .object({
+    currentPage: z.number().int().positive(),
+    totalPages: z.number().int().positive(),
+    totalItems: z.number().int().nonnegative(),
+  })
+  .refine((pagination) => pagination.currentPage <= pagination.totalPages, {
+    message: "Current page cannot exceed total pages.",
+    path: ["currentPage"],
+  });
+
 export const myTournamentsPageSchema = z.object({
   summary: z.object({
     total: z.number().int().nonnegative(),
@@ -58,11 +74,7 @@ export const myTournamentsPageSchema = z.object({
   }),
   games: z.array(gameSchema),
   items: z.array(myTournamentItemSchema),
-  pagination: z.object({
-    currentPage: z.number().int().positive(),
-    totalPages: z.number().int().positive(),
-    totalItems: z.number().int().nonnegative(),
-  }),
+  pagination: paginationSchema,
 });
 
 export class MyTournamentsHttpError extends Error {
