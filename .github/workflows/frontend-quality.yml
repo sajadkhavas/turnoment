@@ -72,7 +72,7 @@ jobs:
           grep -a -q "جام قهرمانان کرج" /tmp/f01-detail.html
           grep -a -q "ثبت‌نام مسابقه" /tmp/f01-register.html
           grep -a -q "EA FC 26" /tmp/f02-game.html
-          grep -a -q "فرمت‌های رقابتی" /tmp/f02-game.html
+          grep -a -q "فرمت‌های مسابقات EA FC 26" /tmp/f02-game.html
 
           DETAIL_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-detail.html | wc -l | tr -d ' ')"
           REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-register.html | wc -l | tr -d ' ')"
