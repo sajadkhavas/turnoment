@@ -25,9 +25,82 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Lint
         run: bun run lint
+      - name: Production build and route generation
+        run: bun run build
       - name: Typecheck
         run: bun run typecheck
-      - name: Dashboard contract checks
+      - name: Contract checks
         run: bun run test
-      - name: Build
-        run: bun run build
+      - name: Browser smoke and responsive screenshots
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for the frontend visual gate."
+            exit 1
+          fi
+
+          mkdir -p artifacts/browser-qa
+          bun run dev -- --host 127.0.0.1 --port 4173 > /tmp/turnoment-browser-qa.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          DETAIL_URL="http://127.0.0.1:4173/tournaments/fc26-karaj-champions-cup"
+          REGISTER_URL="http://127.0.0.1:4173/tournaments/fc26-karaj-champions-cup/register"
+
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$DETAIL_URL" > /tmp/f01-detail.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-browser-qa.log || true
+            exit 1
+          fi
+
+          curl -fsS "$REGISTER_URL" > /tmp/f01-register.html
+          grep -a -q "جام قهرمانان کرج" /tmp/f01-detail.html
+          grep -a -q "ثبت‌نام مسابقه" /tmp/f01-register.html
+
+          DETAIL_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-detail.html | wc -l | tr -d ' ')"
+          REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-register.html | wc -l | tr -d ' ')"
+          test "$DETAIL_MAIN_COUNT" -eq 1
+          test "$REGISTER_MAIN_COUNT" -eq 1
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1200" \
+              --screenshot="artifacts/browser-qa/detail-${WIDTH}.png" \
+              "$DETAIL_URL" >/dev/null 2>&1
+
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1200" \
+              --screenshot="artifacts/browser-qa/register-${WIDTH}.png" \
+              "$REGISTER_URL" >/dev/null 2>&1
+          done
+
+          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 12
+      - name: Upload browser QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-qa-${{ github.sha }}
+          path: artifacts/browser-qa/*.png
+          if-no-files-found: error
+          retention-days: 14
