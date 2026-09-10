@@ -1,6 +1,6 @@
 # F07 — Final OTP Login
 
-Status: `IN PROGRESS`
+Status: `READY TO MERGE / TERMINAL CLOSEOUT PENDING`
 
 Route: `/login`
 
@@ -20,9 +20,11 @@ Lovable subsequently advanced `main` to `64c760af73f6cb30b02e0ac9464ccbdeb18922e
 
 Current-main baseline gate `34447162094` PASS.
 
-## 2. Defect being replaced
+Issue #47 is the terminal authority for F06 and records `DONE / MERGED / FROZEN — FINAL_PRIVATE`, frozen main `e87798a0463677b4da68ee28b80b5e58a91a1883`, and terminal gate `34412405721` PASS. Existing stale F06 wording in continuity/registry is a governance-document inconsistency and is intentionally repaired only in the documentation-only F07 closeout.
 
-The inherited Login screen accepts email/mobile + password, exposes remember-me and forgot-password UI, and links to the separate legacy Register form. This contradicts accepted Turnoment P01 identity truth.
+## 2. Defect replaced
+
+The inherited Login screen accepted email/mobile + password, exposed remember-me and forgot-password UI, and linked to the separate legacy Register form. This contradicted accepted Turnoment P01 identity truth.
 
 F07 removes password semantics entirely and converges Login onto the existing phone-OTP + Django Session flow.
 
@@ -43,7 +45,7 @@ Authoritative request errors include rate limiting and delivery unavailable. Aut
 
 ## 4. Permanent frontend boundary
 
-`/login → validated redirect search → SSR loader projection → typed LoginAuthRepository → runtime-validated Django/QA adapters → explicit OTP actions → UI`
+`/login → validated optional redirect search → SSR loader projection → typed LoginAuthRepository → runtime-validated Django/QA adapters → explicit OTP actions → UI`
 
 Authentication/session truth remains backend-owned.
 
@@ -53,7 +55,7 @@ The QA adapter exists only for deterministic browser/test execution and begins u
 
 ## 5. Redirect security
 
-`redirect` is normalized before use. Only a same-origin internal path beginning with one `/` is accepted. External/protocol-relative paths, backslashes/control characters, oversized values and `/login` loops fail closed to `/dashboard`.
+`redirect` is optional and normalized before use. Only a same-origin internal path beginning with one `/` is accepted. External/protocol-relative paths, backslashes/control characters, oversized values and `/login` loops fail closed to `/dashboard`.
 
 After an authoritative authenticated response, a full navigation is used so the browser proceeds with the established session cookie.
 
@@ -88,29 +90,62 @@ The page remains `noindex,nofollow` and has exactly one `<main>`.
 
 Public SERP research is not applicable to this private noindex authentication surface.
 
-## 8. Regression gate target
+## 8. Accepted QA evidence
 
-The existing seven accepted browser surfaces remain covered. F07 adds `/login?redirect=%2Fdashboard%2Fmatches` at widths:
+Accepted code/browser candidate:
+
+`0f27c9e55bcc8f96664da4910e0d74a004156295`
+
+Frontend Quality Gate:
+
+`34450606193` — PASS.
+
+Browser artifact:
+- ID `10141454114`;
+- digest `sha256:36550b87f438c41570757b73e79c83e31b9465bc8a9eabe9950bf0f6478cb4a7`;
+- 48 regression screenshots.
+
+F07 widths:
 
 `375 / 390 / 430 / 768 / 1024 / 1440`
 
-Target browser artifact count becomes `48` screenshots.
+Manual visual review:
 
-Gate additionally asserts:
-- F07 SSR copy is present;
-- `noindex,nofollow`;
-- exactly one main landmark;
-- legacy `رمز عبور` / `فراموشی رمز` copy is absent.
+`375 / 430 / 768 / 1024 / 1440` — PASS.
 
-## 9. Scope exclusions
+No horizontal overflow, clipped primary CTA, card/header collision, broken RTL hierarchy, or legacy password form affordance was observed.
 
-- no `/dashboard/challenges` or Challenge file mutation;
+Full implementation acceptance record:
+
+`docs/workstreams/F07_ACCEPTANCE_EVIDENCE.md`.
+
+## 9. Diagnostic fixes retained
+
+- redirect control-character validation was rewritten without disabling ESLint security rules;
+- `redirect` remains optional at TanStack type level while loader sanitization remains mandatory;
+- legacy-password browser assertion targets real legacy form affordances rather than valid explanatory copy.
+
+## 10. Scope exclusions
+
+- no `/dashboard/challenges` or Challenge product file mutation;
 - no Challenge Detail route;
 - no backend mutation;
 - no `/register` rebuild in F07;
 - no password/reset-password behavior;
 - no auto-closing Issue #50 before terminal frozen-main CI.
 
-## 10. Terminal chain
+## 11. Remaining terminal chain
 
-Implementation must still pass exact-head CI, PR CI/review/merge, post-implementation main CI, documentation-only closeout PR/merge and terminal post-closeout main CI before F07 can be marked `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
+The current implementation/evidence branch head must first receive an exact-head Quality Gate PASS. Then:
+1. implementation PR without auto-close syntax;
+2. PR exact-head CI + mergeability + unresolved review threads `0`;
+3. verify `main` still equals START_SHA before merge;
+4. expected-head implementation merge;
+5. post-implementation main Quality Gate PASS;
+6. documentation-only closeout branch from implementation merge;
+7. route registry/continuity/F07 closeout reconciliation, including correction of stale F06 terminal wording from authoritative Issue #47;
+8. closeout PR CI/review/merge;
+9. terminal frozen-main Quality Gate PASS;
+10. terminal evidence recorded in Issue #50 and Issue closed completed.
+
+Only after step 10 may F07 be called `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
