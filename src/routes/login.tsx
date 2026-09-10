@@ -3,12 +3,15 @@ import { OtpLoginPage } from "@/components/auth/otp-login-page";
 import { TournamentLayout } from "@/components/tournament/tournament-layout";
 import { sanitizeLoginRedirect } from "@/lib/login-auth-contract";
 
+type LoginSearch = { redirect?: string };
+
 export const Route = createFileRoute("/login")({
   ssr: true,
-  validateSearch: (search: Record<string, unknown>) => ({
-    redirect: sanitizeLoginRedirect(search.redirect),
-  }),
-  loaderDeps: ({ search }) => ({ redirectTo: search.redirect }),
+  validateSearch: (search: Record<string, unknown>): LoginSearch => {
+    if (typeof search.redirect !== "string") return {};
+    return { redirect: search.redirect };
+  },
+  loaderDeps: ({ search }) => ({ redirectTo: sanitizeLoginRedirect(search.redirect) }),
   loader: ({ deps }) => ({ redirectTo: deps.redirectTo }),
   head: () => ({
     meta: [
