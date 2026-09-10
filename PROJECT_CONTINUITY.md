@@ -13,113 +13,158 @@ Every chat/agent MUST:
 2. read `FRONTEND_PAGE_DELIVERY_PROTOCOL.md` for frontend page work;
 3. read `SEO_FINAL_COPY_PROTOCOL.md` for public/indexable pages or material public-copy changes;
 4. read `docs/ROUTE_COMPLIANCE_REGISTRY.md` before modifying/accepting an existing route;
-5. verify exact current `main` SHA before mutation;
+5. verify current `main` SHA of every repository it will change;
 6. read relevant Issue/PR/workstream evidence before repeating work;
-7. use a dedicated branch/Issue/PR;
+7. use a dedicated branch;
 8. never claim `DONE / MERGED / FROZEN` from chat memory alone;
 9. record exact branch/SHA/PR/CI/artifact evidence;
-10. preserve cross-repo backend ownership/runtime truth.
+10. update both repositories when a cross-repo contract/global product truth changes.
 
 Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `READY TO MERGE`, `MERGED / CLOSEOUT IN PROGRESS`, `DONE / MERGED / FROZEN`.
 
-## 2. Current frontend truth
+## 2. Current frontend repository truth
 
 Repository: `sajadkhavas/turnoment`
 
-F13 START_SHA / previous frozen main:
-`a058de708c755d98e7180ffee616b50cbdd8598c`
+Current frozen main / F14 START_SHA:
 
-Current implementation main / closeout base:
-`638d3de4006372e8ec2604152a7523a10f39ea63`
+`80d367fbf9da858a2c1cfb64df4714f136ff2c4c`
 
-Active workstream:
-`F13 — Player Achievements Hub`
+That SHA is terminal F13 frozen main. F13 terminal Frontend Quality Gate `34537474356` passed; artifact `10176084983` digest is `sha256:f7af1a069ed839cdec7da9bfa6b2f2ee0b8d95c8609811e24903aa2c9d01397b`; Issue #68 is CLOSED / COMPLETED.
 
-Route: `/dashboard/achievements`
+Active frontend workstream:
 
-Tracking Issue: `#68`
+`F14 — Player Teams Hub`
 
 Status:
-`MERGED / CLOSEOUT IN PROGRESS`
 
-Target route status: `FINAL_PRIVATE`
+`IN PROGRESS — IMPLEMENTATION / EXACT-HEAD QA`
 
-Runtime truth:
-`FRONTEND MOCK / BACKEND PENDING`
+Route: `/dashboard/teams`
 
-Closeout branch:
-`closeout/f13-player-achievements`
+Tracking Issue: `#71`
 
-## 3. F13 accepted implementation evidence
+Branch: `phase/f14-player-teams`
 
-- START_SHA: `a058de708c755d98e7180ffee616b50cbdd8598c`
-- implementation branch: `phase/f13-player-achievements`
-- final reviewed implementation head: `f3806f5403157a4d0ca97d51bf69ded2e9dcff53`
-- compare from START: ahead 1 / behind 0 / exactly one commit
-- changed files: 11 F13-owned files
-- dependency/version drift: `NONE`; `package.json` only appended the F13 contract spec to the test chain
-- exact-head Frontend Quality Gate: `34523505639` — PASS
-- exact-head artifact: `10170747003`
-- exact-head digest: `sha256:7978de3b3170c82a720ff729beb001b29befb77480b1242e902c5bd2a968e2fd`
-- manual visual QA at `375 / 390 / 430 / 768 / 1024 / 1440`: PASS
-- browser regression: 84 screenshots
-- implementation PR: `#69`
-- PR-context Frontend Quality Gate: `34535849148` — PASS
-- PR artifact: `10175494769`
-- PR digest: `sha256:f01d446547c653892c364b125a8e69092ce7e9bd619b773cdc5be11533a7aa9c`
-- mergeable before merge: `true`
-- unresolved review threads before merge: `0`
-- pre-merge `main` reverified exact START_SHA
-- expected-head merge used
-- implementation merge / current main: `638d3de4006372e8ec2604152a7523a10f39ea63`
-- post-implementation main Frontend Quality Gate: `34536367379` — PASS
-- post-main artifact: `10175682558`
-- post-main digest: `sha256:263e59b171afa14882c7b0e454dff927647128a33be0909147ebfd1ff25f9254`
+Target: `FINAL_PRIVATE`
 
-A first candidate `126737d26c1f18b3e2026c79c611397510fa7741` was superseded because its governance snapshot predated backend terminal closure. A transient uncommitted dependency-drift blob was rejected before branch history and never became repository truth.
+Runtime truth: `FRONTEND MOCK / BACKEND PENDING`
 
-## 4. F13 permanent product / architecture truth
+## 3. F14 permanent product / architecture truth
 
-F13 is a private read-only Achievements Hub.
+Source audit proved `/dashboard/teams` was only a `DashboardSectionPlaceholder`. No previous F14/Teams Issue, PR or branch existed.
+
+Existing accepted Turnoment truth before F14:
+- team participation uses stable `teamId` and `teamName`;
+- current-player role is `captain | member` when team participation is projected;
+- team registration context can expose member count;
+- tournament/team eligibility is backend-owned and MUST NOT be inferred by frontend.
+
+F14 narrows the previously broad “Team / Clan operations” placeholder to the evidence-supported private read surface. No unsupported mutation policy is invented.
 
 Permanent boundary:
 
-`private dashboard access policy → validated status/category/sort/page search → loader → typed PlayerAchievementsRepository → runtime-validated achievement projection → UI`
+`private dashboard access policy → validated team/page search → loader → typed PlayerTeamsRepository → runtime-validated current-player team membership/roster projection → UI`
 
 Backend/repository owns:
-- achievement definitions and stable IDs/codes;
-- category identity/membership/options;
-- status `locked | in-progress | unlocked`;
-- progress `current / target / percent` when present;
-- unlock timestamp;
-- summary, filtering, ordering and pagination.
+- whether the current player belongs to any team;
+- stable team IDs/names;
+- current-player role per membership;
+- team member counts;
+- selected-team resolution;
+- roster membership, player identity and role;
+- summary and roster pagination.
 
-Frontend owns validated URL navigation, final Persian presentation, supplied-timezone date formatting, visual progress from authoritative percentage, accessibility/responsive behavior and deterministic QA fixtures under the same contract.
+Frontend owns only validated URL navigation, final Persian presentation, role/member-list hierarchy, responsive/accessibility behavior and deterministic QA fixture under the same contract.
 
-Frontend MUST NOT derive or award achievements from Match/Tournament/Challenge history, infer status from percentage, or invent XP/coins/financial rewards/trophy rarity/social comparison/claim mutation/Achievement Detail/Challenge eligibility or rating behavior.
+Frontend MUST NOT reconstruct current membership or current role from tournament history.
 
-Private metadata remains `noindex,nofollow`. Django web auth truth remains Session + CSRF; the read adapter uses `credentials: include` and treats 401/403 as unauthenticated. No localStorage/sessionStorage bearer auth is introduced.
+F14 explicitly introduces no:
+- create/rename/delete team;
+- invite/request/accept/decline membership;
+- kick/leave/captain transfer/promotion/demotion;
+- team rating/ranking;
+- tournament/challenge eligibility inference;
+- friend/social graph;
+- Team Detail route;
+- Challenge Hub mutation.
 
-## 5. Backend F13 cross-repo alignment — terminal documentation truth
+Validated URL state:
+- `team=<stable-team-id>`; absence lets repository/server choose the authoritative default membership when one exists;
+- `page=<positive integer>`; absence = 1.
+
+Required states: loading, populated, no-membership empty, unavailable/stale team-selection reset, error/retry, unauthenticated redirect and roster pagination.
+
+## 4. F14 owned implementation scope
+
+Exactly these implementation/governance files may change before closeout:
+- `.github/workflows/frontend-quality.yml` for F14 SSR/browser/six-width evidence only;
+- `PROJECT_CONTINUITY.md`;
+- `docs/workstreams/F14_PLAYER_TEAMS.md`;
+- `package.json` only to append F14 contract test;
+- `src/components/dashboard/player-teams-page.tsx`;
+- `src/lib/player-teams-contract.spec.ts`;
+- `src/lib/player-teams-contract.ts`;
+- `src/lib/player-teams-data.ts`;
+- `src/lib/player-teams-http-repository.ts`;
+- `src/lib/player-teams-repository.ts`;
+- `src/routes/dashboard.teams.tsx`.
+
+No dependency additions/removals/version changes are permitted. No Challenge Hub/Detail files are owned.
+
+Browser regression target is 90 PNGs: previous 84 plus F14 at `375 / 390 / 430 / 768 / 1024 / 1440`.
+
+## 5. Official documentation / design audit
+
+Official sources reviewed before implementation:
+- TanStack Router Data Loading: `https://tanstack.com/router/latest/docs/guide/data-loading`;
+- TanStack Start Selective SSR: `https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr`;
+- TanStack Start Environment Variables: `https://tanstack.com/start/latest/docs/framework/react/guide/environment-variables`;
+- W3C WCAG 2.2: `https://www.w3.org/TR/WCAG22/`;
+- GitHub role-list pattern reference: `https://docs.github.com/en/account-and-profile/how-tos/organization-membership/viewing-peoples-roles-in-an-organization`.
+
+Applied implications:
+- only search inputs actually consumed by the loader are exposed through `loaderDeps`;
+- SSR remains enabled/default and the loader contains no browser-only dependency;
+- no secret is introduced into client environment state;
+- focus-visible controls, touch-safe targets, semantic headings/status text and role labels are mandatory;
+- external role/member UI informed hierarchy only; Turnoment permissions/actions were not copied.
+
+Public SEO research is not applicable because F14 is private and explicit `noindex,nofollow` remains mandatory.
+
+## 6. Backend F14 cross-repo alignment — terminal
 
 Repository: `sajadkhavas/turnoment-backend`
 
-- backend START_SHA: `e81b13a0de6936ded0879d4310eab3883a7556a6`
-- Issue `#23` — CLOSED / COMPLETED
-- docs head: `f6d54a77370b268f1d240180d5eacda86d100dd8`
-- PR `#24` — MERGED
-- PR Quality Gate `34521995236` — PASS on Python 3.12 and 3.14
-- accepted backend main: `ddfdceaa9746cc6a60ad2b5e18e630c53904f00c`
-- post-main Backend Quality Gate `34522798713` — PASS on Python 3.12 and 3.14
-- planned endpoint: `GET /api/v1/me/achievements/`
-- no Achievements Python/model/migration/serializer/view/URL runtime implementation was added
-- Backend NEXT remains exactly `P02 — Games / Catalog Foundation`
+Backend START_SHA:
+`ddfdceaa9746cc6a60ad2b5e18e630c53904f00c`
 
-Therefore runtime remains exactly `FRONTEND MOCK / BACKEND PENDING`.
+Terminal evidence:
+- Issue `#25` — CLOSED / COMPLETED;
+- branch `docs/f14-player-teams-contract`;
+- accepted docs head `26a2182f6d67a63a4a1dc9eef3daf7a030c85b50`;
+- compare from START: ahead 1 / behind 0 / exactly one commit / exactly two Markdown files;
+- PR `#26` — MERGED;
+- PR Backend Quality Gate `34539140468` — PASS on Python 3.12 and 3.14;
+- mergeable before merge `true`;
+- unresolved review threads before merge `0`;
+- pre-merge backend main exact START_SHA;
+- expected-head merge used;
+- accepted backend main `1977db3c9995336166907b9fd85ac26093e6c254`;
+- post-main Backend Quality Gate `34539329509` — PASS on Python 3.12 and 3.14;
+- live backend main reverified exact accepted SHA.
 
-## 6. Previously frozen frontend truth
+Planned future endpoint:
+`GET /api/v1/me/teams/`
 
-- F12 `/dashboard/rivalries` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `a058de708c755d98e7180ffee616b50cbdd8598c`; Issue #65 completed.
+No Teams Python/model/migration/serializer/view/URL/dependency/phase-registry implementation was added. Runtime remains exactly `FRONTEND MOCK / BACKEND PENDING`.
+
+Backend NEXT remains exactly `P02 — Games / Catalog Foundation`.
+
+## 7. Previously frozen frontend truth
+
+- F13 `/dashboard/achievements` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`; Issue #68 completed.
+- F12 `/dashboard/rivalries` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #65 completed.
 - F11 `/dashboard/settings` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #62 completed.
 - F10 `/dashboard/notifications` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #59 completed.
 - F09 `/dashboard/profile` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #56 completed.
@@ -129,43 +174,39 @@ Therefore runtime remains exactly `FRONTEND MOCK / BACKEND PENDING`.
 - F05 `/matches/$id/result` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #44 completed.
 - F04 `/dashboard/matches` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #41 completed.
 - F03 `/dashboard/tournaments` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #38 completed.
-- F02 `/games/$slug` → `DONE / MERGED / FROZEN — FINAL_CURRENT`; terminal truth in Issue #29.
+- F02 `/games/$slug` → `DONE / MERGED / FROZEN — FINAL_CURRENT`; Issue #29 contains terminal truth.
 - F01 `/tournaments/$id` → `FINAL_PRE_SEO`; `/tournaments/$id/register` → `FINAL_PRIVATE`.
 
-## 7. Remaining known work
+## 8. Remaining known work
 
-- `/dashboard/challenges` remains isolated under its own Challenge Hub workstream and MUST NOT be modified by unrelated workstreams.
-- `/dashboard/teams` remains an explicit placeholder.
-- `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` require current-law public recertification.
+- `/dashboard/challenges` remains isolated under its own Challenge Hub/Lovable acceptance chain and MUST NOT be modified by F14.
+- `/dashboard/teams` is active F14 and non-final until terminal acceptance/closeout completes.
+- public `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` require current-law recertification.
 - inherited ecommerce/service/general routes remain `LEGACY_REVIEW` until explicit keep/remove/repurpose decisions.
 
-Competitive truth retained:
+## 9. Competitive truth retained
+
 - Tournament Rating and Challenge Rating are separate;
 - Challenge unlock = 30 finalized valid matches, not wins;
 - no wager/betting/stake mechanics;
-- frontend never owns finalized result/rating/dispute/challenge truth.
+- frontend never determines finalized result/rating/dispute/challenge truth;
+- F14 introduces no new Challenge or eligibility rule.
 
-## 8. Closeout scope and exact NEXT
+## 10. Exact NEXT
 
-The F13 closeout is documentation-only and may change exactly:
-1. `PROJECT_CONTINUITY.md`
-2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`
-3. `docs/workstreams/F13_PLAYER_ACHIEVEMENTS.md`
-4. `docs/workstreams/F13_CLOSEOUT.md`
+F14 frontend:
+1. create one clean implementation commit from exact START_SHA containing only the 11 F14-owned files;
+2. compare must prove one commit ahead / zero behind, no dependency drift and no Challenge changes;
+3. require exact-head Frontend Quality Gate PASS including 90-image regression;
+4. manually inspect F14 at all six widths;
+5. open implementation PR without auto-closing Issue #71;
+6. require PR CI green, mergeable true, review threads 0 and exact pre-merge main lock;
+7. expected-head merge;
+8. require post-main Frontend Quality Gate/artifact/digest;
+9. create documentation-only closeout from exact implementation merge;
+10. require closeout PR CI + expected-head merge + terminal frozen-main Quality Gate/artifact/digest;
+11. reverify exact live main;
+12. record terminal evidence in Issue #71 and close completed;
+13. only then report `F14 — DONE / MERGED / FROZEN — FINAL_PRIVATE`.
 
-No application source, workflow, package/dependency, contract/adapter/fixture or Challenge Hub file may change in closeout.
-
-The route may be promoted non-recursively to `FINAL_PRIVATE` because implementation is merged and post-main QA is green. The workstream itself remains `MERGED / CLOSEOUT IN PROGRESS` until:
-1. closeout diff is proven exactly four Markdown files;
-2. closeout PR full CI passes;
-3. mergeable is true and review threads are zero;
-4. pre-merge main is exact implementation merge `638d3de4006372e8ec2604152a7523a10f39ea63`;
-5. closeout merges with expected-head lock;
-6. terminal frozen-main Frontend Quality Gate passes and artifact/digest are recorded;
-7. live `main` is reverified exact frozen SHA;
-8. terminal facts are written to Issue #68 and it is closed `completed`.
-
-Per the non-recursive rule, the closeout files MUST NOT try to self-record their own eventual merge SHA or terminal run. Those facts belong in Issue #68 after merge.
-
-Only after all terminal evidence exists may F13 be reported as:
-`DONE / MERGED / FROZEN — FINAL_PRIVATE`.
+Backend NEXT remains `P02 — Games / Catalog Foundation`.
