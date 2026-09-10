@@ -23,13 +23,20 @@ export function normalizeOtpCode(value: string) {
   return toAsciiDigits(value).replace(/\D/g, "").slice(0, 6);
 }
 
+function hasControlCharacter(value: string) {
+  return Array.from(value).some((char) => {
+    const code = char.charCodeAt(0);
+    return code <= 31 || code === 127;
+  });
+}
+
 export function sanitizeLoginRedirect(value: unknown) {
   const fallback = "/dashboard";
   if (typeof value !== "string") return fallback;
   const candidate = value.trim();
   if (!candidate || candidate.length > 2048) return fallback;
   if (!candidate.startsWith("/") || candidate.startsWith("//")) return fallback;
-  if (candidate.includes("\\") || /[\u0000-\u001f\u007f]/.test(candidate)) return fallback;
+  if (candidate.includes("\\") || hasControlCharacter(candidate)) return fallback;
 
   try {
     const url = new URL(candidate, "https://turnoment.invalid");
@@ -53,7 +60,7 @@ export const playerProfileSchema = z.object({
 export const authenticatedPlayerSchema = z.object({
   id: z.string().uuid(),
   phone: z.string().regex(/^\+989\d{9}$/),
-  email: z.string().email().nullable(),
+  email: z.union([z.string().email(), z.literal(""), z.null()]),
   is_active: z.literal(true),
   date_joined: z.string().min(1),
   platform_roles: z.array(z.string()),
