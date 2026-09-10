@@ -166,7 +166,7 @@ function NotificationCard({
                 className="inline-flex min-h-10 items-center gap-1.5 rounded-lg px-3.5 text-xs font-bold text-muted-foreground hover:bg-elevated hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-wait disabled:opacity-55"
               >
                 <Check className="h-3.5 w-3.5" aria-hidden="true" />
-                {pending ? "در حال ثبت..." : "خوانده شد"}
+                {pending ? "در حال ثبت..." : "این را خوانده‌ام"}
               </button>
             ) : null}
           </div>
