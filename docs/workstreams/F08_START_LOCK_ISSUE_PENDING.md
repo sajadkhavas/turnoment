@@ -1,1 +1,0 @@
-Tracking Issue creation is the next governance action for F08. This marker exists because the branch was created from the exact frozen main before implementation. It must be removed before implementation acceptance so it does not survive as redundant governance.
