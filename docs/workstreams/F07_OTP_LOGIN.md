@@ -1,151 +1,155 @@
 # F07 — Final OTP Login
 
-Status: `READY TO MERGE / TERMINAL CLOSEOUT PENDING`
+Status: `MERGED / CLOSEOUT IN PROGRESS — TARGET FINAL_PRIVATE`
 
 Route: `/login`
 
 START_SHA: `64c760af73f6cb30b02e0ac9464ccbdeb18922e5`
 
-Branch: `phase/f07-final-otp-login`
+Implementation branch: `phase/f07-final-otp-login`
 
-Tracking Issue: `#50`
+Tracking Issue: `#50` — remains open through terminal frozen-main CI
 
 Index policy: `PRIVATE / NOINDEX`
 
 ## 1. Concurrency / source lock
 
-F06 terminal frozen frontend main was `e87798a0463677b4da68ee28b80b5e58a91a1883` with terminal gate `34412405721` PASS.
+F06 terminal frozen main was `e87798a0463677b4da68ee28b80b5e58a91a1883`, terminal gate `34412405721` PASS, Issue #47 closed completed.
 
-Lovable subsequently advanced `main` to `64c760af73f6cb30b02e0ac9464ccbdeb18922e5` for Challenge Hub planning. The `/login` blob remained byte-identical across those refs (`8cf2aadeb107d0b8e2072d967175c9606d6dbbf7`). F07 therefore starts from the newer live main so Lovable history is preserved, while its scope explicitly excludes Challenge files.
+Lovable then advanced main to F07 START_SHA `64c760af73f6cb30b02e0ac9464ccbdeb18922e5` with Challenge planning history. Compare from F06 frozen main to F07 START_SHA showed only `.lovable/plan/challenge-hub-my-challenges-2026-09-10.md`; Login code remained unchanged. F07 therefore preserved the newer history while excluding Challenge product files from its implementation diff.
 
-Current-main baseline gate `34447162094` PASS.
+## 2. Final product truth
 
-Issue #47 is the terminal authority for F06 and records `DONE / MERGED / FROZEN — FINAL_PRIVATE`, frozen main `e87798a0463677b4da68ee28b80b5e58a91a1883`, and terminal gate `34412405721` PASS. Existing stale F06 wording in continuity/registry is a governance-document inconsistency and is intentionally repaired only in the documentation-only F07 closeout.
+The inherited password-oriented Login was replaced by the accepted P01 phone-OTP identity flow.
 
-## 2. Defect replaced
+Final UI does not expose password login, remember-me, forgot-password or password-reset behavior.
 
-The inherited Login screen accepted email/mobile + password, exposed remember-me and forgot-password UI, and linked to the separate legacy Register form. This contradicted accepted Turnoment P01 identity truth.
+Phone step:
+- Iran mobile normalization;
+- Persian/Arabic digit convenience;
+- LTR phone entry with `autocomplete=tel`;
+- final Persian copy and explicit validation/error feedback.
 
-F07 removes password semantics entirely and converges Login onto the existing phone-OTP + Django Session flow.
+OTP step:
+- exactly six digits;
+- `autocomplete=one-time-code`;
+- authoritative expiry/resend timing;
+- change-phone and bounded resend behavior;
+- invalid/expired/consumed/inactive/rate-limited/delivery-unavailable/validation/transport states;
+- mutation-safe disabled states and accessible status/alert messaging.
 
-## 3. Accepted backend owner / live contract
+## 3. Permanent runtime boundary
 
-Backend accepted main: `38dccbf213d5f439e56cd608e3e4ac419d5092d1`.
+`/login → validated optional redirect search → SSR loader projection → typed LoginAuthRepository → runtime-validated Django/QA adapters → explicit OTP actions → UI`
 
-P01 already implements:
+Backend accepted main:
+
+`38dccbf213d5f439e56cd608e3e4ac419d5092d1`
+
+Existing P01 runtime contract:
 - `GET /api/v1/auth/csrf/`;
 - `POST /api/v1/auth/otp/request/`;
 - `POST /api/v1/auth/otp/verify/`;
 - `GET /api/v1/auth/me/`;
 - `POST /api/v1/auth/logout/`.
 
-Request success returns authoritative `challenge_id`, `expires_in`, and `resend_after`. Verify accepts UUID challenge ID + exactly six digits, consumes/validates the OTP and establishes the Django session. A first successful login creates the User/PlayerProfile when absent.
+Authentication/session truth is backend-owned. Unsafe OTP calls use `credentials: include`, CSRF bootstrap and `X-CSRFToken`. No localStorage/sessionStorage bearer token is introduced.
 
-Authoritative request errors include rate limiting and delivery unavailable. Authoritative verify errors include invalid, expired, consumed and inactive-account states.
+The deterministic QA adapter is test/browser-QA only and implements the same repository contract as the Django adapter.
 
-## 4. Permanent frontend boundary
+## 4. Redirect/session security
 
-`/login → validated optional redirect search → SSR loader projection → typed LoginAuthRepository → runtime-validated Django/QA adapters → explicit OTP actions → UI`
+`redirect` is optional. It is sanitized before use and accepts only a safe same-origin internal path beginning with one `/`.
 
-Authentication/session truth remains backend-owned.
+External/protocol-relative URLs, backslashes, ASCII control characters, oversized values and `/login` loops fail closed to `/dashboard`.
 
-No bearer token is stored in localStorage/sessionStorage. Unsafe OTP calls bootstrap CSRF and send `X-CSRFToken` with `credentials: include`.
+After authoritative authentication, full navigation proceeds with the established Django session cookie.
 
-The QA adapter exists only for deterministic browser/test execution and begins unauthenticated; it implements the same public repository contract.
+If verify transport is ambiguous, the client checks authoritative `/auth/me/`; an already-established server session is treated as success, otherwise the same challenge/code remains retryable.
 
-## 5. Redirect security
+## 5. Accepted implementation and QA
 
-`redirect` is optional and normalized before use. Only a same-origin internal path beginning with one `/` is accepted. External/protocol-relative paths, backslashes/control characters, oversized values and `/login` loops fail closed to `/dashboard`.
-
-After an authoritative authenticated response, a full navigation is used so the browser proceeds with the established session cookie.
-
-On an ambiguous verify transport failure, the client checks `/auth/me/`; if the server already established the session, login succeeds instead of falsely reporting failure. Otherwise the same challenge/code remains retryable.
-
-## 6. Final UI/state model
-
-Phone step:
-- Iran mobile only;
-- Persian/Arabic digit convenience normalization;
-- `autocomplete=tel` and LTR phone input;
-- final Persian copy;
-- no password, remember-me or forgot-password affordance.
-
-OTP step:
-- six-digit accessible OTP control;
-- `autocomplete=one-time-code`;
-- authoritative expiry and resend timing rendered as countdowns;
-- change-phone action;
-- resend action after server timing permits;
-- invalid/expired/consumed/inactive/rate-limited/delivery-unavailable/validation/transport states;
-- buttons disabled during active mutation;
-- final status/alert feedback.
-
-The page remains `noindex,nofollow` and has exactly one `<main>`.
-
-## 7. External guidance applied
-
-- Django REST Framework SessionAuthentication / CSRF guidance for same-session unsafe requests;
-- TanStack Router validated search and auth redirect patterns;
-- WCAG input-purpose/autocomplete and labelled/error-state requirements.
-
-Public SERP research is not applicable to this private noindex authentication surface.
-
-## 8. Accepted QA evidence
-
-Accepted code/browser candidate:
+Accepted browser/code candidate:
 
 `0f27c9e55bcc8f96664da4910e0d74a004156295`
 
-Frontend Quality Gate:
-
-`34450606193` — PASS.
-
-Browser artifact:
-- ID `10141454114`;
+- Quality Gate `34450606193` — PASS;
+- artifact `10141454114`;
 - digest `sha256:36550b87f438c41570757b73e79c83e31b9465bc8a9eabe9950bf0f6478cb4a7`;
-- 48 regression screenshots.
+- 48 regression screenshots;
+- Login widths `375 / 390 / 430 / 768 / 1024 / 1440`;
+- manual visual review `375 / 430 / 768 / 1024 / 1440` — PASS.
 
-F07 widths:
+Final implementation/evidence head:
 
-`375 / 390 / 430 / 768 / 1024 / 1440`
+`5e37a7349c0f1408d9f55682d5aeca7f7318cbc8`
 
-Manual visual review:
+- exact-head push Quality Gate `34451450368` — PASS;
+- implementation PR `#51` — MERGED;
+- PR-triggered Quality Gate `34451772869` — PASS;
+- PR exact base `64c760af73f6cb30b02e0ac9464ccbdeb18922e5`;
+- PR exact head `5e37a7349c0f1408d9f55682d5aeca7f7318cbc8`;
+- mergeable before merge: true;
+- unresolved review threads before merge: 0;
+- live main immediately before merge: exact START_SHA;
+- implementation merge/main: `c522e9593c1628097ee20e2de8ba14f97c0a5334`;
+- post-implementation main Quality Gate `34452092176` — PASS, all steps.
 
-`375 / 430 / 768 / 1024 / 1440` — PASS.
-
-No horizontal overflow, clipped primary CTA, card/header collision, broken RTL hierarchy, or legacy password form affordance was observed.
-
-Full implementation acceptance record:
+Full pre-merge acceptance record:
 
 `docs/workstreams/F07_ACCEPTANCE_EVIDENCE.md`.
 
-## 9. Diagnostic fixes retained
+## 6. Diagnostic fixes retained
 
-- redirect control-character validation was rewritten without disabling ESLint security rules;
-- `redirect` remains optional at TanStack type level while loader sanitization remains mandatory;
-- legacy-password browser assertion targets real legacy form affordances rather than valid explanatory copy.
+1. Redirect control-character validation was implemented without disabling ESLint security rules.
+2. `redirect` remains optional at the TanStack type level so existing links to `/login` remain valid; loader-side sanitization remains mandatory.
+3. Browser assertions detect actual legacy password affordances rather than rejecting correct explanatory copy.
 
-## 10. Scope exclusions
+## 7. Scope integrity
 
-- no `/dashboard/challenges` or Challenge product file mutation;
-- no Challenge Detail route;
-- no backend mutation;
-- no `/register` rebuild in F07;
-- no password/reset-password behavior;
-- no auto-closing Issue #50 before terminal frozen-main CI.
+F07 implementation compare from START_SHA to final implementation head was ahead-only and changed only Login/Auth/QA/evidence files. No Challenge Hub/Detail product file was changed.
 
-## 11. Remaining terminal chain
+F07 does not rebuild `/register`. That route remains `REBUILD` until a separate accepted workstream.
 
-The current implementation/evidence branch head must first receive an exact-head Quality Gate PASS. Then:
-1. implementation PR without auto-close syntax;
-2. PR exact-head CI + mergeability + unresolved review threads `0`;
-3. verify `main` still equals START_SHA before merge;
-4. expected-head implementation merge;
-5. post-implementation main Quality Gate PASS;
-6. documentation-only closeout branch from implementation merge;
-7. route registry/continuity/F07 closeout reconciliation, including correction of stale F06 terminal wording from authoritative Issue #47;
-8. closeout PR CI/review/merge;
-9. terminal frozen-main Quality Gate PASS;
-10. terminal evidence recorded in Issue #50 and Issue closed completed.
+No backend application change was needed because P01 already owns the required auth runtime. Backend NEXT remains `P02 — Games / Catalog Foundation`.
 
-Only after step 10 may F07 be called `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
+## 8. Governance reconciliation
+
+Issue #47 is the terminal authority for F06. This closeout corrects pre-existing stale continuity/registry wording that still described F06 as closeout-in-progress despite its completed terminal chain.
+
+The F06 correction is documentation-only and does not alter F06 runtime behavior.
+
+## 9. Closeout mutation lock
+
+Closeout branch:
+
+`closeout/f07-final-otp-login`
+
+Created exactly from F07 implementation merge:
+
+`c522e9593c1628097ee20e2de8ba14f97c0a5334`
+
+Allowed closeout changes are documentation/governance only:
+- `PROJECT_CONTINUITY.md`;
+- `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
+- `docs/workstreams/F07_OTP_LOGIN.md`;
+- `docs/workstreams/F07_CLOSEOUT.md`.
+
+No source code, workflow, package, dependency, adapter, fixture, contract or runtime behavior may change in closeout.
+
+## 10. Non-recursive terminal rule
+
+This closeout cannot contain its own future merge SHA or future terminal main CI. Therefore the route is represented as `FINAL_PRIVATE` after merged implementation + green post-main QA, while the F07 workstream remains `MERGED / CLOSEOUT IN PROGRESS` until Issue #50 records the final closeout merge/frozen main SHA and terminal green main gate.
+
+## 11. Remaining terminal gate
+
+1. verify closeout diff is documentation-only;
+2. open closeout PR without auto-close syntax;
+3. require closeout PR exact-head full Frontend Quality Gate PASS;
+4. require mergeable true and unresolved review threads 0;
+5. verify main remains exact implementation merge `c522e9593c1628097ee20e2de8ba14f97c0a5334` before merge;
+6. merge with expected-head lock;
+7. require terminal post-closeout main Quality Gate PASS;
+8. verify live main exact frozen SHA;
+9. record frozen SHA, terminal CI and artifact evidence in Issue #50;
+10. close Issue #50 completed as `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
