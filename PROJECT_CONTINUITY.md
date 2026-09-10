@@ -29,59 +29,100 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `READY 
 
 Repository: `sajadkhavas/turnoment`
 
-Current accepted implementation main before F07 closeout:
+Current accepted implementation main before F08 closeout:
 
-`c522e9593c1628097ee20e2de8ba14f97c0a5334`
+`f90e5c9796e256f35a9a4f3d4fe9faf822657df7`
 
-Post-F07-implementation Frontend Quality Gate:
+Post-F08-implementation Frontend Quality Gate:
 
-`34452092176` — **PASS**
+`34456698222` — **PASS**
 
-F07 implementation PR `#51` is MERGED. F07 workstream status at this closeout checkpoint is:
+Post-main browser artifact:
+- id `10143873243`;
+- digest `sha256:557fee16eb234eb25907b57eae8567b62408627d36d94587d9f3ea39782d453d`.
 
-`MERGED / CLOSEOUT IN PROGRESS`
+F08 implementation PR `#54` is MERGED. F08 workstream status at this checkpoint is:
 
-Tracking Issue `#50` MUST remain open until the documentation-only closeout is merged and the terminal post-closeout main Quality Gate is green on the final frozen main SHA.
+`MERGED / CLOSEOUT IN PROGRESS — TARGET FINAL_PRIVATE`
 
-### F06 terminal correction
+Tracking Issue `#53` MUST remain open until documentation-only closeout is merged and terminal post-closeout main Quality Gate is green on the final frozen main SHA.
 
-Issue `#47` is the authoritative terminal record for F06 and is CLOSED / COMPLETED.
+### F08 implementation evidence
 
-F06 — Match Dispute `/matches/$id/dispute`:
-- status: `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
-- frozen main: `e87798a0463677b4da68ee28b80b5e58a91a1883`;
-- terminal Quality Gate: `34412405721` — PASS;
-- terminal artifact: `10127818534`;
-- terminal digest: `sha256:1dc29a54e8a772e616dc426ee2bbd89b918f25a24baccedf3d4595572d1bffe0`;
-- Issue `#47`: closed completed.
+F08 — OTP Account Onboarding `/register`:
+- START_SHA: `0932bef621cf22d3d7a7a95360613061e75d805f`;
+- implementation branch: `phase/f08-otp-account-onboarding`;
+- tracking Issue: `#53`;
+- accepted browser/code candidate: `96b05b7bd1e096765a475ef99d639d990d51e881`;
+- accepted browser Quality Gate: `34455519949` — PASS;
+- accepted browser artifact: `10143394620`;
+- accepted artifact digest: `sha256:8631bfd9c69135fbd76fec75eefc1410d1c5f1ff8255bf38b0d8460229391515`;
+- 54 regression screenshots; F08 widths `375 / 390 / 430 / 768 / 1024 / 1440`;
+- manual visual review `375 / 430 / 768 / 1024 / 1440` — PASS;
+- final implementation/evidence head: `78345a2e0ed84c75f48ea11d4fa2d1c489a89910`;
+- exact-head push Quality Gate: `34456032039` — PASS;
+- exact-head artifact `10143599063`;
+- exact-head digest `sha256:89cc0a426abd3308eb6604a05bdae33c132c4dbd6df6762eb3b2dd423786a7e7`;
+- implementation PR: `#54` — MERGED;
+- implementation PR Quality Gate: `34456378067` — PASS;
+- unresolved review threads before merge: `0`;
+- mergeable before merge: `true`;
+- pre-merge `main` verified exact START_SHA;
+- implementation merge used expected-head lock;
+- implementation merge/current accepted main: `f90e5c9796e256f35a9a4f3d4fe9faf822657df7`;
+- post-implementation main Quality Gate: `34456698222` — PASS;
+- post-main artifact `10143873243`;
+- post-main digest `sha256:557fee16eb234eb25907b57eae8567b62408627d36d94587d9f3ea39782d453d`;
+- closeout branch: `closeout/f08-otp-account-onboarding`, created exactly from implementation merge;
+- workstream evidence: `docs/workstreams/F08_OTP_ACCOUNT_ONBOARDING.md`;
+- acceptance evidence: `docs/workstreams/F08_ACCEPTANCE_EVIDENCE.md`;
+- closeout record: `docs/workstreams/F08_CLOSEOUT.md`.
 
-Any earlier wording describing F06 as `MERGED / CLOSEOUT IN PROGRESS` is superseded by the terminal evidence above.
+The `/register` route may be represented as `FINAL_PRIVATE` in closeout governance because implementation is merged and post-implementation main QA is green. The F08 workstream itself is NOT terminally `DONE / MERGED / FROZEN` until Issue #53 records closeout merge/frozen main SHA and terminal green main CI.
 
-### F07 implementation evidence
+### Previously frozen frontend truth
 
 F07 — Final OTP Login `/login`:
-- START_SHA: `64c760af73f6cb30b02e0ac9464ccbdeb18922e5`;
-- implementation branch: `phase/f07-final-otp-login`;
-- tracking Issue: `#50`;
-- accepted browser/code candidate: `0f27c9e55bcc8f96664da4910e0d74a004156295`;
-- accepted browser Quality Gate: `34450606193` — PASS;
-- accepted artifact: `10141454114`;
-- accepted artifact digest: `sha256:36550b87f438c41570757b73e79c83e31b9465bc8a9eabe9950bf0f6478cb4a7`;
-- 48 regression screenshots; Login widths `375 / 390 / 430 / 768 / 1024 / 1440`;
-- manual visual review `375 / 430 / 768 / 1024 / 1440` — PASS;
-- final implementation/evidence head: `5e37a7349c0f1408d9f55682d5aeca7f7318cbc8`;
-- exact-head push Quality Gate: `34451450368` — PASS;
-- implementation PR: `#51` — MERGED;
-- implementation PR Quality Gate: `34451772869` — PASS;
-- unresolved review threads before merge: `0`;
-- implementation merge/current accepted main: `c522e9593c1628097ee20e2de8ba14f97c0a5334`;
-- post-implementation main Quality Gate: `34452092176` — PASS;
-- closeout branch: `closeout/f07-final-otp-login`, created exactly from implementation merge;
-- workstream evidence: `docs/workstreams/F07_OTP_LOGIN.md`;
-- acceptance evidence: `docs/workstreams/F07_ACCEPTANCE_EVIDENCE.md`;
-- closeout record: `docs/workstreams/F07_CLOSEOUT.md`.
+- status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+- frozen main `0932bef621cf22d3d7a7a95360613061e75d805f`;
+- terminal Quality Gate `34453295788` — PASS;
+- terminal artifact `10142502630`;
+- terminal digest `sha256:5d56f426984edcb6e2bc137eb11475b70057d87accaef41c2265f4954c26a3df`;
+- Issue `#50` CLOSED / COMPLETED.
 
-F07 route may be represented as `FINAL_PRIVATE` in the closeout registry because implementation is merged and post-implementation main QA is green. The F07 workstream itself is NOT terminally `DONE / MERGED / FROZEN` until Issue #50 records the closeout merge/frozen main SHA and terminal green main CI.
+F06 — Match Dispute `/matches/$id/dispute`:
+- status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+- frozen main `e87798a0463677b4da68ee28b80b5e58a91a1883`;
+- terminal Quality Gate `34412405721` — PASS;
+- Issue `#47` CLOSED / COMPLETED.
+
+F05 — Result Submission `/matches/$id/result`:
+- status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+- frozen main `0407a925974d50b4a75af292231bacb48c66eb38`;
+- terminal Quality Gate `34407220433` — PASS;
+- Issue `#44` CLOSED / COMPLETED;
+- runtime result APIs remain `FRONTEND MOCK / BACKEND PENDING`.
+
+F04 — My Matches `/dashboard/matches`:
+- status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+- frozen main `864fe1491739b06c763be487a73a589c7e0f3609`;
+- terminal gate `34391019079` PASS;
+- Issue #41 completed.
+
+F03 — My Tournaments `/dashboard/tournaments`:
+- status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+- frozen main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`;
+- terminal gate `34386636373` PASS;
+- Issue #38 completed.
+
+F02 — Game Detail `/games/$slug`:
+- `DONE / MERGED / FROZEN — FINAL_CURRENT`;
+- terminal truth in Issue #29.
+
+F01 — Tournament Detail + Tournament Registration:
+- `/tournaments/$id` → `FINAL_PRE_SEO`;
+- `/tournaments/$id/register` → `FINAL_PRIVATE`;
+- terminal truth in Issue #8.
 
 ### Backend
 
@@ -96,11 +137,12 @@ Backend phase truth:
 - P01 → `DONE / MERGED / FROZEN`;
 - backend NEXT → `P02 — Games / Catalog Foundation`.
 
-F07 does not require a new backend phase or backend code change. It maps to the already accepted/live P01 auth contract:
+F08 does not require a new backend phase or backend code change. It maps to accepted P01 auth/account runtime:
 - `GET /api/v1/auth/csrf/`;
 - `POST /api/v1/auth/otp/request/`;
 - `POST /api/v1/auth/otp/verify/`;
 - `GET /api/v1/auth/me/`;
+- `PATCH /api/v1/auth/me/profile/`;
 - `POST /api/v1/auth/logout/`.
 
 Web auth truth remains Django Session + CSRF + OTP. Never introduce localStorage/sessionStorage bearer-token auth.
@@ -140,44 +182,44 @@ Private/noindex account/action pages do not require public SERP/keyword research
 
 ## 5. Accepted / active route truth
 
-- `/dashboard` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
-- `/dashboard/tournaments` → F03 `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; gate `34386636373` PASS; Issue #38 completed.
-- `/dashboard/matches` → F04 `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `864fe1491739b06c763be487a73a589c7e0f3609`; gate `34391019079` PASS; Issue #41 completed.
-- `/matches/$id/result` → F05 `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `0407a925974d50b4a75af292231bacb48c66eb38`; gate `34407220433` PASS; Issue #44 completed; runtime remains `FRONTEND MOCK / BACKEND PENDING` for result APIs.
-- `/matches/$id/dispute` → F06 `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `e87798a0463677b4da68ee28b80b5e58a91a1883`; gate `34412405721` PASS; Issue #47 completed; runtime remains `FRONTEND MOCK / BACKEND PENDING` for disputes APIs.
-- `/tournaments/$id/register` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
-- `/tournaments/$id` → `DONE / MERGED / FROZEN — FINAL_PRE_SEO`.
-- `/games/$slug` → F02 `DONE / MERGED / FROZEN — FINAL_CURRENT`; terminal evidence in Issue #29.
-- `/login` → route implementation accepted as `FINAL_PRIVATE`; F07 terminal workstream closeout still in progress until Issue #50 closes after terminal main CI.
+- `/dashboard` → `FINAL_PRIVATE`.
+- `/dashboard/tournaments` → F03 `FINAL_PRIVATE`.
+- `/dashboard/matches` → F04 `FINAL_PRIVATE`.
+- `/matches/$id/result` → F05 `FINAL_PRIVATE`; runtime result APIs `FRONTEND MOCK / BACKEND PENDING`.
+- `/matches/$id/dispute` → F06 `FINAL_PRIVATE`; runtime dispute APIs `FRONTEND MOCK / BACKEND PENDING`.
+- `/tournaments/$id/register` → F01 `FINAL_PRIVATE`.
+- `/tournaments/$id` → F01 `FINAL_PRE_SEO`.
+- `/games/$slug` → F02 `FINAL_CURRENT`.
+- `/login` → F07 `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
+- `/register` → F08 route implementation accepted as `FINAL_PRIVATE`; F08 terminal workstream closeout still in progress until Issue #53 closes after terminal main CI.
 
-## 6. F07 frozen product/architecture truth being closed
+Canonical inventory: `docs/ROUTE_COMPLIANCE_REGISTRY.md`.
 
-`/login` is a private `noindex,nofollow` player authentication surface with:
-- phone OTP only; no password/reset-password/remember-me flow;
+## 6. F08 frozen product/architecture truth being closed
+
+`/register` is a private `noindex,nofollow` player account-onboarding surface with:
+- phone OTP only;
 - Iran mobile normalization including Persian/Arabic digit convenience;
-- `autocomplete=tel` and `autocomplete=one-time-code` semantics;
-- typed runtime-validated `LoginAuthRepository`;
+- accessible phone and OTP input purposes;
+- typed runtime-validated `LoginAuthRepository` reused from F07;
 - deterministic QA adapter and Django HTTP adapter implementing the same permanent contract;
 - Django Session authority;
 - P01 CSRF bootstrap, `credentials: include`, `X-CSRFToken` on unsafe OTP requests;
 - no localStorage/sessionStorage bearer auth;
 - authoritative challenge expiry/resend timings and auth/error states;
-- safe optional internal return-to redirect; unsafe redirect inputs fail closed to `/dashboard`;
+- safe optional internal return-to redirect; unsafe, Login-loop and Register-loop inputs fail closed to `/dashboard`;
 - authoritative `/auth/me/` recovery check after ambiguous verify transport failure;
-- final Persian copy, accessible labels/status handling and responsive behavior;
-- exactly one `<main>`.
+- first-seen verified phone creation remains backend P01 truth;
+- existing verified phone authenticates its existing account;
+- no separate registration API, password creation, password confirmation or required-email/name registration;
+- final Persian copy, responsive behavior and exactly one `<main>`.
 
-The QA adapter is only for deterministic development/test/browser QA. Production mapping targets the existing accepted P01 auth runtime.
+## 7. Remaining known work
 
-## 7. Route registry and remaining known work
-
-Canonical inventory: `docs/ROUTE_COMPLIANCE_REGISTRY.md`.
-
-Important remaining truth:
-- `/register` remains `REBUILD`; F07 did not rebuild it.
-- `/dashboard/challenges` remains `PLACEHOLDER` in accepted route truth until an actual Challenge implementation/evidence chain lands. The existing Lovable file is planning history only.
-- `/dashboard/rivalries`, achievements, notifications, settings and teams remain explicit planned/placeholder surfaces unless a newer accepted workstream supersedes this checkpoint.
-- public competitive routes predating current law remain subject to registry recertification.
+- `/dashboard/challenges` remains a separate Challenge Hub workstream until its own accepted implementation/evidence chain lands; Lovable output alone is not acceptance.
+- `/dashboard/rivalries`, `/dashboard/achievements`, `/dashboard/notifications`, `/dashboard/settings`, `/dashboard/teams` remain placeholders unless a newer accepted workstream supersedes this checkpoint.
+- `/dashboard/profile` remains `NEEDS_RECERTIFICATION`.
+- `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` remain public competitive routes requiring current-law recertification.
 - inherited ecommerce/service/general routes remain `LEGACY_REVIEW` until explicit keep/remove/repurpose decisions.
 
 ## 8. Competitive truth retained
@@ -189,21 +231,23 @@ Important remaining truth:
 
 ## 9. Exact NEXT
 
-F07 terminal closeout NEXT:
-1. keep closeout diff documentation-only;
-2. open closeout PR without auto-closing Issue #50;
-3. require closeout PR exact-head Frontend Quality Gate PASS;
-4. require mergeable true + unresolved review threads `0`;
-5. verify `main` is still exact implementation merge `c522e9593c1628097ee20e2de8ba14f97c0a5334` before closeout merge;
-6. merge closeout with expected-head lock;
-7. require terminal post-closeout main Quality Gate PASS;
-8. record frozen main SHA + terminal CI/artifact evidence in Issue #50;
-9. close Issue #50 completed only then.
+F08 terminal closeout NEXT:
+1. keep closeout diff exactly four Markdown governance files;
+2. compare implementation merge `f90e5c9796e256f35a9a4f3d4fe9faf822657df7` → closeout head and require docs-only scope;
+3. open closeout PR without auto-close syntax;
+4. require closeout PR exact-head Frontend Quality Gate PASS;
+5. require mergeable true + unresolved review threads `0`;
+6. verify `main` is still exact implementation merge before closeout merge;
+7. merge closeout with expected-head lock;
+8. require terminal post-closeout main Quality Gate PASS;
+9. record frozen main SHA + terminal CI/artifact/digest in Issue #53;
+10. re-verify live `main` exact frozen SHA;
+11. close Issue #53 with `state_reason=completed` only then.
 
 Parallel frontend roadmap remains:
-1. Challenge Hub / Detail — Lovable planning exists, but accepted implementation must still follow the full evidence chain;
+1. Challenge Hub / Detail — own controlled acceptance chain;
 2. Rivalry Detail;
-3. auth completion for `/register`;
-4. Notifications / Settings.
+3. Notifications / Settings;
+4. recertify remaining competitive routes and resolve legacy routes.
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
