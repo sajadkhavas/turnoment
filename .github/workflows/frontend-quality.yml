@@ -61,6 +61,7 @@ jobs:
           ACCOUNT_REGISTER_URL="http://127.0.0.1:4173/register?redirect=%2Fdashboard%2Ftournaments"
           PROFILE_URL="http://127.0.0.1:4173/dashboard/profile"
           NOTIFICATIONS_URL="http://127.0.0.1:4173/dashboard/notifications"
+          SETTINGS_URL="http://127.0.0.1:4173/dashboard/settings"
 
           READY=0
           for _ in $(seq 1 30); do
@@ -85,6 +86,7 @@ jobs:
           curl -fsS "$ACCOUNT_REGISTER_URL" > /tmp/f08-account-register.html
           curl -fsS "$PROFILE_URL" > /tmp/f09-player-profile.html
           curl -fsS "$NOTIFICATIONS_URL" > /tmp/f10-player-notifications.html
+          curl -fsS "$SETTINGS_URL" > /tmp/f11-player-settings.html
           grep -a -q "جام قهرمانان کرج" /tmp/f01-detail.html
           grep -a -q "ثبت‌نام مسابقه" /tmp/f01-register.html
           grep -a -q "EA FC 26" /tmp/f02-game.html
@@ -107,6 +109,9 @@ jobs:
           grep -a -q "صندوق اعلان‌ها" /tmp/f10-player-notifications.html
           grep -a -q "خوانده‌نشده" /tmp/f10-player-notifications.html
           grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f10-player-notifications.html
+          grep -a -q "تنظیمات اعلان‌ها" /tmp/f11-player-settings.html
+          grep -a -q "اعلان‌های ضروری" /tmp/f11-player-settings.html
+          grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f11-player-settings.html
           if grep -a -q 'type="password"' /tmp/f07-login.html || grep -a -q "فراموشی رمز\|مرا به خاطر بسپار" /tmp/f07-login.html; then
             echo "Legacy password affordances must not exist on F07 Login."
             exit 1
@@ -123,6 +128,10 @@ jobs:
             echo "Implementation-stage placeholder copy must not exist on F10 Player Notifications."
             exit 1
           fi
+          if grep -a -q "به‌زودی فعال می‌شود\|پس از اتصال سرویس\|بک‌اند\|API" /tmp/f11-player-settings.html; then
+            echo "Implementation-stage engineering copy must not exist on F11 Player Settings."
+            exit 1
+          fi
 
           DETAIL_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-detail.html | wc -l | tr -d ' ')"
           REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-register.html | wc -l | tr -d ' ')"
@@ -135,6 +144,7 @@ jobs:
           ACCOUNT_REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f08-account-register.html | wc -l | tr -d ' ')"
           PROFILE_MAIN_COUNT="$(grep -a -o '<main' /tmp/f09-player-profile.html | wc -l | tr -d ' ')"
           NOTIFICATIONS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f10-player-notifications.html | wc -l | tr -d ' ')"
+          SETTINGS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f11-player-settings.html | wc -l | tr -d ' ')"
           test "$DETAIL_MAIN_COUNT" -eq 1
           test "$REGISTER_MAIN_COUNT" -eq 1
           test "$GAME_MAIN_COUNT" -eq 1
@@ -146,6 +156,7 @@ jobs:
           test "$ACCOUNT_REGISTER_MAIN_COUNT" -eq 1
           test "$PROFILE_MAIN_COUNT" -eq 1
           test "$NOTIFICATIONS_MAIN_COUNT" -eq 1
+          test "$SETTINGS_MAIN_COUNT" -eq 1
 
           for WIDTH in 375 390 430 768 1024 1440; do
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/detail-${WIDTH}.png" "$DETAIL_URL" >/dev/null 2>&1
@@ -159,9 +170,10 @@ jobs:
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1400" --screenshot="artifacts/browser-qa/account-register-${WIDTH}.png" "$ACCOUNT_REGISTER_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-profile-${WIDTH}.png" "$PROFILE_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-notifications-${WIDTH}.png" "$NOTIFICATIONS_URL" >/dev/null 2>&1
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-settings-${WIDTH}.png" "$SETTINGS_URL" >/dev/null 2>&1
           done
 
-          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 66
+          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 72
       - name: Upload browser QA evidence
         if: always()
         uses: actions/upload-artifact@v4
