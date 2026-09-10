@@ -6,11 +6,13 @@
 
 Last audit: `2026-09-10`
 
-Audit baseline: `c522e9593c1628097ee20e2de8ba14f97c0a5334` — F07 implementation merge; post-implementation main Quality Gate `34452092176` PASS.
+Audit baseline: `f90e5c9796e256f35a9a4f3d4fe9faf822657df7` — F08 implementation merge; post-implementation main Quality Gate `34456698222` PASS.
 
-F06 terminal truth is independently confirmed by completed Issue #47: frozen main `e87798a0463677b4da68ee28b80b5e58a91a1883`, terminal gate `34412405721` PASS.
+F08 `/register` is promoted non-recursively to `FINAL_PRIVATE` because implementation is merged and post-implementation main QA is green. The F08 workstream itself is not terminally `DONE / MERGED / FROZEN` until closeout merge + terminal frozen-main CI are recorded in Issue #53.
 
-F07 route is promoted non-recursively to `FINAL_PRIVATE` because implementation is merged and post-implementation main QA is green. The F07 workstream itself is not terminally `DONE / MERGED / FROZEN` until closeout merge + terminal frozen-main CI are recorded in Issue #50.
+F07 terminal truth remains frozen main `0932bef621cf22d3d7a7a95360613061e75d805f`, terminal gate `34453295788` PASS, Issue #50 CLOSED / COMPLETED.
+
+F06 terminal truth remains frozen main `e87798a0463677b4da68ee28b80b5e58a91a1883`, terminal gate `34412405721` PASS, Issue #47 CLOSED / COMPLETED.
 
 ## Status meanings
 
@@ -31,10 +33,11 @@ F07 route is promoted non-recursively to `FINAL_PRIVATE` because implementation 
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen. Main `df7c4e8c6c60c35616bba1143814b5d2a7a408c7`; gate `34386636373` PASS; Issue #38 completed. |
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen. Main `864fe1491739b06c763be487a73a589c7e0f3609`; gate `34391019079` PASS; Issue #41 completed. F06 later reconciled result/dispute navigation under full regression coverage. |
 | `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen. Main `0407a925974d50b4a75af292231bacb48c66eb38`; gate `34407220433` PASS; Issue #44 completed. Runtime result APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen. Main `e87798a0463677b4da68ee28b80b5e58a91a1883`; terminal gate `34412405721` PASS; Issue #47 CLOSED / COMPLETED. Runtime dispute APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/login` | `FINAL_PRIVATE` | F07 implementation accepted/merged. START `64c760af73f6cb30b02e0ac9464ccbdeb18922e5`; final implementation head `5e37a7349c0f1408d9f55682d5aeca7f7318cbc8`; exact-head gate `34451450368` PASS; PR #51 gate `34451772869` PASS; implementation merge `c522e9593c1628097ee20e2de8ba14f97c0a5334`; post-main gate `34452092176` PASS. Maps to existing backend P01 OTP/Session runtime. F07 terminal closeout still belongs in Issue #50. |
+| `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen. Main `e87798a0463677b4da68ee28b80b5e58a91a1883`; gate `34412405721` PASS; Issue #47 completed. Runtime dispute APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
+| `/login` | `FINAL_PRIVATE` | F07 terminally frozen. Main `0932bef621cf22d3d7a7a95360613061e75d805f`; terminal gate `34453295788` PASS; Issue #50 completed. Phone OTP, Django Session + CSRF, no password/local bearer auth. |
+| `/register` | `FINAL_PRIVATE` | F08 implementation accepted/merged. START `0932bef621cf22d3d7a7a95360613061e75d805f`; final implementation head `78345a2e0ed84c75f48ea11d4fa2d1c489a89910`; exact-head gate `34456032039` PASS; PR #54 gate `34456378067` PASS; implementation merge `f90e5c9796e256f35a9a4f3d4fe9faf822657df7`; post-main gate `34456698222` PASS. Reuses accepted P01 OTP/Session runtime. F08 terminal closeout remains Issue #53. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 terminally accepted before current strict SEO final-copy protocol. |
-| `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final registration action route; private noindex and Session/CSRF boundary accepted. |
+| `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final tournament-registration action route; private noindex and Session/CSRF boundary accepted. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical + SEO/final-copy acceptance terminally recorded in Issue #29. |
 
 ## B. Public competitive routes requiring current-law recertification
@@ -47,23 +50,21 @@ F07 route is promoted non-recursively to `FINAL_PRIVATE` because implementation 
 | `/centers` | `NEEDS_RECERTIFICATION` | Local direct data; no final repository/runtime contract/current SEO evidence. |
 | `/centers/$id` | `NEEDS_RECERTIFICATION` | Local lookups; lacks current final contract/SEO evidence and stable public identifier decision. |
 | `/ranking` | `NEEDS_RECERTIFICATION` | No dedicated final ranking contract/SSR/search-intent workstream. |
-| `/players/$username` | `NEEDS_RECERTIFICATION` | Uses local ranking data/frontend derived values; must move to authoritative player/rating contract. |
+| `/players/$username` | `NEEDS_RECERTIFICATION` | Uses local ranking data/frontend-derived values; must move to authoritative player/rating contract. |
 | `/host` | `NEEDS_RECERTIFICATION` | Public acquisition route has not passed current final page + SEO gates. |
 | `/rules` | `NEEDS_RECERTIFICATION` | Must be reconciled with authoritative ruleset/product copy and current evidence law. |
 
 ## C. Known rebuild routes
 
-| Route | Status | Required truth |
-|---|---|---|
-| `/register` | `REBUILD` | Existing name/email/mobile/password form is not final P01 identity truth. Must be rebuilt as the accepted OTP/account onboarding continuation; F07 did not rebuild it. |
+No currently accepted auth route remains in `REBUILD`: F07 accepted `/login`; F08 accepted `/register`.
 
-`/login` is no longer a rebuild route after F07 implementation acceptance.
+Any future route may enter `REBUILD` only through explicit source/product audit evidence.
 
 ## D. Player dashboard routes that remain explicit placeholders
 
 | Route | Status | Planned product workstream |
 |---|---|---|
-| `/dashboard/challenges` | `PLACEHOLDER` | Challenge Hub. A Lovable planning file exists, but planning alone is not accepted implementation evidence. |
+| `/dashboard/challenges` | `PLACEHOLDER` | Challenge Hub. Lovable planning/output does not become accepted implementation until its own controlled evidence chain lands. |
 | `/dashboard/rivalries` | `PLACEHOLDER` | Rivalry. |
 | `/dashboard/achievements` | `PLACEHOLDER` | Achievements. |
 | `/dashboard/notifications` | `PLACEHOLDER` | Notifications. |
@@ -103,38 +104,54 @@ General content requiring explicit product decision:
 
 All above remain `LEGACY_REVIEW`.
 
-## G. F07 accepted auth truth
+## G. Accepted auth/account truth
 
-`/login` permanently follows:
+### `/login` — F07
 
-`validated optional redirect → SSR loader → typed LoginAuthRepository → runtime-validated adapter → OTP UI`
+`validated optional redirect → SSR loader → typed LoginAuthRepository → runtime-validated adapter → OTP Login UI`
 
-Required invariants:
-- phone OTP only;
+### `/register` — F08
+
+`validated optional redirect → route loader/session preflight → typed LoginAuthRepository → runtime-validated P01 actions → OTP Account Onboarding UI`
+
+Shared permanent invariants:
+- Iran phone OTP only;
 - Django Session authority;
 - P01 CSRF bootstrap + `credentials: include` + `X-CSRFToken` on unsafe OTP calls;
 - no localStorage/sessionStorage bearer token;
-- safe internal return-to only; unsafe redirects fail closed;
+- safe internal return-to only; unsafe/self-loop redirects fail closed;
 - authoritative challenge/session/error state;
 - private `noindex,nofollow`;
 - final Persian copy/accessibility/responsive states;
 - QA fixture is test-only and shares the permanent production contract.
 
-## H. Compliance priorities
+F08-specific truth:
+- first-seen verified phone account creation belongs to backend P01;
+- an existing phone authenticates its existing account;
+- frontend does not decide account existence before verification;
+- no separate password/email registration contract exists.
 
-F07 terminal closeout is the immediate governance task until Issue #50 is completed.
+## H. Competitive truth retained
 
-Parallel frontend roadmap after that:
-1. Challenge Hub / Detail — planning exists, implementation still requires full controlled evidence chain;
+- Tournament Rating and Challenge Rating are separate;
+- Challenge unlock = 30 finalized valid matches, not wins;
+- no wager/betting/stake mechanics;
+- frontend never determines finalized result/rating/dispute/challenge truth.
+
+## I. Compliance priorities
+
+F08 terminal closeout is the immediate governance task until Issue #53 is completed.
+
+Parallel frontend roadmap remains:
+1. Challenge Hub / Detail — its own implementation/evidence chain;
 2. Rivalry Detail;
-3. auth completion `/register`;
-4. Notifications / Settings;
-5. recertify remaining public competitive routes;
-6. decide keep/remove/repurpose for all `LEGACY_REVIEW` routes before production delivery.
+3. Notifications / Settings;
+4. recertify remaining public competitive routes;
+5. decide keep/remove/repurpose for all `LEGACY_REVIEW` routes before production delivery.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
-## I. Registry maintenance law
+## J. Registry maintenance law
 
 - A route cannot be promoted from chat memory.
 - A merged implementation with required green post-implementation main gate may be promoted non-recursively in closeout governance.
