@@ -63,6 +63,7 @@ jobs:
           NOTIFICATIONS_URL="http://127.0.0.1:4173/dashboard/notifications"
           SETTINGS_URL="http://127.0.0.1:4173/dashboard/settings"
           RIVALRIES_URL="http://127.0.0.1:4173/dashboard/rivalries"
+          ACHIEVEMENTS_URL="http://127.0.0.1:4173/dashboard/achievements"
 
           READY=0
           for _ in $(seq 1 30); do
@@ -89,6 +90,8 @@ jobs:
           curl -fsS "$NOTIFICATIONS_URL" > /tmp/f10-player-notifications.html
           curl -fsS "$SETTINGS_URL" > /tmp/f11-player-settings.html
           curl -fsS "$RIVALRIES_URL" > /tmp/f12-player-rivalries.html
+          curl -fsS "$ACHIEVEMENTS_URL" > /tmp/f13-player-achievements.html
+
           grep -a -q "جام قهرمانان کرج" /tmp/f01-detail.html
           grep -a -q "ثبت‌نام مسابقه" /tmp/f01-register.html
           grep -a -q "EA FC 26" /tmp/f02-game.html
@@ -117,6 +120,11 @@ jobs:
           grep -a -q "رقابت‌های من" /tmp/f12-player-rivalries.html
           grep -a -q "آخرین برخورد نهایی‌شده" /tmp/f12-player-rivalries.html
           grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f12-player-rivalries.html
+          grep -a -q "دستاوردهای من" /tmp/f13-player-achievements.html
+          grep -a -q "پیشرفت ثبت‌شده" /tmp/f13-player-achievements.html
+          grep -a -q "قفل‌شده" /tmp/f13-player-achievements.html
+          grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f13-player-achievements.html
+
           if grep -a -q 'type="password"' /tmp/f07-login.html || grep -a -q "فراموشی رمز\|مرا به خاطر بسپار" /tmp/f07-login.html; then
             echo "Legacy password affordances must not exist on F07 Login."
             exit 1
@@ -141,6 +149,10 @@ jobs:
             echo "Implementation-stage engineering copy must not exist on F12 Player Rivalries."
             exit 1
           fi
+          if grep -a -q "به‌زودی فعال می‌شود\|پس از اتصال سرویس\|بک‌اند\|API\|mock\|placeholder" /tmp/f13-player-achievements.html; then
+            echo "Implementation-stage engineering copy must not exist on F13 Player Achievements."
+            exit 1
+          fi
 
           DETAIL_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-detail.html | wc -l | tr -d ' ')"
           REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-register.html | wc -l | tr -d ' ')"
@@ -155,6 +167,7 @@ jobs:
           NOTIFICATIONS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f10-player-notifications.html | wc -l | tr -d ' ')"
           SETTINGS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f11-player-settings.html | wc -l | tr -d ' ')"
           RIVALRIES_MAIN_COUNT="$(grep -a -o '<main' /tmp/f12-player-rivalries.html | wc -l | tr -d ' ')"
+          ACHIEVEMENTS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f13-player-achievements.html | wc -l | tr -d ' ')"
           test "$DETAIL_MAIN_COUNT" -eq 1
           test "$REGISTER_MAIN_COUNT" -eq 1
           test "$GAME_MAIN_COUNT" -eq 1
@@ -168,6 +181,7 @@ jobs:
           test "$NOTIFICATIONS_MAIN_COUNT" -eq 1
           test "$SETTINGS_MAIN_COUNT" -eq 1
           test "$RIVALRIES_MAIN_COUNT" -eq 1
+          test "$ACHIEVEMENTS_MAIN_COUNT" -eq 1
 
           for WIDTH in 375 390 430 768 1024 1440; do
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/detail-${WIDTH}.png" "$DETAIL_URL" >/dev/null 2>&1
@@ -183,9 +197,10 @@ jobs:
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-notifications-${WIDTH}.png" "$NOTIFICATIONS_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-settings-${WIDTH}.png" "$SETTINGS_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-rivalries-${WIDTH}.png" "$RIVALRIES_URL" >/dev/null 2>&1
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-achievements-${WIDTH}.png" "$ACHIEVEMENTS_URL" >/dev/null 2>&1
           done
 
-          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 78
+          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 84
       - name: Upload browser QA evidence
         if: always()
         uses: actions/upload-artifact@v4
