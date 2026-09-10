@@ -93,8 +93,8 @@ jobs:
           grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f06-dispute.html
           grep -a -q "ورود با کد یکبارمصرف" /tmp/f07-login.html
           grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f07-login.html
-          if grep -a -q "رمز عبور\|فراموشی رمز" /tmp/f07-login.html; then
-            echo "Legacy password copy must not exist on F07 Login."
+          if grep -a -q 'type="password"' /tmp/f07-login.html || grep -a -q "فراموشی رمز\|مرا به خاطر بسپار" /tmp/f07-login.html; then
+            echo "Legacy password affordances must not exist on F07 Login."
             exit 1
           fi
 
