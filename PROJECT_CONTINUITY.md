@@ -26,110 +26,130 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `READY 
 
 Repository: `sajadkhavas/turnoment`
 
-Current accepted implementation main / F11 closeout base:
+Current frozen main / F12 START_SHA:
 
-`ce3e241e297c86c9c8c09b2d29d774274f0ef847`
+`47ea1ed9bda2a788860f382bc75ea50a83efaaf3`
 
-F11 status at this checkpoint:
+That SHA is the terminal F11 closeout merge. Terminal Frontend Quality Gate `34482788767` passed and terminal artifact `10154473010` has digest `sha256:6a77a9dbcf8cab8cad5c3a9bd4507ef31011d56c5f4b1b69c4368a64970f412c`. F11 Issue `#62` is CLOSED / COMPLETED.
 
-`MERGED / CLOSEOUT IN PROGRESS — TARGET FINAL_PRIVATE`
+Active frontend workstream:
 
-Route: `/dashboard/settings`
+`F12 — Player Rivalries Hub`
 
-Tracking Issue: `#62` — MUST remain open until documentation-only closeout is merged and terminal frozen-main Quality Gate/artifact/digest are green and recorded.
+Status:
 
-### F11 implementation acceptance
+`IN PROGRESS — IMPLEMENTATION / EXACT-HEAD QA`
 
-- START_SHA: `4e3a347de9140636bc95e37b096f67f146ed2e70`;
-- implementation branch: `phase/f11-player-settings`;
-- clean final implementation head: `1688356421e07747b36944cf4e47038e843f2a67`;
-- clean history: exactly one commit ahead of START_SHA, zero behind;
-- exact-head Quality Gate: `34478166285` — PASS;
-- exact-head artifact: `10152549996`;
-- exact-head digest: `sha256:ffa0c5be43ddf4523756a6e7002c60591c458bd4f2b78e511cc9eeb059c3241d`;
-- manual visual acceptance: `375 / 390 / 430 / 768 / 1024 / 1440` — PASS;
-- implementation PR: `#63` — MERGED;
-- PR Quality Gate: `34478792619` — PASS;
-- PR artifact: `10152775926`;
-- PR artifact digest: `sha256:4ca1f59d2e3d73d81eefcefcc2d15b302e37ff876f987b938a3db4f5626d4f9b`;
-- mergeable immediately before merge: `true`;
-- unresolved review threads immediately before merge: `0`;
-- pre-merge `main`: exact START_SHA;
-- expected-head merge used;
-- implementation merge/current accepted main: `ce3e241e297c86c9c8c09b2d29d774274f0ef847`;
-- post-implementation main Quality Gate: `34481396073` — PASS;
-- post-main artifact: `10153880614`;
-- post-main digest: `sha256:7d100b44b2cf2ce2e25fc7d0f273d345680a5f71f0f475ccdc9f57e39f794624`;
-- live frontend `main` reverified exact implementation merge after post-main QA.
+Route: `/dashboard/rivalries`
 
-Because implementation is merged and post-main QA is green, `/dashboard/settings` may be represented as `FINAL_PRIVATE` in closeout governance. The F11 workstream itself is not terminally frozen until closeout merge + terminal main CI complete.
+Tracking Issue: `#65`
 
-## 3. F11 permanent product / architecture truth
+Implementation branch: `phase/f12-player-rivalries`
 
-Accepted bounded scope:
-- optional player notification preferences: `tournament`, `match`, `challenge`;
-- `account` and `system` remain mandatory/non-disableable;
-- preference changes are prospective and never delete or mutate existing F10 inbox items;
-- preferences never change registration, Match, Challenge, rating, result, dispute, moderation, eligibility or lifecycle truth;
-- no unrelated privacy/business settings were invented;
-- no PWA/web-push subscription implementation is claimed.
+Target: `FINAL_PRIVATE`
 
-Permanent boundary:
-
-`private dashboard access policy → loader → typed PlayerSettingsRepository → runtime-validated settings projection → UI`
-
-Permanent behavior:
-- private `noindex,nofollow` route;
-- authenticated loader with Login redirect;
-- deterministic QA fixture and Django HTTP adapter implement the same repository interface;
-- runtime validation for settings read/save payloads;
-- opaque repository/backend revision for concurrency;
-- stale writes fail closed and return authoritative current settings;
-- frontend keeps local draft intent but treats returned projection as persisted truth;
-- complete loading/load-error/pristine/dirty/reset/save-pending/success/failure/stale/session-expired states;
-- final Persian copy and accessible labeled switches/status semantics;
-- responsive acceptance at all six standard widths.
-
-Runtime truth remains exactly:
+Runtime truth:
 
 `FRONTEND MOCK / BACKEND PENDING`
 
-## 4. Backend truth
+## 3. F12 product / architecture truth
+
+Source audit found `/dashboard/rivalries` was only a `DashboardSectionPlaceholder`; no previous F12 implementation Issue/branch existed.
+
+Mandatory rules and current TanStack Router data-loading/search/head guidance plus WCAG 2.2 were reviewed. Private-page public SEO research is not applicable; explicit `noindex,nofollow`, final natural copy, accessibility and responsive QA remain mandatory.
+
+Design masters are the accepted DashboardShell and F04/F10/F11 private dashboard pages. Challenge Hub remains isolated.
+
+Bounded F12 scope:
+- private read-only Rivalries Hub;
+- rivalry row is backend/repository-defined, not frontend-generated from raw Match history;
+- one rivalry projection represents a current-player/opponent/game relationship with at least one finalized valid encounter;
+- backend/repository owns rivalry membership, stable IDs, head-to-head aggregate counts, latest finalized encounter, filters, ordering, summary and pagination;
+- only finalized valid non-void encounters contribute;
+- no friend/block/social graph behavior;
+- no wager/betting/stake behavior;
+- no Challenge eligibility/rating inference;
+- no Rivalry Detail route/link is invented in F12;
+- `/dashboard/challenges` MUST NOT be modified.
+
+Permanent boundary:
+
+`private dashboard access policy → validated game/kind/sort/page search → loader → typed PlayerRivalriesRepository → runtime-validated rivalry projection → UI`
+
+Validated URL state:
+- `kind=player|team`; absence = all;
+- `game=<stable-game-id>`;
+- `sort=recent|most-played`; absence = recent;
+- `page=<positive integer>`; absence = 1.
+
+Required states: loading, populated, all-empty, filtered-empty/reset, error/retry, unauthenticated redirect and pagination.
+
+## 4. F12 implementation scope
+
+Owned files:
+- `src/routes/dashboard.rivalries.tsx`;
+- `src/components/dashboard/player-rivalries-page.tsx`;
+- `src/lib/player-rivalries-contract.ts`;
+- `src/lib/player-rivalries-data.ts`;
+- `src/lib/player-rivalries-http-repository.ts`;
+- `src/lib/player-rivalries-repository.ts`;
+- `src/lib/player-rivalries-contract.spec.ts`;
+- `.github/workflows/frontend-quality.yml` only for F12 smoke/responsive evidence;
+- `package.json` only to append F12 contract test;
+- `docs/workstreams/F12_PLAYER_RIVALRIES.md`;
+- this continuity file.
+
+No dependency versions/additions/removals are permitted. No Challenge Hub/Detail file is owned.
+
+Browser gate target: 78 screenshots total, adding F12 at `375 / 390 / 430 / 768 / 1024 / 1440`.
+
+The first implementation candidate `93fc626fbb99cdd00b7a5e9ae71bb3eabc1611fd` successfully passed frozen install, lint, production build, typecheck and contract checks while its browser gate was running, but it is not the final accepted head because its workstream/continuity evidence still described Backend PR #22 as open. The implementation branch is being rebuilt from the same F12 START_SHA into one clean final commit with terminal backend evidence. Superseded candidate SHAs are not acceptance evidence.
+
+## 5. Backend F12 cross-repo alignment — terminal
 
 Repository: `sajadkhavas/turnoment-backend`
 
-F11 backend alignment is documentation-only and terminally complete:
-- Backend START_SHA `e1d8d86f9b44a2874afc29f4ef9de13aeb34d9f7`;
-- Issue `#19` — CLOSED / COMPLETED;
-- docs head `44aee41fac159d5095218af06b635e9caa519375`;
-- PR `#20` — MERGED;
-- PR Quality Gate `34477007799` — PASS on Python 3.12 and 3.14;
-- accepted backend main `3fb421cf2c85d94753ddf9352d8bc1134358847a`;
-- post-main Backend Quality Gate `34477753302` — PASS on Python 3.12 and 3.14;
+Backend START_SHA:
+`3fb421cf2c85d94753ddf9352d8bc1134358847a`
+
+Backend tracking:
+- Issue `#21` — CLOSED / COMPLETED;
+- branch `docs/f12-player-rivalries-contract`;
+- accepted docs head `01ebe3832642799e5a040cf3420a47819d518078`;
+- compare: ahead 1 / behind 0 / exactly one commit / exactly two Markdown files;
+- PR `#22` — MERGED;
+- PR Quality Gate `34516235451` — PASS on Python 3.12 and 3.14;
+- mergeable before merge `true`;
+- unresolved review threads before merge `0`;
+- pre-merge backend main exact START_SHA;
+- expected-head merge used;
+- accepted backend merge/main `e81b13a0de6936ded0879d4310eab3883a7556a6`;
+- post-main Backend Quality Gate `34516995711` — PASS on Python 3.12 and 3.14;
 - live backend main reverified exact accepted SHA.
 
-Planned future endpoints:
-- `GET /api/v1/me/settings/notification-preferences/`;
-- `PATCH /api/v1/me/settings/notification-preferences/`.
+Planned future endpoint:
+`GET /api/v1/me/rivalries/`
 
-No Settings Python domain/model/migration/URL implementation is accepted yet. Backend NEXT remains `P02 — Games / Catalog Foundation`.
+No Python/models/migrations/serializers/views/URLs/dependencies/phase-registry implementation was added. Runtime remains exactly `FRONTEND MOCK / BACKEND PENDING`.
 
-Web auth remains Django Session + CSRF + OTP. Never introduce localStorage/sessionStorage bearer-token authentication.
+Backend NEXT remains:
+`P02 — Games / Catalog Foundation`.
 
-## 5. Previously frozen frontend truth
+## 6. Previously frozen frontend truth
 
-- F10 `/dashboard/notifications` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `4e3a347de9140636bc95e37b096f67f146ed2e70`; terminal gate `34474656269` PASS; artifact `10151074107`; Issue #59 completed.
-- F09 `/dashboard/profile` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `34d6a576691532e4228b2eecc0fea1c1d296d58e`; Issue #56 completed.
+- F11 `/dashboard/settings` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; terminal gate `34482788767` PASS; artifact `10154473010`; Issue #62 completed.
+- F10 `/dashboard/notifications` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #59 completed.
+- F09 `/dashboard/profile` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #56 completed.
 - F08 `/register` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #53 completed.
 - F07 `/login` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #50 completed.
 - F06 `/matches/$id/dispute` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #47 completed.
 - F05 `/matches/$id/result` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #44 completed.
 - F04 `/dashboard/matches` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #41 completed.
 - F03 `/dashboard/tournaments` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #38 completed.
-- F02 `/games/$slug` → `DONE / MERGED / FROZEN — FINAL_CURRENT`; terminal truth in Issue #29.
+- F02 `/games/$slug` → `DONE / MERGED / FROZEN — FINAL_CURRENT`; Issue #29 contains terminal truth.
 - F01 `/tournaments/$id` → `FINAL_PRE_SEO`; `/tournaments/$id/register` → `FINAL_PRIVATE`.
 
-## 6. Permanent frontend law
+## 7. Permanent frontend law
 
 Every accepted page is built once as final frontend architecture:
 
@@ -137,29 +157,12 @@ Every accepted page is built once as final frontend architecture:
 
 Fixtures are development/test/visual-QA adapters only and must satisfy the same permanent contract. Frontend is not authoritative for auth/session, lifecycle, eligibility, capacity, result/winner, rating, dispute, challenge, payment/refund/settlement or moderation truth.
 
-## 7. Current route truth
-
-- `/dashboard` → `FINAL_PRIVATE`.
-- `/dashboard/tournaments` → `FINAL_PRIVATE`.
-- `/dashboard/matches` → `FINAL_PRIVATE`.
-- `/dashboard/profile` → `FINAL_PRIVATE`.
-- `/dashboard/notifications` → `FINAL_PRIVATE`.
-- `/dashboard/settings` → implementation accepted and governance-promotable to `FINAL_PRIVATE`; F11 closeout still in progress.
-- `/matches/$id/result` → `FINAL_PRIVATE`.
-- `/matches/$id/dispute` → `FINAL_PRIVATE`.
-- `/tournaments/$id/register` → `FINAL_PRIVATE`.
-- `/tournaments/$id` → `FINAL_PRE_SEO`.
-- `/games/$slug` → `FINAL_CURRENT`.
-- `/login` → `FINAL_PRIVATE`.
-- `/register` → `FINAL_PRIVATE`.
-
-Canonical inventory: `docs/ROUTE_COMPLIANCE_REGISTRY.md`.
-
 ## 8. Remaining known work
 
-- `/dashboard/challenges` remains isolated under its own Challenge Hub workstream/Lovable acceptance chain and MUST NOT be modified by F11 closeout.
-- `/dashboard/rivalries`, `/dashboard/achievements`, `/dashboard/teams` remain explicit placeholders.
-- `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` still require current-law public recertification.
+- `/dashboard/challenges` remains isolated under its own Challenge Hub workstream/Lovable acceptance chain.
+- `/dashboard/rivalries` is active F12 and is not final until the terminal acceptance/closeout chain completes.
+- `/dashboard/achievements`, `/dashboard/teams` remain explicit placeholders.
+- `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` require current-law public recertification.
 - inherited ecommerce/service/general routes remain `LEGACY_REVIEW` until explicit keep/remove/repurpose decisions.
 
 ## 9. Competitive truth retained
@@ -171,17 +174,19 @@ Canonical inventory: `docs/ROUTE_COMPLIANCE_REGISTRY.md`.
 
 ## 10. Exact NEXT
 
-F11 closeout NEXT:
-1. closeout branch `closeout/f11-player-settings` from exact implementation merge `ce3e241e297c86c9c8c09b2d29d774274f0ef847`;
-2. exactly one docs-only closeout commit changing exactly four Markdown files;
-3. compare must prove ahead 1 / behind 0 and only those four files;
-4. closeout PR must contain no auto-close syntax and must pass full Frontend Quality Gate;
-5. require mergeable true, unresolved review threads 0, and pre-merge main exact implementation merge;
-6. expected-head closeout merge;
-7. terminal post-closeout main Quality Gate/artifact/digest on exact frozen main;
-8. live main exact reverify;
-9. only then update Issue #62 with terminal evidence and close `completed`.
-
-After F11 terminal freeze, Challenge Hub remains isolated; the next independent dashboard placeholder may be `/dashboard/rivalries` unless product priority explicitly selects another controlled workstream.
+F12 frontend:
+1. publish one clean final implementation commit from exact START_SHA with terminal backend evidence;
+2. compare must prove only F12-owned files, one commit ahead/zero behind, and no dependency drift;
+3. require exact-head Frontend Quality Gate PASS including F12 contract test and 78-image browser gate;
+4. manually inspect F12 at all six standard widths;
+5. open frontend implementation PR without auto-closing Issue #65;
+6. require PR CI green, mergeable true, review threads 0 and exact pre-merge main lock;
+7. expected-head implementation merge;
+8. require post-main Frontend Quality Gate/artifact/digest;
+9. create documentation-only closeout from exact implementation merge;
+10. require closeout PR CI, expected-head merge and terminal frozen-main Quality Gate/artifact/digest;
+11. reverify exact live main;
+12. only then record terminal evidence in Issue #65 and close completed;
+13. only then report `F12 — DONE / MERGED / FROZEN — FINAL_PRIVATE`.
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
