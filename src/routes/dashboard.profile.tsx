@@ -19,7 +19,7 @@ export const Route = createFileRoute("/dashboard/profile")({
   },
   head: () => ({
     meta: [
-      { title: "پروفایل بازیکن — تورنومنت" },
+      { title: "پروفایل بازیکن — ایران مهر افزار" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
