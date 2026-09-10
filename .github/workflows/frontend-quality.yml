@@ -59,6 +59,7 @@ jobs:
           DISPUTE_URL="http://127.0.0.1:4173/matches/m-206/dispute"
           LOGIN_URL="http://127.0.0.1:4173/login?redirect=%2Fdashboard%2Fmatches"
           ACCOUNT_REGISTER_URL="http://127.0.0.1:4173/register?redirect=%2Fdashboard%2Ftournaments"
+          PROFILE_URL="http://127.0.0.1:4173/dashboard/profile"
 
           READY=0
           for _ in $(seq 1 30); do
@@ -81,6 +82,7 @@ jobs:
           curl -fsS "$DISPUTE_URL" > /tmp/f06-dispute.html
           curl -fsS "$LOGIN_URL" > /tmp/f07-login.html
           curl -fsS "$ACCOUNT_REGISTER_URL" > /tmp/f08-account-register.html
+          curl -fsS "$PROFILE_URL" > /tmp/f09-player-profile.html
           grep -a -q "جام قهرمانان کرج" /tmp/f01-detail.html
           grep -a -q "ثبت‌نام مسابقه" /tmp/f01-register.html
           grep -a -q "EA FC 26" /tmp/f02-game.html
@@ -97,12 +99,19 @@ jobs:
           grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f07-login.html
           grep -a -q "ساخت حساب با شماره موبایل" /tmp/f08-account-register.html
           grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f08-account-register.html
+          grep -a -q "پروفایل بازیکن" /tmp/f09-player-profile.html
+          grep -a -q "اطلاعات قابل ویرایش" /tmp/f09-player-profile.html
+          grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f09-player-profile.html
           if grep -a -q 'type="password"' /tmp/f07-login.html || grep -a -q "فراموشی رمز\|مرا به خاطر بسپار" /tmp/f07-login.html; then
             echo "Legacy password affordances must not exist on F07 Login."
             exit 1
           fi
           if grep -a -q 'type="password"\|type="email"\|name="email"' /tmp/f08-account-register.html; then
             echo "Legacy password/email registration inputs must not exist on F08 Account Onboarding."
+            exit 1
+          fi
+          if grep -a -q 'type="password"\|تغییر رمز عبور\|تاریخ تولد' /tmp/f09-player-profile.html; then
+            echo "Unsupported legacy identity/profile fields must not exist on F09 Player Profile."
             exit 1
           fi
 
@@ -115,6 +124,7 @@ jobs:
           DISPUTE_MAIN_COUNT="$(grep -a -o '<main' /tmp/f06-dispute.html | wc -l | tr -d ' ')"
           LOGIN_MAIN_COUNT="$(grep -a -o '<main' /tmp/f07-login.html | wc -l | tr -d ' ')"
           ACCOUNT_REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f08-account-register.html | wc -l | tr -d ' ')"
+          PROFILE_MAIN_COUNT="$(grep -a -o '<main' /tmp/f09-player-profile.html | wc -l | tr -d ' ')"
           test "$DETAIL_MAIN_COUNT" -eq 1
           test "$REGISTER_MAIN_COUNT" -eq 1
           test "$GAME_MAIN_COUNT" -eq 1
@@ -124,6 +134,7 @@ jobs:
           test "$DISPUTE_MAIN_COUNT" -eq 1
           test "$LOGIN_MAIN_COUNT" -eq 1
           test "$ACCOUNT_REGISTER_MAIN_COUNT" -eq 1
+          test "$PROFILE_MAIN_COUNT" -eq 1
 
           for WIDTH in 375 390 430 768 1024 1440; do
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/detail-${WIDTH}.png" "$DETAIL_URL" >/dev/null 2>&1
@@ -135,9 +146,10 @@ jobs:
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/dispute-${WIDTH}.png" "$DISPUTE_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/login-${WIDTH}.png" "$LOGIN_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1400" --screenshot="artifacts/browser-qa/account-register-${WIDTH}.png" "$ACCOUNT_REGISTER_URL" >/dev/null 2>&1
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-profile-${WIDTH}.png" "$PROFILE_URL" >/dev/null 2>&1
           done
 
-          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 54
+          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 60
       - name: Upload browser QA evidence
         if: always()
         uses: actions/upload-artifact@v4
