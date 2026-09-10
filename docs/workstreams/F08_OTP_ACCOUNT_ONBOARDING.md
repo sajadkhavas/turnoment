@@ -8,6 +8,8 @@ START_SHA: `0932bef621cf22d3d7a7a95360613061e75d805f`
 
 Branch: `phase/f08-otp-account-onboarding`
 
+Tracking Issue: `#53`
+
 Index policy: `PRIVATE / NOINDEX`
 
 ## 1. Source / concurrency lock
@@ -17,6 +19,8 @@ F07 is terminally frozen at `0932bef621cf22d3d7a7a95360613061e75d805f`, terminal
 F08 starts exactly from that frozen main. Challenge Hub remains a separate Lovable workstream and F08 MUST NOT modify Challenge product files.
 
 The inherited `/register` route is `REBUILD`: name/email/mobile/password scaffolding contradicts the accepted P01 identity contract.
+
+No overlapping `register` / F08 branch or Issue was found before creation. Existing F07 branches are frozen historical work only.
 
 ## 2. Backend P01 truth
 
@@ -110,4 +114,4 @@ F08 cannot become `DONE / MERGED / FROZEN` until:
 8. closeout PR CI PASS and review threads 0;
 9. expected-head closeout merge;
 10. terminal frozen-main Quality Gate PASS;
-11. terminal evidence recorded in the tracking Issue and Issue CLOSED / COMPLETED.
+11. terminal evidence recorded in Issue #53 and Issue CLOSED / COMPLETED.
