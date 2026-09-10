@@ -14,13 +14,15 @@ export const playerProfileLoadResultSchema = z.discriminatedUnion("state", [
 
 export type PlayerProfileLoadResult = z.infer<typeof playerProfileLoadResultSchema>;
 
-export const playerProfileUpdateCommandSchema = z.object({
-  gamer_tag: z.string().regex(gamerTagPattern).nullable(),
-  display_name: z.string().max(80),
-  city: z.string().max(80),
-  bio: z.string().max(280),
-  interview_opt_in: z.boolean(),
-});
+export const playerProfileUpdateCommandSchema = z
+  .object({
+    gamer_tag: z.string().regex(gamerTagPattern).nullable(),
+    display_name: z.string().max(80),
+    city: z.string().max(80),
+    bio: z.string().max(280),
+    interview_opt_in: z.boolean(),
+  })
+  .strict();
 
 export type PlayerProfileUpdateCommand = z.infer<typeof playerProfileUpdateCommandSchema>;
 
