@@ -4,13 +4,13 @@
 >
 > Every chat/agent modifying an existing route MUST read this registry together with `PROJECT_CONTINUITY.md`, `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`, and when applicable `SEO_FINAL_COPY_PROTOCOL.md`.
 
-Last audit: `2026-09-10`
+Last audit: `2026-09-11`
 
-Audit baseline: `0188324915160f5c6b751b831d394228688cc3f2` — F12 implementation merge; post-implementation main Frontend Quality Gate `34518845218` PASS; artifact `10168931114`; digest `sha256:250fa6ba63d84efc93af8e82bd2259f3b32c9cffb45d09f35285fc6e315fbf60`.
+Audit baseline: `638d3de4006372e8ec2604152a7523a10f39ea63` — F13 implementation merge; post-implementation main Frontend Quality Gate `34536367379` PASS; artifact `10175682558`; digest `sha256:263e59b171afa14882c7b0e454dff927647128a33be0909147ebfd1ff25f9254`.
 
-F12 `/dashboard/rivalries` is promoted non-recursively to `FINAL_PRIVATE` because its implementation is merged and post-implementation main QA is green. The F12 workstream itself is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout merge + terminal frozen-main CI/artifact/digest are recorded in Issue #65.
+F13 `/dashboard/achievements` is promoted non-recursively to `FINAL_PRIVATE` because its implementation is merged and required post-implementation main QA is green. The F13 workstream itself is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout merge plus terminal frozen-main CI/artifact/digest are recorded in Issue #68.
 
-F11 terminal truth: frozen main `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; terminal gate `34482788767` PASS; artifact `10154473010`; digest `sha256:6a77a9dbcf8cab8cad5c3a9bd4507ef31011d56c5f4b1b69c4368a64970f412c`; Issue #62 CLOSED / COMPLETED.
+F12 terminal truth: frozen main `a058de708c755d98e7180ffee616b50cbdd8598c`; terminal gate `34520157521` PASS; artifact `10169424034`; digest `sha256:167894d704c2c548f6cf40102bb67f2f584afeff09f8bff96b20a837828911e4`; Issue #65 CLOSED / COMPLETED.
 
 ## Status meanings
 
@@ -32,8 +32,9 @@ F11 terminal truth: frozen main `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; term
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen; Issue #41 completed. |
 | `/dashboard/profile` | `FINAL_PRIVATE` | F09 terminally frozen; Issue #56 completed. |
 | `/dashboard/notifications` | `FINAL_PRIVATE` | F10 terminally frozen; Issue #59 completed. Runtime notification APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/settings` | `FINAL_PRIVATE` | F11 terminally frozen. Frozen main `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; terminal gate `34482788767` PASS; artifact `10154473010`; Issue #62 completed. Runtime settings APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 implementation accepted/merged. START `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; clean head `27fa3bc599923e8e9687197bd9e153748ebe565b`; exact-head gate `34517344762` PASS; PR #66 gate `34517973585` PASS; implementation merge `0188324915160f5c6b751b831d394228688cc3f2`; post-main gate `34518845218` PASS; artifact `10168931114`, digest `sha256:250fa6ba63d84efc93af8e82bd2259f3b32c9cffb45d09f35285fc6e315fbf60`. Runtime Rivalries API remains `FRONTEND MOCK / BACKEND PENDING`. F12 terminal closeout remains Issue #65. |
+| `/dashboard/settings` | `FINAL_PRIVATE` | F11 terminally frozen; Issue #62 completed. Runtime settings APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 terminally frozen; frozen main `a058de708c755d98e7180ffee616b50cbdd8598c`; terminal gate `34520157521` PASS; artifact `10169424034`; Issue #65 completed. Runtime Rivalries API remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/achievements` | `FINAL_PRIVATE` | F13 implementation accepted/merged. START `a058de708c755d98e7180ffee616b50cbdd8598c`; final reviewed head `f3806f5403157a4d0ca97d51bf69ded2e9dcff53`; exact-head gate `34523505639` PASS; PR #69 gate `34535849148` PASS; implementation merge `638d3de4006372e8ec2604152a7523a10f39ea63`; post-main gate `34536367379` PASS; artifact `10175682558`; digest `sha256:263e59b171afa14882c7b0e454dff927647128a33be0909147ebfd1ff25f9254`. Runtime Achievements API remains `FRONTEND MOCK / BACKEND PENDING`. F13 terminal closeout remains Issue #68. |
 | `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen; Issue #44 completed. Runtime result APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen; Issue #47 completed. Runtime dispute APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/login` | `FINAL_PRIVATE` | F07 terminally frozen; Phone OTP, Django Session + CSRF, no password/local bearer auth. |
@@ -65,10 +66,9 @@ No currently accepted auth/account route remains in `REBUILD`.
 | Route | Status | Planned product workstream |
 |---|---|---|
 | `/dashboard/challenges` | `PLACEHOLDER` | Challenge Hub. Lovable planning/output does not become accepted implementation until its own controlled evidence chain lands. |
-| `/dashboard/achievements` | `PLACEHOLDER` | Achievements. |
 | `/dashboard/teams` | `PLACEHOLDER` | Team / Clan operations. |
 
-`/dashboard/rivalries` is no longer a placeholder; it is listed in section A as `FINAL_PRIVATE`.
+`/dashboard/rivalries` and `/dashboard/achievements` are no longer placeholders; they are listed in section A as `FINAL_PRIVATE`.
 
 ## E. Private dashboard routes requiring recertification
 
@@ -121,6 +121,9 @@ All above remain `LEGACY_REVIEW`.
 ### `/dashboard/rivalries` — F12
 `private dashboard access policy → validated game/kind/sort/page search → loader → typed PlayerRivalriesRepository → runtime-validated rivalry projection → Rivalries UI`
 
+### `/dashboard/achievements` — F13
+`private dashboard access policy → validated status/category/sort/page search → loader → typed PlayerAchievementsRepository → runtime-validated achievement projection → Achievements UI`
+
 Shared permanent invariants:
 - Django Session authority;
 - P01 CSRF bootstrap + `credentials: include` + `X-CSRFToken` on unsafe calls;
@@ -129,27 +132,13 @@ Shared permanent invariants:
 - final Persian copy/accessibility/responsive states;
 - QA fixture is test-only and shares the permanent production contract.
 
-F10-specific truth:
-- backend owns recipient/list/content/read/order/summary/pagination truth;
-- mark-one and mark-all are explicit actions;
-- frontend does not optimistically own unread count;
-- typed targets only; arbitrary href/open redirect is rejected;
-- Challenge Detail URL is not invented.
-
-F11-specific truth:
-- only `tournament`, `match`, `challenge` are writable optional preferences;
-- `account` and `system` remain required/non-disableable;
-- settings revision is opaque and stale writes fail closed;
-- preference changes do not mutate existing inbox items or competitive truth;
-- backend docs alignment is terminally accepted but runtime settings domain is not implemented yet.
-
-F12-specific truth:
-- rivalry membership/identity/head-to-head/latest encounter/summary/filter/sort/pagination truth is backend/repository-owned;
-- only finalized valid non-void encounters contribute;
-- frontend never groups raw Match history into authoritative Rivalry rows;
-- no Rivalry Detail route/link is introduced by F12;
-- no friend/block/social graph, wager/stake or Challenge eligibility/rating behavior is introduced;
-- backend docs alignment is terminally accepted, but runtime Rivalries domain/endpoint is not implemented yet.
+F13-specific truth:
+- achievement definitions/IDs/codes/categories/status/progress/unlock time/summary/filter/sort/pagination are backend/repository-owned;
+- frontend never derives or awards an achievement from raw competitive history or infers status from progress;
+- status is `locked | in-progress | unlocked` and progress is server-projected when present;
+- no XP/coin/financial reward/trophy rarity/social comparison/claim mutation/Achievement Detail behavior is introduced;
+- `/dashboard/challenges` remains isolated;
+- backend docs alignment is terminally accepted, but runtime Achievements domain/endpoint is not implemented yet.
 
 ## H. Competitive truth retained
 
@@ -160,11 +149,11 @@ F12-specific truth:
 
 ## I. Compliance priorities
 
-F12 documentation-only closeout is the immediate governance task until Issue #65 is completed.
+F13 documentation-only closeout is the immediate governance task until Issue #68 is completed.
 
-Challenge Hub / Detail remains isolated under its own Lovable + acceptance chain and must not be modified by unrelated workstreams.
+Challenge Hub remains isolated under its own Lovable + acceptance chain and must not be modified by unrelated workstreams.
 
-After F12 terminal freeze, the next independent placeholder may be `/dashboard/achievements` or `/dashboard/teams` unless product priority explicitly selects another controlled workstream. Public competitive routes still require current-law recertification and `LEGACY_REVIEW` routes require explicit keep/remove/repurpose decisions before production delivery.
+After F13 terminal freeze, `/dashboard/teams` is the next independent dashboard placeholder unless product priority explicitly selects another controlled workstream. Public competitive routes still require current-law recertification and `LEGACY_REVIEW` routes require explicit keep/remove/repurpose decisions before production delivery.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
