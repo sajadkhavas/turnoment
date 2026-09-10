@@ -6,11 +6,11 @@
 
 Last audit: `2026-09-10`
 
-Audit baseline: `ce3e241e297c86c9c8c09b2d29d774274f0ef847` — F11 implementation merge; post-implementation main Quality Gate `34481396073` PASS; artifact `10153880614`; digest `sha256:7d100b44b2cf2ce2e25fc7d0f273d345680a5f71f0f475ccdc9f57e39f794624`.
+Audit baseline: `0188324915160f5c6b751b831d394228688cc3f2` — F12 implementation merge; post-implementation main Frontend Quality Gate `34518845218` PASS; artifact `10168931114`; digest `sha256:250fa6ba63d84efc93af8e82bd2259f3b32c9cffb45d09f35285fc6e315fbf60`.
 
-F11 `/dashboard/settings` is promoted non-recursively to `FINAL_PRIVATE` because implementation is merged and post-implementation main QA is green. The F11 workstream itself is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout merge + terminal frozen-main CI/artifact are recorded in Issue #62.
+F12 `/dashboard/rivalries` is promoted non-recursively to `FINAL_PRIVATE` because its implementation is merged and post-implementation main QA is green. The F12 workstream itself is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout merge + terminal frozen-main CI/artifact/digest are recorded in Issue #65.
 
-F10 terminal truth: frozen main `4e3a347de9140636bc95e37b096f67f146ed2e70`; terminal gate `34474656269` PASS; artifact `10151074107`; Issue #59 CLOSED / COMPLETED.
+F11 terminal truth: frozen main `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; terminal gate `34482788767` PASS; artifact `10154473010`; digest `sha256:6a77a9dbcf8cab8cad5c3a9bd4507ef31011d56c5f4b1b69c4368a64970f412c`; Issue #62 CLOSED / COMPLETED.
 
 ## Status meanings
 
@@ -30,9 +30,10 @@ F10 terminal truth: frozen main `4e3a347de9140636bc95e37b096f67f146ed2e70`; term
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout accepted; private session/repository/runtime contract. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen; Issue #38 completed. |
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen; Issue #41 completed. |
-| `/dashboard/profile` | `FINAL_PRIVATE` | F09 terminally frozen; frozen main `34d6a576691532e4228b2eecc0fea1c1d296d58e`; Issue #56 completed. |
-| `/dashboard/notifications` | `FINAL_PRIVATE` | F10 terminally frozen. Frozen main `4e3a347de9140636bc95e37b096f67f146ed2e70`; terminal gate `34474656269` PASS; artifact `10151074107`; Issue #59 completed. Runtime notification APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/settings` | `FINAL_PRIVATE` | F11 implementation accepted/merged. START `4e3a347de9140636bc95e37b096f67f146ed2e70`; clean head `1688356421e07747b36944cf4e47038e843f2a67`; exact-head gate `34478166285` PASS; PR #63 gate `34478792619` PASS; implementation merge `ce3e241e297c86c9c8c09b2d29d774274f0ef847`; post-main gate `34481396073` PASS; artifact `10153880614`. Runtime settings APIs remain `FRONTEND MOCK / BACKEND PENDING`. F11 terminal closeout remains Issue #62. |
+| `/dashboard/profile` | `FINAL_PRIVATE` | F09 terminally frozen; Issue #56 completed. |
+| `/dashboard/notifications` | `FINAL_PRIVATE` | F10 terminally frozen; Issue #59 completed. Runtime notification APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/settings` | `FINAL_PRIVATE` | F11 terminally frozen. Frozen main `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; terminal gate `34482788767` PASS; artifact `10154473010`; Issue #62 completed. Runtime settings APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 implementation accepted/merged. START `47ea1ed9bda2a788860f382bc75ea50a83efaaf3`; clean head `27fa3bc599923e8e9687197bd9e153748ebe565b`; exact-head gate `34517344762` PASS; PR #66 gate `34517973585` PASS; implementation merge `0188324915160f5c6b751b831d394228688cc3f2`; post-main gate `34518845218` PASS; artifact `10168931114`, digest `sha256:250fa6ba63d84efc93af8e82bd2259f3b32c9cffb45d09f35285fc6e315fbf60`. Runtime Rivalries API remains `FRONTEND MOCK / BACKEND PENDING`. F12 terminal closeout remains Issue #65. |
 | `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen; Issue #44 completed. Runtime result APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen; Issue #47 completed. Runtime dispute APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/login` | `FINAL_PRIVATE` | F07 terminally frozen; Phone OTP, Django Session + CSRF, no password/local bearer auth. |
@@ -64,9 +65,10 @@ No currently accepted auth/account route remains in `REBUILD`.
 | Route | Status | Planned product workstream |
 |---|---|---|
 | `/dashboard/challenges` | `PLACEHOLDER` | Challenge Hub. Lovable planning/output does not become accepted implementation until its own controlled evidence chain lands. |
-| `/dashboard/rivalries` | `PLACEHOLDER` | Rivalry. |
 | `/dashboard/achievements` | `PLACEHOLDER` | Achievements. |
 | `/dashboard/teams` | `PLACEHOLDER` | Team / Clan operations. |
+
+`/dashboard/rivalries` is no longer a placeholder; it is listed in section A as `FINAL_PRIVATE`.
 
 ## E. Private dashboard routes requiring recertification
 
@@ -116,6 +118,9 @@ All above remain `LEGACY_REVIEW`.
 ### `/dashboard/settings` — F11
 `private dashboard access policy → loader → typed PlayerSettingsRepository → runtime-validated settings projection → Settings UI`
 
+### `/dashboard/rivalries` — F12
+`private dashboard access policy → validated game/kind/sort/page search → loader → typed PlayerRivalriesRepository → runtime-validated rivalry projection → Rivalries UI`
+
 Shared permanent invariants:
 - Django Session authority;
 - P01 CSRF bootstrap + `credentials: include` + `X-CSRFToken` on unsafe calls;
@@ -138,6 +143,14 @@ F11-specific truth:
 - preference changes do not mutate existing inbox items or competitive truth;
 - backend docs alignment is terminally accepted but runtime settings domain is not implemented yet.
 
+F12-specific truth:
+- rivalry membership/identity/head-to-head/latest encounter/summary/filter/sort/pagination truth is backend/repository-owned;
+- only finalized valid non-void encounters contribute;
+- frontend never groups raw Match history into authoritative Rivalry rows;
+- no Rivalry Detail route/link is introduced by F12;
+- no friend/block/social graph, wager/stake or Challenge eligibility/rating behavior is introduced;
+- backend docs alignment is terminally accepted, but runtime Rivalries domain/endpoint is not implemented yet.
+
 ## H. Competitive truth retained
 
 - Tournament Rating and Challenge Rating are separate;
@@ -147,11 +160,11 @@ F11-specific truth:
 
 ## I. Compliance priorities
 
-F11 terminal closeout is the immediate governance task until Issue #62 is completed.
+F12 documentation-only closeout is the immediate governance task until Issue #65 is completed.
 
 Challenge Hub / Detail remains isolated under its own Lovable + acceptance chain and must not be modified by unrelated workstreams.
 
-After F11 terminal freeze, continue with the next explicitly selected independent placeholder such as Rivalry/Achievements/Teams, or resume Challenge Hub only through its owning workstream. Then recertify remaining public competitive routes and decide keep/remove/repurpose for `LEGACY_REVIEW` routes before production delivery.
+After F12 terminal freeze, the next independent placeholder may be `/dashboard/achievements` or `/dashboard/teams` unless product priority explicitly selects another controlled workstream. Public competitive routes still require current-law recertification and `LEGACY_REVIEW` routes require explicit keep/remove/repurpose decisions before production delivery.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
