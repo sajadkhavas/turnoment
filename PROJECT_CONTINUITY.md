@@ -29,58 +29,68 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `READY 
 
 Repository: `sajadkhavas/turnoment`
 
-Current accepted implementation main before F08 closeout:
+Current accepted implementation main / F09 closeout base:
 
-`f90e5c9796e256f35a9a4f3d4fe9faf822657df7`
+`6b4705ede745427ee4dd1a6aeafdeeab7c73042f`
 
-Post-F08-implementation Frontend Quality Gate:
+Post-F09-implementation Frontend Quality Gate:
 
-`34456698222` — **PASS**
+`34467008288` — **PASS**
 
 Post-main browser artifact:
-- id `10143873243`;
-- digest `sha256:557fee16eb234eb25907b57eae8567b62408627d36d94587d9f3ea39782d453d`.
+- id `10148013024`;
+- digest `sha256:c1d30a5e53542b230e7dea2f52ba15fa12aadf284a325ccfe88193ab016d7469`.
 
-F08 implementation PR `#54` is MERGED. F08 workstream status at this checkpoint is:
+F09 implementation PR `#57` is MERGED. F09 workstream status at this checkpoint is:
 
 `MERGED / CLOSEOUT IN PROGRESS — TARGET FINAL_PRIVATE`
 
-Tracking Issue `#53` MUST remain open until documentation-only closeout is merged and terminal post-closeout main Quality Gate is green on the final frozen main SHA.
+Tracking Issue `#56` MUST remain open until documentation-only closeout is merged and terminal post-closeout main Quality Gate is green on the final frozen main SHA.
 
-### F08 implementation evidence
+### F09 implementation evidence
 
-F08 — OTP Account Onboarding `/register`:
-- START_SHA: `0932bef621cf22d3d7a7a95360613061e75d805f`;
-- implementation branch: `phase/f08-otp-account-onboarding`;
-- tracking Issue: `#53`;
-- accepted browser/code candidate: `96b05b7bd1e096765a475ef99d639d990d51e881`;
-- accepted browser Quality Gate: `34455519949` — PASS;
-- accepted browser artifact: `10143394620`;
-- accepted artifact digest: `sha256:8631bfd9c69135fbd76fec75eefc1410d1c5f1ff8255bf38b0d8460229391515`;
-- 54 regression screenshots; F08 widths `375 / 390 / 430 / 768 / 1024 / 1440`;
+F09 — Player Profile Recertification `/dashboard/profile`:
+- START_SHA: `9876e5e6c47b42f9f2574f1675de6dab9ba1cc7f`;
+- implementation branch: `phase/f09-player-profile`;
+- tracking Issue: `#56`;
+- accepted browser/code candidate: `7062f629264e78323dedbb84f8151bf29e270a94`;
+- candidate Quality Gate: `34460593400` — PASS;
+- candidate artifact: `10145475710`;
+- candidate digest: `sha256:c261480e9fcbaa6cba6d0a2b972cea4f81b7ed85ca70799c9139c707edf83509`;
+- 60 regression screenshots; F09 widths `375 / 390 / 430 / 768 / 1024 / 1440`;
 - manual visual review `375 / 430 / 768 / 1024 / 1440` — PASS;
-- final implementation/evidence head: `78345a2e0ed84c75f48ea11d4fa2d1c489a89910`;
-- exact-head push Quality Gate: `34456032039` — PASS;
-- exact-head artifact `10143599063`;
-- exact-head digest `sha256:89cc0a426abd3308eb6604a05bdae33c132c4dbd6df6762eb3b2dd423786a7e7`;
-- implementation PR: `#54` — MERGED;
-- implementation PR Quality Gate: `34456378067` — PASS;
-- unresolved review threads before merge: `0`;
+- final implementation/evidence head: `8b362cbe521d39a103c192a7d6ff344f0a08e1d1`;
+- exact-head Quality Gate: `34461197903` — PASS;
+- exact-head artifact `10145721261`;
+- exact-head digest `sha256:23101901d354f4f4a21d50efe8d9fb561d2808a13202739a7c7cde3001c18a20`;
+- implementation PR: `#57` — MERGED;
+- PR-triggered Quality Gate: `34461614267` — PASS;
+- PR artifact `10145875847`;
+- PR artifact digest `sha256:b460b561c2efece21cdec465b363893dd6d9e84fd272506e06676449487e2079`;
 - mergeable before merge: `true`;
+- unresolved review threads before merge: `0`;
 - pre-merge `main` verified exact START_SHA;
 - implementation merge used expected-head lock;
-- implementation merge/current accepted main: `f90e5c9796e256f35a9a4f3d4fe9faf822657df7`;
-- post-implementation main Quality Gate: `34456698222` — PASS;
-- post-main artifact `10143873243`;
-- post-main digest `sha256:557fee16eb234eb25907b57eae8567b62408627d36d94587d9f3ea39782d453d`;
-- closeout branch: `closeout/f08-otp-account-onboarding`, created exactly from implementation merge;
-- workstream evidence: `docs/workstreams/F08_OTP_ACCOUNT_ONBOARDING.md`;
-- acceptance evidence: `docs/workstreams/F08_ACCEPTANCE_EVIDENCE.md`;
-- closeout record: `docs/workstreams/F08_CLOSEOUT.md`.
+- implementation merge/current accepted main: `6b4705ede745427ee4dd1a6aeafdeeab7c73042f`;
+- post-implementation main Quality Gate: `34467008288` — PASS;
+- post-main artifact `10148013024`;
+- post-main digest `sha256:c1d30a5e53542b230e7dea2f52ba15fa12aadf284a325ccfe88193ab016d7469`;
+- closeout branch: `closeout/f09-player-profile`, created exactly from implementation merge;
+- workstream evidence: `docs/workstreams/F09_PLAYER_PROFILE.md`;
+- acceptance evidence: `docs/workstreams/F09_ACCEPTANCE_EVIDENCE.md`;
+- closeout record: `docs/workstreams/F09_CLOSEOUT.md`.
 
-The `/register` route may be represented as `FINAL_PRIVATE` in closeout governance because implementation is merged and post-implementation main QA is green. The F08 workstream itself is NOT terminally `DONE / MERGED / FROZEN` until Issue #53 records closeout merge/frozen main SHA and terminal green main CI.
+The `/dashboard/profile` route may be represented as `FINAL_PRIVATE` in closeout governance because implementation is merged and post-implementation main QA is green. The F09 workstream itself is NOT terminally `DONE / MERGED / FROZEN` until Issue #56 records closeout merge/frozen main SHA and terminal green main CI.
 
 ### Previously frozen frontend truth
+
+F08 — OTP Account Onboarding `/register`:
+- status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+- frozen main `9876e5e6c47b42f9f2574f1675de6dab9ba1cc7f`;
+- terminal Quality Gate `34458480652` — PASS;
+- terminal artifact `10144590436`;
+- terminal digest `sha256:6407bc926904ef3ff2f3b4747c3744205add4da52dde3e30c537257dd129197f`;
+- Issue `#53` CLOSED / COMPLETED.
 
 F07 — Final OTP Login `/login`:
 - status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
@@ -137,15 +147,12 @@ Backend phase truth:
 - P01 → `DONE / MERGED / FROZEN`;
 - backend NEXT → `P02 — Games / Catalog Foundation`.
 
-F08 does not require a new backend phase or backend code change. It maps to accepted P01 auth/account runtime:
+F09 uses accepted P01 account/profile runtime only:
 - `GET /api/v1/auth/csrf/`;
-- `POST /api/v1/auth/otp/request/`;
-- `POST /api/v1/auth/otp/verify/`;
 - `GET /api/v1/auth/me/`;
-- `PATCH /api/v1/auth/me/profile/`;
-- `POST /api/v1/auth/logout/`.
+- `PATCH /api/v1/auth/me/profile/`.
 
-Web auth truth remains Django Session + CSRF + OTP. Never introduce localStorage/sessionStorage bearer-token auth.
+Editable profile fields are exactly `gamer_tag`, `display_name`, `city`, `bio`, `interview_opt_in`. `avatar_key`, phone, email, join date, roles, id and active state are not frontend mutation fields. Web auth remains Django Session + CSRF + OTP. Never introduce localStorage/sessionStorage bearer-token auth.
 
 ## 3. Permanent frontend law
 
@@ -185,40 +192,35 @@ Private/noindex account/action pages do not require public SERP/keyword research
 - `/dashboard` → `FINAL_PRIVATE`.
 - `/dashboard/tournaments` → F03 `FINAL_PRIVATE`.
 - `/dashboard/matches` → F04 `FINAL_PRIVATE`.
+- `/dashboard/profile` → F09 implementation accepted as `FINAL_PRIVATE`; F09 terminal closeout in progress until Issue #56 closes after terminal main CI.
 - `/matches/$id/result` → F05 `FINAL_PRIVATE`; runtime result APIs `FRONTEND MOCK / BACKEND PENDING`.
 - `/matches/$id/dispute` → F06 `FINAL_PRIVATE`; runtime dispute APIs `FRONTEND MOCK / BACKEND PENDING`.
 - `/tournaments/$id/register` → F01 `FINAL_PRIVATE`.
 - `/tournaments/$id` → F01 `FINAL_PRE_SEO`.
 - `/games/$slug` → F02 `FINAL_CURRENT`.
 - `/login` → F07 `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
-- `/register` → F08 route implementation accepted as `FINAL_PRIVATE`; F08 terminal workstream closeout still in progress until Issue #53 closes after terminal main CI.
+- `/register` → F08 `DONE / MERGED / FROZEN — FINAL_PRIVATE`.
 
 Canonical inventory: `docs/ROUTE_COMPLIANCE_REGISTRY.md`.
 
-## 6. F08 frozen product/architecture truth being closed
+## 6. F09 frozen product/architecture truth being closed
 
-`/register` is a private `noindex,nofollow` player account-onboarding surface with:
-- phone OTP only;
-- Iran mobile normalization including Persian/Arabic digit convenience;
-- accessible phone and OTP input purposes;
-- typed runtime-validated `LoginAuthRepository` reused from F07;
-- deterministic QA adapter and Django HTTP adapter implementing the same permanent contract;
-- Django Session authority;
-- P01 CSRF bootstrap, `credentials: include`, `X-CSRFToken` on unsafe OTP requests;
-- no localStorage/sessionStorage bearer auth;
-- authoritative challenge expiry/resend timings and auth/error states;
-- safe optional internal return-to redirect; unsafe, Login-loop and Register-loop inputs fail closed to `/dashboard`;
-- authoritative `/auth/me/` recovery check after ambiguous verify transport failure;
-- first-seen verified phone creation remains backend P01 truth;
-- existing verified phone authenticates its existing account;
-- no separate registration API, password creation, password confirmation or required-email/name registration;
-- final Persian copy, responsive behavior and exactly one `<main>`.
+`/dashboard/profile` is a private `noindex,nofollow` player profile surface with:
+- route loader → typed `PlayerProfileRepository` → runtime-validated P01 payload → UI;
+- read authority `GET /api/v1/auth/me/`;
+- mutation authority `PATCH /api/v1/auth/me/profile/`;
+- Django Session + CSRF with `credentials: include` and `X-CSRFToken` on PATCH;
+- only gamer tag, display name, city, bio and interview opt-in editable;
+- phone, email and join date clearly read-only;
+- no password, birthdate, phone/email mutation or fake avatar uploader;
+- strict mutation schema rejecting unsupported fields;
+- pending/saved/validation/conflict/session-expired/error states;
+- final Persian copy and responsive/accessibility acceptance.
 
 ## 7. Remaining known work
 
 - `/dashboard/challenges` remains a separate Challenge Hub workstream until its own accepted implementation/evidence chain lands; Lovable output alone is not acceptance.
 - `/dashboard/rivalries`, `/dashboard/achievements`, `/dashboard/notifications`, `/dashboard/settings`, `/dashboard/teams` remain placeholders unless a newer accepted workstream supersedes this checkpoint.
-- `/dashboard/profile` remains `NEEDS_RECERTIFICATION`.
 - `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` remain public competitive routes requiring current-law recertification.
 - inherited ecommerce/service/general routes remain `LEGACY_REVIEW` until explicit keep/remove/repurpose decisions.
 
@@ -231,23 +233,19 @@ Canonical inventory: `docs/ROUTE_COMPLIANCE_REGISTRY.md`.
 
 ## 9. Exact NEXT
 
-F08 terminal closeout NEXT:
+F09 terminal closeout NEXT:
 1. keep closeout diff exactly four Markdown governance files;
-2. compare implementation merge `f90e5c9796e256f35a9a4f3d4fe9faf822657df7` → closeout head and require docs-only scope;
+2. compare implementation merge `6b4705ede745427ee4dd1a6aeafdeeab7c73042f` → closeout head and require docs-only scope;
 3. open closeout PR without auto-close syntax;
 4. require closeout PR exact-head Frontend Quality Gate PASS;
 5. require mergeable true + unresolved review threads `0`;
 6. verify `main` is still exact implementation merge before closeout merge;
 7. merge closeout with expected-head lock;
 8. require terminal post-closeout main Quality Gate PASS;
-9. record frozen main SHA + terminal CI/artifact/digest in Issue #53;
+9. record frozen main SHA + terminal CI/artifact/digest in Issue #56;
 10. re-verify live `main` exact frozen SHA;
-11. close Issue #53 with `state_reason=completed` only then.
+11. close Issue #56 with `state_reason=completed` only then.
 
-Parallel frontend roadmap remains:
-1. Challenge Hub / Detail — own controlled acceptance chain;
-2. Rivalry Detail;
-3. Notifications / Settings;
-4. recertify remaining competitive routes and resolve legacy routes.
+After F09 terminal freeze, the next independent frontend workstream is `/dashboard/notifications`, while Challenge Hub/Detail remains isolated for its own Lovable + acceptance chain.
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
