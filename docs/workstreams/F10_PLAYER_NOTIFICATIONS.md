@@ -1,48 +1,61 @@
 # F10 — Player Notifications Inbox
 
-Status: `IN PROGRESS`
+Status: `MERGED / CLOSEOUT IN PROGRESS — TARGET FINAL_PRIVATE`
 
 Route: `/dashboard/notifications`
 
 START_SHA: `34d6a576691532e4228b2eecc0fea1c1d296d58e`
 
-Branch: `phase/f10-player-notifications`
+Implementation branch: `phase/f10-player-notifications`
 
-Tracking Issue: `#59`
+Final implementation/evidence head: `0629febdebda58a1d0373e005aa80999e1a75623`
+
+Implementation PR: `#60` — MERGED
+
+Implementation merge / closeout base: `74f0e25275ea2bb64ee374c0ea0f8e50e519c3d9`
+
+Closeout branch: `closeout/f10-player-notifications`
+
+Tracking Issue: `#59` — MUST remain open until terminal frozen-main CI/artifact are green and terminal evidence is recorded.
 
 Index policy: `PRIVATE / NOINDEX`
 
-Runtime until backend implementation: `FRONTEND MOCK / BACKEND PENDING`
+Runtime status: `FRONTEND MOCK / BACKEND PENDING`
 
 ## 1. Source / concurrency lock
 
-F09 Player Profile is terminally frozen at frontend main `34d6a576691532e4228b2eecc0fea1c1d296d58e`; terminal Quality Gate `34468048698` PASS; terminal artifact `10148453532`; Issue #56 CLOSED / COMPLETED.
+F09 Player Profile is terminally frozen at frontend main `34d6a576691532e4228b2eecc0fea1c1d296d58e`; terminal Quality Gate `34468048698` PASS; artifact `10148453532`; Issue #56 CLOSED / COMPLETED.
 
-F10 branch was created exactly from that frozen main. No open Notifications branch/Issue/PR overlapped F10 before creation. Challenge Hub/Detail Lovable work is outside F10 ownership and MUST NOT be modified.
+F10 started exactly from that frozen main. Challenge Hub/Detail Lovable work remained outside F10 ownership and no Challenge product file was modified.
 
-Backend audited main before F10 alignment: `38dccbf213d5f439e56cd608e3e4ac419d5092d1`. Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
+## 2. Inherited defect removed
 
-## 2. Inherited defect
+The inherited `/dashboard/notifications` route was only a `DashboardSectionPlaceholder` with implementation-stage copy and no loader, validated search, repository, runtime validation, read-state actions, paging or final states.
 
-The inherited `/dashboard/notifications` route rendered only `DashboardSectionPlaceholder` and displayed implementation-stage language about future activation/service connection. It had no route loader, validated search, repository, runtime validation, read-state actions, paging or final product states.
+F10 replaced that placeholder completely.
 
-F10 replaces that placeholder completely.
+## 3. Cross-repo backend contract truth
 
-## 3. Cross-repo contract truth
-
-Backend documentation-only alignment:
-- backend Issue `#17`;
-- branch `docs/f10-player-notifications-contract`;
+Backend documentation-only alignment is terminally complete:
+- backend Issue `#17` — CLOSED / COMPLETED;
+- backend START_SHA `38dccbf213d5f439e56cd608e3e4ac419d5092d1`;
+- docs branch `docs/f10-player-notifications-contract`;
 - docs head `6e452ea74ec91d4c402f282a173384ce27744fde`;
-- PR `#18`;
-- planned owner document `docs/F10_NOTIFICATIONS_CONTRACT.md`.
+- backend PR `#18` — MERGED;
+- PR gate `34468881823` — PASS on Python 3.12 and 3.14;
+- accepted backend main `e1d8d86f9b44a2874afc29f4ef9de13aeb34d9f7`;
+- post-main gate `34469522243` — PASS on Python 3.12 and 3.14.
 
 Planned endpoints:
 - `GET /api/v1/me/notifications/`;
 - `POST /api/v1/me/notifications/{notificationId}/read/`;
 - `POST /api/v1/me/notifications/read-all/`.
 
-This alignment is documentation only. It does not implement a backend notifications domain and does not reorder P02.
+This is contract documentation only. No notification Python domain, model, migration or URL registration was implemented. Backend NEXT remains `P02 — Games / Catalog Foundation`.
+
+Therefore runtime truth remains deliberately:
+
+`FRONTEND MOCK / BACKEND PENDING`
 
 ## 4. Permanent frontend boundary
 
@@ -50,9 +63,9 @@ This alignment is documentation only. It does not implement a backend notificati
 
 Adapters:
 - deterministic in-memory QA repository for development/test/visual acceptance;
-- Django HTTP adapter for the planned same-origin private contract.
+- Django HTTP adapter mapped to the planned private contract.
 
-The production adapter uses Django Session credentials and P01 CSRF bootstrap for unsafe read-state commands. No localStorage/sessionStorage bearer authentication is introduced.
+The Django adapter uses Django Session credentials and P01 CSRF bootstrap for unsafe read-state commands. No localStorage/sessionStorage bearer authentication is introduced.
 
 ## 5. Query / projection truth
 
@@ -61,7 +74,7 @@ Validated URL search:
 - `kind=tournament|match|challenge|account|system`; absent = all;
 - `page=<integer > 1>`; absent = page 1.
 
-Backend/repository owns:
+Repository/backend owns:
 - recipient membership and notification existence;
 - total/unread summary;
 - filter/order/pagination truth;
@@ -73,7 +86,7 @@ Frontend does not infer result, winner, lifecycle, rating, eligibility, moderati
 
 ## 6. Safe navigation target law
 
-F10 accepts only strict discriminated targets that already map to accepted routes:
+F10 accepts only strict discriminated targets that map to already accepted routes:
 - My Tournaments;
 - My Matches;
 - Tournament Detail;
@@ -81,59 +94,41 @@ F10 accepts only strict discriminated targets that already map to accepted route
 - Match Dispute;
 - Player Profile.
 
-Arbitrary `href` values are rejected by runtime validation. Challenge notifications may exist as content, but F10 does not invent a Challenge Detail route while that route is unaccepted.
+Arbitrary `href` values and unknown target fields are rejected by runtime validation. Challenge notifications may exist as content, but F10 does not invent a Challenge Detail route while that route is unaccepted.
 
-## 7. Action law
+## 7. Read-state action law
 
-Mark-one and mark-all are explicit user actions. Frontend does not optimistically decrement unread state. After a successful authoritative receipt, the route is invalidated and reloaded from the repository.
+Mark-one and mark-all are explicit user actions. Frontend does not optimistically decrement unread state. After an accepted receipt, the route is invalidated and reloaded through the repository.
 
-Outcomes include:
-- saved;
-- unavailable for mark-one when the item no longer exists;
-- session-expired;
-- unexpected transport/runtime failure handled as final natural Persian error copy.
+Supported outcomes preserve saved, unavailable and session-expired semantics without inventing state.
 
-Commands are planned as backend-idempotent state transitions; repeated read commands must not create duplicate effects.
-
-## 8. UI / accessibility scope
+## 8. UI / accessibility acceptance
 
 Final page includes:
-- page header and unread action;
+- page header and mark-all action;
 - total/unread summary;
-- all/unread/read state filters;
+- all/unread/read filters;
 - domain-kind filter;
 - inbox list with explicit unread/read semantics;
-- typed target CTA where supported;
+- typed context CTA where supported;
 - explicit mark-one and mark-all read actions;
 - pagination;
 - unfiltered and filtered empty states;
 - pending/error/session-expired/mutation feedback states;
 - responsive dashboard layout.
 
-Accessibility requirements:
-- private `noindex,nofollow`;
-- exactly one page `<main>` through DashboardShell;
+Accessibility:
+- `noindex,nofollow`;
+- DashboardShell remains the single page `<main>` owner;
 - semantic list, time, buttons, links and pagination nav;
 - `aria-pressed` on state filters;
-- mutation/status feedback through `role=status`/polite live semantics;
+- status feedback exposed through live/status semantics;
 - visible keyboard focus;
-- status never communicated by color alone.
+- status is not communicated by color alone.
 
-## 9. Official guidance reviewed
+## 9. Runtime validation invariants
 
-Current sources checked on 2026-09-10:
-- TanStack Router Data Loading: route validation/deps/loaders coordinate required async page data and pending/error boundaries;
-- W3C WAI / WCAG status-message guidance: non-focus status changes should be programmatically exposed, with `role=status` providing polite announcement semantics.
-
-F10 is private/noindex, so public SERP/keyword research is not applicable. Final natural Persian copy remains mandatory.
-
-## 10. Design reference findings
-
-Mature notification inboxes use a small number of high-signal triage controls: unread/read state, category/context, clear time, explicit read acknowledgement, and direct navigation to the originating surface. F10 adopts those information-architecture principles while retaining Turnoment's established RTL dashboard visual system and avoiding generic social-feed or email-inbox complexity.
-
-## 11. Runtime validation invariants
-
-Runtime schemas fail closed on:
+Schemas fail closed on:
 - arbitrary/unknown target fields;
 - unsupported target kinds;
 - malformed opaque IDs;
@@ -144,37 +139,82 @@ Runtime schemas fail closed on:
 - invalid pagination relationships;
 - duplicate notification IDs on one page.
 
-## 12. QA plan
+## 10. Accepted implementation evidence
 
-Contract tests cover schema integrity, target allow-listing, filters, mark-one, unavailable item handling, mark-all and idempotency.
+Accepted visual candidate:
 
-Browser regression gate must expand from 60 to 66 screenshots by adding `/dashboard/notifications` at:
+`77d89d7143d315b1f8db92ab10dc32085d0ac963`
 
-`375 / 390 / 430 / 768 / 1024 / 1440`
+- Quality Gate `34471158110` — PASS;
+- artifact `10149666864`;
+- digest `sha256:b36b923ada03c4f346de8b87794e644e2fdd202ec620b3fb9a2ffcd88b605950`;
+- 66 regression screenshots;
+- F10 screenshots at `375 / 390 / 430 / 768 / 1024 / 1440`;
+- manual visual review `375 / 430 / 768 / 1024 / 1440` — PASS.
 
-Browser smoke must verify:
-- final Notifications copy exists;
-- `noindex,nofollow` exists;
-- inherited placeholder/service-connection copy is absent;
-- exactly one page `<main>` remains through DashboardShell.
+Visual review corrected the unread action microcopy from status-like `خوانده شد` to explicit action `این را خوانده‌ام` before final implementation acceptance.
 
-Representative visual acceptance must include at least `375 / 430 / 768 / 1024 / 1440`.
+Clean final implementation/evidence head:
 
-## 13. Completion law
+`0629febdebda58a1d0373e005aa80999e1a75623`
 
-F10 cannot become `DONE / MERGED / FROZEN` until:
-1. backend docs alignment is merged and post-main CI is green;
-2. implementation candidate full frontend Quality Gate PASS;
-3. 66-shot artifact is manually reviewed;
-4. acceptance evidence is committed;
-5. final implementation/evidence exact-head Quality Gate PASS;
-6. implementation PR CI PASS, mergeable true and review threads zero;
-7. pre-merge main exact START_SHA;
-8. expected-head implementation merge;
-9. post-implementation main Quality Gate PASS;
-10. documentation-only closeout from exact implementation merge;
-11. closeout PR CI PASS, mergeable true and review threads zero;
-12. expected-head closeout merge;
-13. terminal frozen-main Quality Gate PASS and artifact recorded;
-14. live main exact frozen SHA re-verified;
-15. Issue #59 updated with terminal evidence and CLOSED / COMPLETED.
+- rebuilt as exactly one clean commit from START_SHA;
+- ahead 1 / behind 0;
+- no transient dependency-version drift in reviewed history;
+- exact-head Quality Gate `34472707498` — PASS;
+- exact-head artifact `10150299042`;
+- exact-head digest `sha256:413113078075f7b979d023e52d447e25ef953c6e3eb369bcfe6543b56d0d2232`.
+
+Implementation PR `#60`:
+- PR Quality Gate `34473099462` — PASS;
+- PR artifact `10150419030`;
+- PR artifact digest `sha256:19325defe0b8fefacecb0541a52970a298dbaf10178571be9e2b04e973c645eb`;
+- mergeable immediately before merge `true`;
+- unresolved review threads immediately before merge `0`;
+- pre-merge main exact START_SHA;
+- expected-head merge used.
+
+Implementation merge / closeout base:
+
+`74f0e25275ea2bb64ee374c0ea0f8e50e519c3d9`
+
+Post-implementation main:
+- Quality Gate `34473462713` — PASS;
+- artifact `10150600270`;
+- digest `sha256:b503925b92b89bd9a27eb0d1d20ac900b7bbbd69024eaefb5865c91bc169234c`;
+- full browser regression including 66 screenshots PASS;
+- live `main` re-verified exact implementation merge after the gate.
+
+## 11. Scope integrity
+
+Final reviewed implementation diff contains only F10 source/evidence plus the F10 extension of the existing regression gate and test script. No Challenge Hub/Detail product file was changed. Dependency versions are unchanged.
+
+## 12. Closeout mutation lock
+
+Relative to implementation merge `74f0e25275ea2bb64ee374c0ea0f8e50e519c3d9`, the closeout commit may change exactly these four Markdown governance/workstream files:
+
+1. `PROJECT_CONTINUITY.md`;
+2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
+3. `docs/workstreams/F10_PLAYER_NOTIFICATIONS.md`;
+4. `docs/workstreams/F10_CLOSEOUT.md`.
+
+Application/runtime source changes: `NONE`.
+Workflow/package/dependency changes: `NONE`.
+Contract/adapter/fixture changes: `NONE`.
+Challenge Hub/Detail product changes: `NONE`.
+
+## 13. Non-recursive terminal rule
+
+This closeout document cannot contain its own future merge SHA or terminal main CI run.
+
+The route may be promoted to `FINAL_PRIVATE` because implementation is merged and post-main QA is green. F10 itself MUST NOT be called `DONE / MERGED / FROZEN` until:
+1. implementation-merge → closeout-head compare proves exactly four Markdown files changed;
+2. closeout PR is opened without auto-close syntax;
+3. closeout PR full Quality Gate is PASS;
+4. closeout PR is mergeable with unresolved review threads `0`;
+5. pre-closeout-merge `main` remains exact implementation merge;
+6. closeout merge uses expected-head lock;
+7. terminal post-closeout main Quality Gate is PASS on exact frozen main;
+8. terminal artifact/digest are recorded in Issue #59;
+9. live `main` is re-verified exact frozen SHA;
+10. Issue #59 is closed with `state_reason=completed`.
