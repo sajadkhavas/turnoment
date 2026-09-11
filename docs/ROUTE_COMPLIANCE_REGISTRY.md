@@ -6,160 +6,165 @@
 
 Last audit: `2026-09-12`
 
-Current live frontend `main` at F19 closeout creation:
+Current terminal frozen frontend `main` before F20:
 
-`b3d6360af21c1c86a06a95cdbe20ac30ac42c84c` — accepted F19 implementation merge/main.
+`a473613191fd5132664c5234b692befda4a5cf41` — F19 terminal frozen main.
 
-Last terminal frozen frontend baseline before the F19 closeout remains:
+Active workstream:
 
-`41bdbb90f127474ecabd61cb5ceda5db1b91ae49` — F18 terminal frozen main.
-
-Active closeout workstream:
-
-`F19 — Public Gaming Center Discovery` — Issue #92 OPEN — implementation PR #93 MERGED — implementation merge `b3d6360af21c1c86a06a95cdbe20ac30ac42c84c` — closeout branch `closeout/f19-public-gaming-center-discovery`.
+`F20 — Public Gaming Center Detail` — Issue #95 OPEN — branch `phase/f20-public-gaming-center-detail` — START `a473613191fd5132664c5234b692befda4a5cf41`.
 
 ## Status meanings
 
 - `FINAL_CURRENT` — route implementation is accepted under the current applicable protocol set, including current SEO/final-copy law for public/indexable pages.
 - `FINAL_PRIVATE` — final private/noindex route; public SEO research is not applicable, but final architecture/UX/contracts are accepted.
 - `FINAL_PRE_SEO` — technically/factually final under page protocol but frozen before the stricter SEO final-copy law.
-- `IN_PROGRESS` — active controlled implementation workstream exists; not final until its required route-level acceptance gates are complete.
+- `IN_PROGRESS` — active controlled implementation workstream exists; not final until its required acceptance chain completes.
 - `NEEDS_RECERTIFICATION` — route exists but has not passed the full current-law evidence chain.
-- `PLACEHOLDER` — intentionally incomplete/temporary product surface; must be rebuilt before product acceptance.
+- `PLACEHOLDER` — intentionally incomplete/temporary product surface.
 - `REBUILD` — known product/architecture truth is wrong and must be rebuilt rather than patched as-is.
-- `LEGACY_REVIEW` — inherited non-Turnoment/ecommerce/general-site route; not an approved competitive architecture reference.
+- `LEGACY_REVIEW` — inherited non-Turnoment/ecommerce/general-site route.
 
-Route-level `FINAL_CURRENT` does not by itself mean the owning workstream is terminally `DONE / MERGED / FROZEN`. Terminal workstream status additionally requires closeout merge + terminal frozen-main CI/artifact evidence recorded in the tracking Issue.
+Route-level `FINAL_CURRENT` does not alone mean a workstream is terminally `DONE / MERGED / FROZEN`; terminal evidence still requires closeout merge + frozen-main CI/artifacts in the tracking Issue.
 
 ## A. Accepted / active competitive routes
 
 | Route | Status | Evidence / exact truth |
 |---|---|---|
-| `/` | `FINAL_CURRENT` | F16 terminally frozen. Issue #81 CLOSED / COMPLETED. Permanent boundary: SSR loader → typed `PublicHomeRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/tournaments` | `FINAL_CURRENT` | F17 terminally frozen. Issue #84 CLOSED / COMPLETED; frozen main `73955783add94c562f4eea0bb55300aab077c342`. Permanent boundary: validated URL search → loaderDeps → SSR loader → typed `TournamentDiscoveryRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/games` | `FINAL_CURRENT` | F18 terminally frozen. Issue #89 CLOSED / COMPLETED; implementation PR #90 MERGED; closeout PR #91 MERGED; frozen main `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/centers` | `FINAL_CURRENT` | F19 route-level implementation accepted. Issue #92 remains OPEN only for non-recursive closeout/terminal freeze. Implementation PR #93 MERGED with expected head `79c084611fb6dbe3617ba9a58f100934b9272587`; implementation merge/main `b3d6360af21c1c86a06a95cdbe20ac30ac42c84c`; post-main Full/F19/F18/F17/F16 gates PASS. Permanent boundary: validated URL search → loaderDeps → SSR loader → typed `GamingCenterDiscoveryRepository` → runtime-validated directory projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. `/centers/$id` is protected as the separate next workstream. |
-| `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout accepted; private session/repository/runtime contract. |
+| `/` | `FINAL_CURRENT` | F16 terminally frozen; Issue #81 CLOSED / COMPLETED. SSR loader → typed repository → runtime-validated projection. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/tournaments` | `FINAL_CURRENT` | F17 terminally frozen; Issue #84 CLOSED / COMPLETED; permanent validated-search/SSR/repository architecture accepted. |
+| `/games` | `FINAL_CURRENT` | F18 terminally frozen; Issue #89 CLOSED / COMPLETED; no production fixture fallback. |
+| `/centers` | `FINAL_CURRENT` | F19 `DONE / MERGED / FROZEN`; Issue #92 CLOSED / COMPLETED; frozen main `a473613191fd5132664c5234b692befda4a5cf41`; terminal Full/F19/F18/F17/F16 gates PASS. |
+| `/centers/$id` | `IN_PROGRESS` | F20 Issue #95. START `a473613191fd5132664c5234b692befda4a5cf41`. Legacy local lookup/name-join replaced on branch by `publicId → SSR loader → typed GamingCenterDetailRepository → strict runtime-validated projection → detail UI`; exact implementation QA accepted, but PR/merge/closeout/terminal freeze are still pending. |
+| `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout accepted. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen; Issue #38 completed. |
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen; Issue #41 completed. |
 | `/dashboard/profile` | `FINAL_PRIVATE` | F09 terminally frozen; Issue #56 completed. |
-| `/dashboard/notifications` | `FINAL_PRIVATE` | F10 terminally frozen; Issue #59 completed. Runtime notification APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/settings` | `FINAL_PRIVATE` | F11 terminally frozen; Issue #62 completed. Runtime settings APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 terminally frozen; Issue #65 completed. Runtime Rivalries API remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/achievements` | `FINAL_PRIVATE` | F13 terminally frozen; Issue #68 completed. Runtime Achievements API remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/teams` | `FINAL_PRIVATE` | F14 terminally frozen; Issue #71 completed. Runtime Teams API remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/challenges` | `FINAL_PRIVATE` | F15 terminally frozen; Issue #77 completed. Runtime Challenge APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen; Issue #44 completed. Runtime result APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen; Issue #47 completed. Runtime dispute APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/login` | `FINAL_PRIVATE` | F07 terminally frozen; Phone OTP, Django Session + CSRF, no password/local bearer auth. |
+| `/dashboard/notifications` | `FINAL_PRIVATE` | F10 terminally frozen; Issue #59 completed. Runtime API remains backend pending. |
+| `/dashboard/settings` | `FINAL_PRIVATE` | F11 terminally frozen; Issue #62 completed. |
+| `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 terminally frozen; Issue #65 completed. |
+| `/dashboard/achievements` | `FINAL_PRIVATE` | F13 terminally frozen; Issue #68 completed. |
+| `/dashboard/teams` | `FINAL_PRIVATE` | F14 terminally frozen; Issue #71 completed. |
+| `/dashboard/challenges` | `FINAL_PRIVATE` | F15 terminally frozen; Issue #77 completed. |
+| `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen; Issue #44 completed. |
+| `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen; Issue #47 completed. |
+| `/login` | `FINAL_PRIVATE` | F07 terminally frozen; Phone OTP, Django Session + CSRF. |
 | `/register` | `FINAL_PRIVATE` | F08 terminally frozen; Issue #53 completed. |
-| `/tournaments/$id` | `FINAL_PRE_SEO` | F01 terminally accepted before current strict SEO final-copy protocol. |
-| `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final tournament-registration action route; private noindex and Session/CSRF boundary accepted. |
-| `/games/$slug` | `FINAL_CURRENT` | F02 technical + SEO/final-copy acceptance terminally recorded. Frozen and protected outside later listing workstreams. |
+| `/tournaments/$id` | `FINAL_PRE_SEO` | F01 accepted before current strict SEO final-copy protocol. |
+| `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final private registration action route. |
+| `/games/$slug` | `FINAL_CURRENT` | F02 technical + SEO/final-copy acceptance terminally recorded; frozen/protected. |
 
 ## B. Public competitive routes requiring current-law recertification
 
 | Route | Status | Why it is not current-law final |
 |---|---|---|
-| `/centers/$id` | `NEEDS_RECERTIFICATION` | Local lookup; lacks current repository/runtime contract, authoritative address/contact policy, current SEO evidence and final stable public identifier/canonical decision. |
 | `/ranking` | `NEEDS_RECERTIFICATION` | No dedicated final ranking contract/SSR/search-intent workstream. |
-| `/players/$username` | `NEEDS_RECERTIFICATION` | Uses local ranking data/frontend-derived values; must move to authoritative player/rating contract. |
-| `/host` | `NEEDS_RECERTIFICATION` | Public acquisition route has not passed current final page + SEO gates. |
+| `/players/$username` | `NEEDS_RECERTIFICATION` | Uses frontend/local ranking-derived truth and needs authoritative player/rating contract reconciliation. |
+| `/host` | `NEEDS_RECERTIFICATION` | Public acquisition route has not passed current page + SEO gates. |
 | `/rules` | `NEEDS_RECERTIFICATION` | Must be reconciled with authoritative ruleset/product copy and current evidence law. |
 
-## C. Accepted F19 Public Gaming Center Discovery truth
+## C. Active F20 Public Gaming Center Detail truth
+
+Permanent target architecture:
+
+`route publicId param → SSR loader → typed GamingCenterDetailRepository → strict runtime-validated detail projection → Gaming Center Detail UI`
+
+Canonical identity:
+- F20 v1 canonical public route key = `publicId`;
+- canonical URL `/centers/{publicId}`;
+- `centerId` remains stable backend relation/entity identity;
+- display name is never a relation key;
+- future slug migration requires explicit redirect/alias compatibility work.
+
+Planned production endpoint:
+
+`GET /api/v1/centers/{publicId}/`
+
+Production invariants:
+- production defaults to Django HTTP adapter;
+- requires `VITE_API_BASE_URL`;
+- 404 maps to not-found;
+- non-404 HTTP errors fail closed;
+- strict runtime validation required;
+- returned `publicId` must match requested identity;
+- no fixture fallback in production;
+- no rating/review projection;
+- no tournament relation by center display name.
+
+Public visit-information policy:
+- address/phone/opening hours/map are displayed only when explicitly public in the authoritative projection;
+- missing values are valid and never fabricated.
+
+LocalBusiness policy:
+- emit generic `LocalBusiness` only when complete authoritative public address exists and is visibly rendered;
+- optional public phone/opening hours only when authoritative;
+- no rating/review schema;
+- no public address => no LocalBusiness markup.
+
+Indexing policy:
+- found published detail: canonical `/centers/{publicId}`, robots `index,follow`;
+- not-found/non-public state: no public detail projection, `noindex,nofollow` metadata path.
+
+Current runtime remains:
+
+`FRONTEND MOCK / BACKEND PENDING`
+
+Exact implementation source head before governance checkpoint:
+
+`a424b8ef1ea9cef4173ce5caa86106371281e1e4`
+
+Exact-head QA:
+- Full `34653443343` PASS; artifact `10284697461`; digest `sha256:d241f96dafd5394b1de5c4bdd2eb9d2d4871f68dc66b22b36be31a8d556ef773`;
+- F20 `34653443430` PASS; artifact `10284771804`; digest `sha256:1ce354668583c5b9fba17811640eb5d5990e9a42ded90f93c0799b911bdc6661`;
+- c1 + c4 responsive evidence manually inspected at 375/390/430/768/1024/1440 without observed overflow/clipping/overlap.
+
+Backend F20 documentation alignment:
+- Issue #37 CLOSED / COMPLETED;
+- PR #38 MERGED;
+- backend main `e8e48061cba201b3a12ac534ef97f22565bea5a3`;
+- PR gate `34653701760` PASS on Python 3.12/3.14;
+- post-main gate `34653883656` PASS on Python 3.12/3.14;
+- Backend NEXT remains `P02 — Games / Catalog Foundation`.
+
+## D. Accepted F19 Public Gaming Center Discovery truth
 
 Permanent route architecture:
 
 `validated URL search → loaderDeps → SSR loader → typed GamingCenterDiscoveryRepository → runtime-validated directory projection → Gaming Center Discovery UI`
 
-Repository/backend owns:
-- published center membership/order;
-- stable center ID + public navigation-key projection;
-- verification state;
-- stable city identity/slug + district;
-- public center summary;
-- equipment labels;
-- optional cover image;
-- nullable authoritative upcoming-tournament count;
-- city facets/counts/filtering;
-- pagination.
-
-Frontend owns:
-- safe normalized/shareable `city` and `page` URL state;
-- final Persian page copy and information hierarchy;
-- presentation/accessibility/responsive behavior;
-- canonical/robots policy;
-- deterministic dev/test/visual-QA fixture behind the same typed contract.
-
 Production invariant:
 - planned endpoint `GET /api/v1/centers/`;
-- production HTTP adapter fails closed;
-- production MUST NOT silently fall back to fixture centers;
-- production MUST NOT derive directory membership, verification, facility truth, city facets/filtering/pagination or tournament counts from local arrays;
-- rating/review fields are intentionally absent from F19 v1.
+- no production fixture fallback;
+- no rating/review fields;
+- backend/repository owns public membership/order/verification/locality/facilities/count/filter/pagination truth.
 
-SEO/final-copy lock:
+SEO truth:
 - H1 `گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات`;
 - title `گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات | Turnoment`;
-- base canonical `/centers`;
-- base robots `index,follow`;
-- current city/page variants `noindex,follow` + canonical `/centers`;
-- SSR primary directory;
-- no `LocalBusiness` structured data on this multi-entity listing;
-- no unsupported popularity/rating/review/superlative claims.
+- base canonical `/centers`, robots `index,follow`;
+- city/page variants `noindex,follow` + canonical `/centers`;
+- no LocalBusiness markup on the multi-entity listing.
 
-Exact F19 route acceptance evidence:
-- START `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`;
-- final reviewed implementation head `79c084611fb6dbe3617ba9a58f100934b9272587`;
-- implementation PR #93 MERGED;
-- implementation merge/main `b3d6360af21c1c86a06a95cdbe20ac30ac42c84c`;
-- pre-merge mergeable `true`, unresolved review threads `0`, exact main lock retained;
-- post-main Full `34648835775` PASS;
-- post-main F19 `34648835745` PASS;
-- post-main F18 `34648835820` PASS;
-- post-main F17 `34648835901` PASS;
-- post-main F16 `34648835803` PASS.
+Terminal frozen main:
 
-The route may therefore be promoted non-recursively to `FINAL_CURRENT`. F19 workstream terminal freeze still requires the closeout merge and terminal frozen-main evidence in Issue #92.
+`a473613191fd5132664c5234b692befda4a5cf41`
 
-## D. Accepted F18 Public Game Catalog truth
+## E. Other accepted public discovery truth
 
-Permanent route architecture:
+F18 `/games`:
+- `SSR loader → typed GameCatalogRepository → runtime-validated projection → UI`;
+- planned `GET /api/v1/games/`;
+- canonical `/games`, robots `index,follow`.
 
-`/games → SSR loader → typed GameCatalogRepository → runtime-validated catalog projection → Game Catalog UI`
-
-Production invariant:
-- planned endpoint `GET /api/v1/games/`;
-- no production fixture fallback;
-- backend/repository owns published catalog membership/order, stable game identity, canonical slug and optional authoritative tournament count.
-
-SEO truth:
-- H1 `بازی‌های مسابقات گیمینگ`;
-- title `بازی‌های مسابقات گیمینگ حضوری | Turnoment`;
-- canonical `/games`;
-- robots `index,follow`.
-
-## E. Accepted F17 Public Tournament Discovery truth
-
-Permanent route architecture:
-
-`validated URL search → loaderDeps → SSR loader → typed TournamentDiscoveryRepository → runtime-validated discovery projection → UI`
-
-Production invariant:
-- planned endpoint `GET /api/v1/tournaments/`;
-- no production fixture fallback;
-- backend/repository owns filtering/order/pagination, lifecycle/registration, venue verification, capacity, fee/prize and featured identity.
-
-SEO truth:
-- H1 `تورنمنت‌ها و مسابقات گیمینگ حضوری`;
-- title `تورنمنت‌ها و مسابقات گیمینگ حضوری | Turnoment`;
+F17 `/tournaments`:
+- validated URL search + loaderDeps + SSR loader + typed repository;
+- planned `GET /api/v1/tournaments/`;
 - base canonical `/tournaments`, robots `index,follow`;
-- normalized facet/sort/page variants `noindex,follow` + canonical `/tournaments`.
+- normalized facet/page variants `noindex,follow`.
 
 ## F. Inherited legacy / ecommerce / non-competitive routes
 
-Commerce / checkout legacy:
+Commerce/checkout legacy:
 - `/cart`
 - `/checkout`
 - `/products`
@@ -186,13 +191,13 @@ All above remain `LEGACY_REVIEW`.
 
 ## G. Shared accepted private/account invariants
 
-Existing final private routes retain their frozen architecture records. Shared invariants include:
+Existing final private routes retain their frozen records. Shared invariants include:
 - Django Session authority;
 - CSRF bootstrap + `credentials: include` + `X-CSRFToken` on unsafe calls;
 - no localStorage/sessionStorage bearer token;
 - private `noindex,nofollow`;
 - final Persian copy/accessibility/responsive states;
-- QA fixture test-only behind the same permanent production contract.
+- QA fixtures test-only behind permanent production contracts.
 
 Competitive truth retained:
 - Tournament Rating and Challenge Rating are separate;
@@ -202,11 +207,11 @@ Competitive truth retained:
 
 ## H. Compliance priorities / NEXT
 
-Immediate active task: finish the F19 documentation-only closeout and terminal freeze without mutating `/centers/$id` or frozen F16/F17/F18/F02 source.
+Immediate active task: finish F20 implementation PR → post-main QA → documentation-only closeout → terminal frozen-main QA without reopening frozen F19/F18/F17/F16/F02 source.
 
-After F19 terminal freeze, next public recertification order is:
+After terminal F20 freeze, next public recertification order:
 
-`/centers/$id` → `/ranking` → `/players/$username` → `/host` → `/rules`
+`/ranking` → `/players/$username` → `/host` → `/rules`
 
 unless an explicit product decision changes order.
 
@@ -217,9 +222,8 @@ Backend NEXT independently remains:
 ## I. Registry maintenance law
 
 - A route cannot be promoted from chat memory.
-- `IN_PROGRESS` is mandatory while required route-level implementation/merge/post-main evidence is missing.
-- A merged implementation with required green post-implementation main gates may be promoted non-recursively to `FINAL_CURRENT` in closeout governance.
-- Terminal workstream `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal main CI recorded in its tracking Issue.
-- New/placeholder/legacy routes remain visible until accepted or intentionally removed.
+- `IN_PROGRESS` is mandatory while required implementation/merge/post-main evidence is missing.
+- Route-level `FINAL_CURRENT` may be promoted non-recursively only after accepted implementation merge + required post-main gates.
+- Terminal workstream `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal main CI recorded in the tracking Issue.
 - If implementation truth and this registry conflict, treat the route as not final until reconciled.
-- Do not create recursive documentation-only commits merely to record the SHA of the commit containing that same record; terminal closeout SHA/CI belongs in the tracking Issue after merge.
+- Do not create recursive documentation commits merely to record their own future SHA; terminal closeout SHA/CI belongs in the tracking Issue after merge.

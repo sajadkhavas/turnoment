@@ -19,273 +19,245 @@ Every chat/agent MUST:
 8. never claim `DONE / MERGED / FROZEN` from chat memory alone;
 9. record exact branch/SHA/PR/CI/artifact evidence;
 10. update both repositories when a cross-repo contract/global product truth changes;
-11. preserve frozen routes outside the active workstream unless a separately authorized regression fix is required;
-12. keep production fail-closed: deterministic fixture data is dev/test/visual-QA only unless a route-specific law explicitly says otherwise.
+11. preserve frozen routes outside the active workstream;
+12. keep production fail-closed: deterministic fixtures are dev/test/visual-QA only.
 
 Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `READY TO MERGE`, `MERGED / CLOSEOUT IN PROGRESS`, `DONE / MERGED / FROZEN`.
 
-## 2. Current frontend main / freeze truth
+## 2. Current frontend frozen-main truth
 
 Repository: `sajadkhavas/turnoment`
 
-Current live frontend `main` at F19 closeout creation:
+Current terminal frozen frontend `main` before F20:
 
-`b3d6360af21c1c86a06a95cdbe20ac30ac42c84c`
+`a473613191fd5132664c5234b692befda4a5cf41`
 
-This is the accepted F19 implementation merge/main SHA. It is **not yet the terminal F19 frozen-main SHA** because the documentation-only closeout has not yet merged.
+This is the F19 closeout merge/frozen-main SHA.
 
-Last terminally frozen frontend baseline before F19 remains:
+F19 `/centers` terminal evidence:
+- Issue #92 — CLOSED / COMPLETED;
+- implementation PR #93 — MERGED;
+- closeout PR #94 — MERGED;
+- frozen main `a473613191fd5132664c5234b692befda4a5cf41`;
+- terminal Full `34650034489` — PASS;
+- terminal F19 `34650034427` — PASS;
+- terminal F18 `34650034399` — PASS;
+- terminal F17 `34650034345` — PASS;
+- terminal F16 `34650034387` — PASS.
 
-`41bdbb90f127474ecabd61cb5ceda5db1b91ae49`
+Therefore F19 is terminal:
 
-That SHA is the terminal F18 closeout merge/frozen-main evidence recorded in Issue #89.
+`DONE / MERGED / FROZEN — FINAL_CURRENT`
 
-## 3. Active frontend workstream — F19
+## 3. Active frontend workstream — F20
 
 Workstream:
 
-`F19 — Public Gaming Center Discovery`
+`F20 — Public Gaming Center Detail`
 
 Route:
 
-`/centers`
+`/centers/$id`
 
 Tracking Issue:
 
-`#92` — OPEN
+`#95` — OPEN
 
 START_SHA:
 
-`41bdbb90f127474ecabd61cb5ceda5db1b91ae49`
+`a473613191fd5132664c5234b692befda4a5cf41`
 
 Implementation branch:
 
-`phase/f19-public-gaming-center-discovery`
+`phase/f20-public-gaming-center-detail`
 
-Final reviewed implementation head:
+Current implementation source head before this documentation checkpoint:
 
-`79c084611fb6dbe3617ba9a58f100934b9272587`
+`a424b8ef1ea9cef4173ce5caa86106371281e1e4`
 
-Implementation PR:
+Status:
 
-`#93` — MERGED
+`IN PROGRESS — IMPLEMENTATION QA ACCEPTED / DOCUMENTATION CHECKPOINT`
 
-Implementation merge / accepted main:
+Frozen dependencies outside F20:
+- F16 `/`;
+- F17 `/tournaments`;
+- F18 `/games`;
+- F19 `/centers`;
+- F02 `/games/$slug`.
 
-`b3d6360af21c1c86a06a95cdbe20ac30ac42c84c`
+F20 does not mutate those frozen route sources.
 
-Closeout branch:
+## 4. F20 permanent architecture
 
-`closeout/f19-public-gaming-center-discovery`
+F20 replaces the legacy local-fixture/detail-name-join route with:
 
-Current workstream status:
+`route publicId param → SSR loader → typed GamingCenterDetailRepository → strict runtime-validated detail projection → Gaming Center Detail UI`
 
-`MERGED / CLOSEOUT IN PROGRESS`
+Production endpoint planned:
 
-Route-level status after accepted implementation + post-main QA:
-
-`FINAL_CURRENT`
-
-Important non-recursive distinction: route-level promotion is now justified, but the F19 workstream itself is not terminal `DONE / MERGED / FROZEN` until closeout merge + terminal frozen-main CI/artifact evidence exist and Issue #92 is closed `completed`.
-
-Protected route boundary:
-
-`/centers/$id` remains a separate `NEEDS_RECERTIFICATION` route and must not be changed by F19 closeout.
-
-Frozen dependencies outside F19 include F16 `/`, F17 `/tournaments`, F18 `/games` and F02 `/games/$slug`.
-
-## 4. Accepted F19 permanent boundary
-
-F19 replaced the START_SHA browser-owned/local fixture directory with:
-
-`validated URL search → loaderDeps → SSR loader → typed GamingCenterDiscoveryRepository → runtime-validated directory projection → Gaming Center Discovery UI`
+`GET /api/v1/centers/{publicId}/`
 
 Repository/backend owns:
-- published center membership/order;
-- stable center ID and public navigation-key projection;
+- published/public center identity and existence;
+- stable `centerId` relation identity;
+- public `publicId` route identity;
 - verification state;
-- stable city identity/slug and district;
-- center summary/equipment/cover;
-- nullable authoritative upcoming-tournament count;
-- city facets/counts/filtering;
-- pagination.
+- city/district identity;
+- public summary/description;
+- public facilities/media;
+- explicitly public address/phone/opening-hours/map projection;
+- authoritative upcoming-tournament count;
+- bounded tournament projection by stable tournament IDs/slugs.
 
 Frontend owns:
-- safe `city` / `page` URL normalization;
-- final Persian page copy/information hierarchy;
-- presentation/accessibility/responsive behavior;
-- canonical/robots policy;
+- route presentation and final natural Persian copy;
+- title/meta/canonical/robots;
+- conditional LocalBusiness structured data using only authoritative public values;
+- accessibility/responsive behavior;
 - deterministic fixture repository for dev/test/visual QA only.
 
-Production MUST NOT derive directory truth from local arrays and MUST NOT silently fall back to fixture data.
+Production invariant:
+- no direct import from legacy `tournament-data`;
+- no center-name joins;
+- no production fixture fallback;
+- no rating/review fabrication;
+- HTTP/contract failures fail closed.
 
-## 5. F19 runtime / API truth
+## 5. F20 canonical identifier decision
 
-Planned production endpoint:
+F20 v1 keeps `publicId` as the canonical public route identifier.
 
-`GET /api/v1/centers/`
+Canonical URL:
 
-Optional query parameters:
-- `city=<stable-city-slug>`;
-- `page=<positive-integer>`.
+`/centers/{publicId}`
 
-Current integration truth remains exactly:
+Reason:
+- frozen F19 already links with `publicId`;
+- `centerId` remains backend relation identity;
+- display names are never keys;
+- avoiding a URL migration prevents reopening frozen F19 without an explicit redirect/alias contract.
 
-`FRONTEND MOCK / BACKEND PENDING`
+Any future human-readable slug migration requires its own compatibility/redirect workstream.
 
-Production behavior:
-- uses the Django HTTP repository;
-- requires `VITE_API_BASE_URL`;
-- runtime-validates JSON with strict Zod contract;
-- fails closed on missing base URL, HTTP failure or invalid payload;
-- never silently falls back to fixture centers.
+## 6. F20 SEO / LocalBusiness truth
 
-Rating/review fields remain intentionally absent from F19 v1 because no accepted authoritative backend ratings domain exists yet.
+Published authoritative detail:
+- robots `index,follow`;
+- canonical `/centers/{publicId}`;
+- entity-specific title format: `{name} | گیم‌نت و مرکز گیمینگ در {city} | Turnoment`;
+- natural meta description from authoritative center/locality identity;
+- OpenGraph type `website`;
+- no unsupported popularity, “best/largest/number one”, rating or review claim.
 
-## 6. F19 SEO / final-copy truth
+Not-found/non-public detail:
+- no public detail payload;
+- final not-found UX;
+- `noindex,nofollow` metadata path.
 
-Final H1:
+LocalBusiness decision:
+- emit generic `LocalBusiness` JSON-LD only when a complete runtime-validated `publicAddress` exists;
+- visible page address must match structured data;
+- optional phone/opening hours only when public-authorized and visible;
+- no aggregateRating/review markup;
+- if public address is missing, omit LocalBusiness rather than invent values.
 
-`گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات`
+## 7. F20 implementation source scope
 
-Final title:
+Current implementation commit:
 
-`گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات | Turnoment`
+`a424b8ef1ea9cef4173ce5caa86106371281e1e4`
 
-Final meta description:
-
-`گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات را بر اساس شهر پیدا کن، امکانات و وضعیت تأیید هر مرکز را ببین و مسیر مسابقات حضوری را دنبال کن.`
-
-Indexing:
-- base canonical `/centers`;
-- base robots `index,follow`;
-- current city/page variants `noindex,follow` + canonical `/centers`;
-- primary directory inventory SSR-rendered;
-- no `LocalBusiness` structured data on the multi-entity listing.
-
-Intent boundary:
-- `/centers` = center directory/discovery;
-- `/centers/$id` = one center detail/local entity;
-- `/tournaments` = tournament inventory/filtering;
-- `/games` = game catalog;
-- `/host` = center-owner acquisition.
-
-No unsupported popularity/search-volume/rating/review/superlative claim is authorized.
-
-## 7. Exact F19 implementation evidence
-
-Final compare from START to reviewed implementation head:
-- ahead `4` / behind `0`;
-- `12` changed files;
+Compare from START:
+- ahead `1` / behind `0` / exactly one implementation commit;
+- exactly `9` changed files before governance docs;
 - no `bun.lock` mutation;
-- no dependency/version drift;
-- `package.json` final delta only appends the F19 contract spec to the existing full test command;
-- no frozen F16/F17/F18/F02 route-source mutation;
-- no `/centers/$id` mutation.
+- package delta only appends `gaming-center-detail-contract.spec.ts` to the full test chain;
+- no dependency/version mutation;
+- no frozen F19/F18/F17/F16/F02 source mutation.
 
-Exact-head QA on `79c084611fb6dbe3617ba9a58f100934b9272587`:
-- Frontend Quality Gate `34641669982` — PASS;
-  - artifact `10280223087`;
-  - digest `sha256:429c30dabcc0a6f53b9cb5b3021e09214208ef45ba69de192ead1d7ac6fdf02f`;
-- F19 focused gate `34641670087` — PASS;
-  - artifact `10280038052`;
-  - digest `sha256:6eab337b1261b4b5f6831f1bd051734ca23e4d524882656b49f083add19f59ea`;
-  - base + Tehran-filtered evidence at `375 / 390 / 430 / 768 / 1024 / 1440` manually inspected PASS with no observed horizontal overflow, clipping or overlap.
+Implementation source files:
+- `.github/workflows/f20-public-gaming-center-detail-quality.yml`;
+- `package.json` test wiring only;
+- `src/routes/centers.$id.tsx`;
+- `src/components/centers/gaming-center-detail-page.tsx`;
+- `src/lib/gaming-center-detail-contract.ts`;
+- `src/lib/gaming-center-detail-contract.spec.ts`;
+- `src/lib/gaming-center-detail-fixture.ts`;
+- `src/lib/gaming-center-detail-http-repository.ts`;
+- `src/lib/gaming-center-detail-repository.ts`.
 
-Implementation PR #93 pre-merge truth:
-- mergeable `true`;
-- unresolved review threads `0`;
-- exact pre-merge `main` remained START_SHA;
-- expected head `79c084611fb6dbe3617ba9a58f100934b9272587` was used.
+## 8. Exact-head F20 QA evidence
 
-PR-context QA:
-- Frontend Quality Gate `34642209064` — PASS; artifact `10280732493`; digest `sha256:fb9ac0c6c37e6d9ad27da1ac6c776aa8440405eff0fbe7fdf3cfae79746cb0b3`;
-- F19 `34642209107` — PASS; artifact `10280856920`; digest `sha256:3cad8e62b147ed1e4e3c460dda6113ec3aaa9b4e3f47bde07d7b1d3184d95069`;
-- F18 regression `34642209177` — PASS; artifact `10280517173`; digest `sha256:1a01b18bb5bccec1297f9dd68894b9a7e48facd4feeb30997963617555dd8016`;
-- F17 regression `34642209062` — PASS; artifact `10280128550`; digest `sha256:9deac635b4ec5278ba758a0fb6be701325293d4fe825a84693431d973fb05fa5`;
-- F16 regression `34642209078` — PASS; artifact `10280507215`; digest `sha256:8941bd80bae087b0ba2b1287b7e84fc44e0c1b77e6abb3a6b54071bb4238cc08`.
+Exact implementation head:
 
-Implementation merge/main:
+`a424b8ef1ea9cef4173ce5caa86106371281e1e4`
 
-`b3d6360af21c1c86a06a95cdbe20ac30ac42c84c`
+Focused F20 gate:
+- run `34653443430` — PASS;
+- contract/build/typecheck/SSR/SEO/LocalBusiness/responsive evidence PASS;
+- artifact `10284771804`;
+- digest `sha256:1ce354668583c5b9fba17811640eb5d5990e9a42ded90f93c0799b911bdc6661`.
 
-Post-main implementation QA on that exact SHA:
-- Frontend Quality Gate `34648835775` — PASS; artifact `10282474318`; digest `sha256:554e2b3fca09d93b0aa37363acd197347be436c86540caf6b3b23c21141f5901`;
-- F19 focused gate `34648835745` — PASS; artifact `10283008212`; digest `sha256:bc7bc1520e3eb7a3a87fce19e0baeac53731d1cb9cf3222bd48e8826955d6721`;
-- F18 regression `34648835820` — PASS; artifact `10282748480`; digest `sha256:ea4dcbd61f8e3016246fbd8cef6952085cedaac29e3abc8dad4d15869854232d`;
-- F17 regression `34648835901` — PASS; artifact `10282623618`; digest `sha256:45157552717c4a3401fccb2f3f047425f1632f8bce8e9ef569ce1021c0b10156`;
-- F16 regression `34648835803` — PASS; artifact `10283327884`; digest `sha256:1bf35fafc927231d5eedc79c74072f93f1f4d80fa91e5116c2b4b098a652573b`.
+Full Frontend Quality Gate:
+- run `34653443343` — PASS;
+- lint/build/typecheck/full contracts/browser smoke/responsive screenshots PASS;
+- artifact `10284697461`;
+- digest `sha256:d241f96dafd5394b1de5c4bdd2eb9d2d4871f68dc66b22b36be31a8d556ef773`.
 
-Live frontend `main` was reverified exact `b3d6360af21c1c86a06a95cdbe20ac30ac42c84c` before closeout branch creation.
+Manual responsive inspection:
+- `c1` authoritative visit-info state checked at `375 / 390 / 430 / 768 / 1024 / 1440`;
+- `c4` no-public-address state checked at the same six widths;
+- no observed horizontal overflow, clipping or overlap;
+- no-address state remains useful without fabricated contact/address data.
 
-## 8. Backend alignment truth
+## 9. Backend F20 alignment truth
 
 Backend repository:
 
 `sajadkhavas/turnoment-backend`
 
-F19 backend contract alignment is terminal **as documentation alignment only**:
-- Backend START `b0fc9ed73dc57aed6a28453745386489aaef0ceb`;
-- Issue `#35` — CLOSED / COMPLETED;
-- docs head `7f2663fa649df9b17bd2d5282e497954cb277359`;
-- PR `#36` — MERGED;
-- PR Backend Quality Gate `34641469931` — PASS on Python 3.12 / 3.14;
-- backend merge/main `b6421e1e76e846c89d799fe4860bc11c8242f2f8`;
-- post-main Backend Quality Gate `34641761119` — PASS on Python 3.12 / 3.14;
-- no gaming-center runtime Python/model/migration/serializer/view/URL implementation was added.
+Backend F20 alignment is terminal **as documentation alignment only**:
+- Backend START `b6421e1e76e846c89d799fe4860bc11c8242f2f8`;
+- Issue #37 — CLOSED / COMPLETED;
+- docs head `1844f02993063a5e4f9547d0f564f2e298cc6552`;
+- PR #38 — MERGED with expected-head lock;
+- backend merge/main `e8e48061cba201b3a12ac534ef97f22565bea5a3`;
+- PR-context Backend Quality Gate `34653701760` — PASS on Python 3.12 / 3.14;
+- post-main Backend Quality Gate `34653883656` — PASS on Python 3.12 / 3.14;
+- no runtime Python/model/migration/serializer/view/URL/settings/dependency/phase-registry implementation was added.
+
+Runtime remains exactly:
+
+`FRONTEND MOCK / BACKEND PENDING`
 
 Backend NEXT remains exactly:
 
 `P02 — Games / Catalog Foundation`
 
-F19 frontend acceptance does not make `GET /api/v1/centers/` live and does not reorder backend phases.
+## 10. F20 remaining acceptance chain
 
-## 9. Previous accepted frontend truth
+F20 is not terminal yet. Required remaining chain:
+1. commit this implementation documentation checkpoint;
+2. re-run exact-head Full + focused F20 QA on final reviewed implementation/docs head;
+3. final compare and frozen-route protection verification;
+4. implementation PR without auto-closing Issue #95;
+5. PR-context Full + F20 + all triggered frozen-route regressions PASS;
+6. mergeable=true, unresolved review threads=0, exact pre-merge main lock;
+7. expected-head implementation merge;
+8. post-main Full + F20 QA PASS;
+9. documentation-only non-recursive closeout;
+10. closeout PR-context gates PASS and expected-head merge;
+11. terminal frozen-main Full + F20 + triggered regression QA/artifacts/digests;
+12. exact live-main verification;
+13. terminal evidence in Issue #95 and close `completed`;
+14. only then report `DONE / MERGED / FROZEN — FINAL_CURRENT`.
 
-Accepted/frozen route truth retained:
-- F16 `/` = `DONE / MERGED / FROZEN — FINAL_CURRENT`;
-- F17 `/tournaments` = `DONE / MERGED / FROZEN — FINAL_CURRENT`;
-- F18 `/games` = `DONE / MERGED / FROZEN — FINAL_CURRENT`;
-- F02 `/games/$slug` = `FINAL_CURRENT` and frozen;
-- `/tournaments/$id` remains `FINAL_PRE_SEO` pending a later limited current-law recertification;
-- private account/dashboard/match routes retain their recorded `FINAL_PRIVATE` truth.
+## 11. Public-route NEXT after terminal F20
 
-Do not reopen frozen routes from chat memory.
+After F20 terminal freeze, current-law order remains:
 
-## 10. F19 documentation-only closeout law
-
-Closeout scope is restricted to exactly four Markdown files:
-1. `PROJECT_CONTINUITY.md`;
-2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
-3. `docs/workstreams/F19_PUBLIC_GAMING_CENTER_DISCOVERY.md`;
-4. `docs/workstreams/F19_CLOSEOUT.md`.
-
-No source code, package, lockfile, workflow, dependency or runtime configuration mutation is authorized.
-
-This closeout snapshot is non-recursive. The future closeout merge/frozen-main SHA and terminal post-closeout CI/artifact/digest facts belong in Issue #92 after they exist; do not create a recursive documentation commit solely to self-record them.
-
-## 11. Remaining terminal F19 chain
-
-F19 is not terminally `DONE` yet. Remaining gates:
-1. exact closeout compare: ahead 1 / behind 0 / exactly one commit / exactly four Markdown files;
-2. closeout PR to `main` without auto-closing Issue #92;
-3. PR-context normal + focused F19 + triggered frozen-route regression gates PASS;
-4. mergeable=true;
-5. unresolved review threads=0;
-6. exact live-main lock at implementation merge SHA before closeout merge;
-7. expected-head closeout merge;
-8. terminal frozen-main normal Frontend Quality Gate PASS;
-9. terminal frozen-main focused F19 gate PASS and triggered regression gates PASS;
-10. terminal artifact IDs/digests recorded in Issue #92;
-11. exact live frontend `main` reverified;
-12. Issue #92 updated with terminal evidence and closed `completed`;
-13. only then report `DONE / MERGED / FROZEN — FINAL_CURRENT`.
-
-## 12. Public-route NEXT after F19
-
-After F19 terminal freeze, current-law order remains:
-
-`/centers/$id` → `/ranking` → `/players/$username` → `/host` → `/rules`
+`/ranking` → `/players/$username` → `/host` → `/rules`
 
 unless an explicit product decision changes that order.
 

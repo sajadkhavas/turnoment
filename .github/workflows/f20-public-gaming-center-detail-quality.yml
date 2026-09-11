@@ -1,0 +1,158 @@
+name: F20 Public Gaming Center Detail Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f20-public-gaming-center-detail
+    paths:
+      - "src/routes/centers.$id.tsx"
+      - "src/components/centers/gaming-center-detail-page.tsx"
+      - "src/lib/gaming-center-detail-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F20_*"
+      - ".github/workflows/f20-public-gaming-center-detail-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/centers.$id.tsx"
+      - "src/components/centers/gaming-center-detail-page.tsx"
+      - "src/lib/gaming-center-detail-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F20_*"
+      - ".github/workflows/f20-public-gaming-center-detail-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  gaming-center-detail-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Gaming center detail contract checks
+        run: bun run src/lib/gaming-center-detail-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, LocalBusiness and responsive evidence
+        shell: bash
+        env:
+          VITE_DATA_ADAPTER: mock
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F20 visual QA."
+            exit 1
+          fi
+
+          mkdir -p artifacts/f20-gaming-center-detail-qa
+          bun run dev -- --host 127.0.0.1 --port 4178 > /tmp/turnoment-f20.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          CENTER_URL="http://127.0.0.1:4178/centers/c1"
+          NO_ADDRESS_URL="http://127.0.0.1:4178/centers/c4"
+          NOT_FOUND_URL="http://127.0.0.1:4178/centers/does-not-exist"
+
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$CENTER_URL" > artifacts/f20-gaming-center-detail-qa/c1.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f20.log || true
+            exit 1
+          fi
+
+          curl -fsS "$NO_ADDRESS_URL" > artifacts/f20-gaming-center-detail-qa/c4.html
+          curl -sS "$NOT_FOUND_URL" > artifacts/f20-gaming-center-detail-qa/not-found.html
+
+          CENTER_HTML="artifacts/f20-gaming-center-detail-qa/c1.html"
+          NO_ADDRESS_HTML="artifacts/f20-gaming-center-detail-qa/c4.html"
+          NOT_FOUND_HTML="artifacts/f20-gaming-center-detail-qa/not-found.html"
+
+          grep -a -q "Arena Gaming Center" "$CENTER_HTML"
+          grep -a -q "Arena Gaming Center | گیم‌نت و مرکز گیمینگ در کرج | Turnoment" "$CENTER_HTML"
+          grep -a -q 'name="robots" content="index,follow"' "$CENTER_HTML"
+          grep -a -q 'rel="canonical" href="/centers/c1"' "$CENTER_HTML"
+          grep -a -q 'application/ld+json' "$CENTER_HTML"
+          grep -a -q 'LocalBusiness' "$CENTER_HTML"
+          grep -a -q 'PostalAddress' "$CENTER_HTML"
+          grep -a -q 'fc26-karaj-champions-cup' "$CENTER_HTML"
+          grep -a -q 'ea-fc-26' "$CENTER_HTML"
+          grep -a -q "کرج، عظیمیه" "$CENTER_HTML"
+
+          grep -a -q "Gohardasht Play" "$NO_ADDRESS_HTML"
+          grep -a -q 'rel="canonical" href="/centers/c4"' "$NO_ADDRESS_HTML"
+          if grep -a -q 'LocalBusiness' "$NO_ADDRESS_HTML"; then
+            echo "LocalBusiness markup must not be emitted without authoritative public address data."
+            exit 1
+          fi
+
+          grep -a -q "این مرکز گیمینگ پیدا نشد" "$NOT_FOUND_HTML"
+          grep -a -q 'name="robots" content="noindex,nofollow"' "$NOT_FOUND_HTML"
+
+          for HTML in "$CENTER_HTML" "$NO_ADDRESS_HTML"; do
+            if grep -a -q "ایران مهر افزار\|iranmehrafzar\.ir\|امتیاز کاربران\| نظر\|بک‌اند\|API\|mock\|placeholder" "$HTML"; then
+              echo "Legacy brand, unsupported rating/review copy, or implementation-stage language must not exist in F20 SSR."
+              exit 1
+            fi
+            MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+            test "$MAIN_COUNT" -eq 1
+          done
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},2000" \
+              --screenshot="artifacts/f20-gaming-center-detail-qa/center-c1-${WIDTH}.png" \
+              "$CENTER_URL" >/dev/null 2>&1
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},2000" \
+              --screenshot="artifacts/f20-gaming-center-detail-qa/center-c4-${WIDTH}.png" \
+              "$NO_ADDRESS_URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f20-gaming-center-detail-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 12
+
+      - name: Upload F20 gaming center detail QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f20-gaming-center-detail-qa-${{ github.sha }}
+          path: artifacts/f20-gaming-center-detail-qa
+          if-no-files-found: error
+          retention-days: 14
