@@ -1,6 +1,6 @@
 # F16 — Public Home Discovery
 
-Status: `IN PROGRESS — IMPLEMENTATION`
+Status: `MERGED / CLOSEOUT IN PROGRESS`
 
 Route: `/`
 
@@ -8,7 +8,9 @@ Tracking Issue: `#81`
 
 START_SHA: `008f4fbd959138e3abe6bf85078f6cf700319bd2`
 
-Branch: `phase/f16-public-home-discovery`
+Implementation branch: `phase/f16-public-home-discovery`
+
+Closeout branch: `closeout/f16-public-home-discovery`
 
 Target: `FINAL_CURRENT`
 
@@ -23,7 +25,7 @@ Mandatory root law read before implementation:
 - `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
 - `docs/SEO_CONTENT_RESEARCH_TEMPLATE.md`.
 
-Live frontend main was exact START_SHA before branch creation.
+Live frontend main was exact START_SHA before implementation branch creation.
 
 ## 2. Source audit
 
@@ -37,6 +39,7 @@ Blocking findings:
 - popular-game cards lost game identity when navigating;
 - showdown navigation was generic;
 - public metadata still used legacy `ایران مهر افزار` branding;
+- shared tournament shell exposed fabricated phone/email/address and dead social `#` links;
 - claims were not backed by a stable anonymous backend projection;
 - no current SEO/final-copy evidence chain existed.
 
@@ -64,7 +67,7 @@ Frontend owns:
 
 No production fallback to fixture data is allowed.
 
-## 4. Backend alignment
+## 4. Backend alignment — terminal documentation truth
 
 Backend Issue `#29` — CLOSED / COMPLETED as documentation alignment only.
 
@@ -80,6 +83,8 @@ Backend Issue `#29` — CLOSED / COMPLETED as documentation alignment only.
 
 Planned endpoint:
 `GET /api/v1/discovery/home/`
+
+This backend closure is contract documentation only. It does not make the endpoint live.
 
 ## 5. Implementation decisions
 
@@ -98,9 +103,15 @@ F16 adds:
 
 F16 intentionally does not rewrite `src/lib/tournament-home-data.ts`, because unre-certified adjacent routes still consume that file. The accepted Home route stops importing it entirely.
 
+Shared shell correction included in the same implementation:
+- active tournament shell branding changed to Turnoment;
+- fabricated phone/email/address removed;
+- dead social `#` links removed;
+- only real product routes/copy retained.
+
 ## 6. Final product states
 
-Required Home states:
+Accepted Home states:
 - SSR ready projection;
 - loader pending skeleton;
 - loader/transport error with retry;
@@ -114,11 +125,11 @@ Required Home states:
 - stable navigation from dynamic cards;
 - responsive presentation at 375 / 390 / 430 / 768 / 1024 / 1440.
 
-No engineering-stage copy or fabricated fallback claim may be shown to users.
+No engineering-stage copy or fabricated fallback claim is shown to users.
 
-## 7. SEO/final-copy law
+## 7. SEO/final-copy acceptance
 
-See `docs/workstreams/F16_PUBLIC_HOME_SEO.md` for the evidence record.
+Detailed research record: `docs/workstreams/F16_PUBLIC_HOME_SEO.md`.
 
 Accepted intent split:
 - `/` broad discovery gateway;
@@ -140,25 +151,113 @@ Canonical: `/`
 
 Organization JSON-LD is intentionally omitted until stable absolute production site/logo identity is available; F16 does not invent structured-data facts.
 
-## 8. Quality gate
+## 8. Exact implementation evidence
 
-Before implementation merge:
-1. one clean implementation commit from START;
-2. no dependency/lockfile drift;
-3. normal Frontend Quality Gate PASS;
-4. full contract chain includes `public-home-contract.spec.ts`;
-5. focused F16 gate verifies SSR H1/title/meta/robots/canonical, removal of legacy brand/engineering copy and dynamic crawlable links;
-6. focused F16 gate captures six responsive screenshots;
-7. manual six-width QA PASS;
-8. PR-context normal + focused gates PASS;
-9. mergeable=true and unresolved review threads=0;
-10. exact pre-merge `main` lock;
-11. expected-head merge;
-12. post-main normal + focused QA;
-13. documentation-only closeout;
-14. closeout PR gates + expected-head merge;
-15. terminal frozen-main normal + focused QA/artifact/digest;
-16. exact-main verification and Issue #81 close completed.
+Implementation head:
+
+`41aeba987fa4435832361db95d2e232817c668b3`
+
+Compare from START:
+- ahead 1 / behind 0;
+- exactly one commit;
+- exactly 15 changed files;
+- no lockfile mutation;
+- no dependency/version mutation.
+
+Exact-head normal gate:
+- Frontend Quality Gate `34592421423` — PASS;
+- artifact `10196275291`;
+- digest `sha256:41799e4d45b4351fdb3f87edb7513c1af918858087d04661c618ab6721bbef5a`.
+
+Exact-head focused gate:
+- F16 Public Home Quality Gate `34592421509` — PASS;
+- artifact `10196188910`;
+- digest `sha256:1a6ff22263d98927f784c5d5facff97978b125370cee0496052d32e9627a4651`;
+- SSR/final-copy/link assertions PASS;
+- six screenshots at 375/390/430/768/1024/1440 generated;
+- manual six-width visual QA PASS with no observed horizontal overflow, clipping or overlap.
+
+## 9. Implementation PR acceptance
+
+Implementation PR:
+
+`#82` — MERGED.
+
+PR-context normal gate:
+- run `34598183137` — PASS;
+- artifact `10262957454`;
+- digest `sha256:0e563511f2c20e042ed27d025395b9fd40a4ce28d2f9e2f04cdcc057bc706a8e`.
+
+PR-context focused gate:
+- run `34598183138` — PASS;
+- artifact `10263646547`;
+- digest `sha256:52cc118d27e789894295523c8b6cf38bd3c0b98e098790673ec2734c1cf910e9`.
+
+Before merge:
+- PR mergeable `true`;
+- unresolved review threads `0`;
+- live main exact START_SHA;
+- expected-head merge used with implementation head.
+
+Implementation merge / accepted main:
+
+`2b66c5140511febaa98e96d93351cfdb62773bbf`
+
+## 10. Post-main implementation acceptance
+
+Exact implementation main `2b66c5140511febaa98e96d93351cfdb62773bbf`:
+
+Normal Frontend Quality Gate:
+- run `34598728780` — PASS including full browser regression;
+- artifact `10263148439`;
+- digest `sha256:6522b08fc635fbcef7844257d37083681a4407b3de4afa14eebc51034b003fda`.
+
+Focused F16 Public Home Quality Gate:
+- run `34598728817` — PASS;
+- artifact `10263087863`;
+- digest `sha256:6337d86bbaa94e83ced301825445483c5b59c91a93426480a1d4ff810c18dd3d`.
+
+Live frontend main was reverified exact accepted implementation SHA before closeout branch creation.
+
+Implementation is therefore accepted on main and `/` may be promoted non-recursively to `FINAL_CURRENT` in the compliance registry.
+
+## 11. Closeout boundary
+
+Closeout is documentation-only.
+
+Authorized files exactly:
+1. `PROJECT_CONTINUITY.md`;
+2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
+3. `docs/workstreams/F16_PUBLIC_HOME.md`;
+4. `docs/workstreams/F16_CLOSEOUT.md`.
+
+Forbidden during closeout:
+- source/runtime code;
+- `package.json` or lockfiles;
+- workflows;
+- dependencies;
+- route implementation;
+- backend phase/runtime changes.
+
+Non-recursive rule:
+- this committed record may contain implementation evidence that already exists;
+- it MUST NOT claim its own future closeout merge SHA or future terminal main run/artifact;
+- those terminal facts are recorded in Issue #81 after closeout merge and terminal CI actually exist.
+
+## 12. Remaining acceptance chain
+
+Before F16 can be terminally reported `DONE / MERGED / FROZEN — FINAL_CURRENT`:
+1. closeout compare must be one commit / exactly four Markdown files;
+2. closeout PR must remain docs-only and must not auto-close Issue #81;
+3. PR-context normal + focused gates PASS;
+4. PR mergeable=true and unresolved review threads=0;
+5. exact pre-merge main remains implementation merge SHA;
+6. expected-head closeout merge;
+7. terminal frozen-main normal + focused gates PASS;
+8. terminal artifacts/digests recorded;
+9. exact live-main verification;
+10. Issue #81 updated and CLOSED / COMPLETED.
 
 Only then may F16 be reported as:
+
 `DONE / MERGED / FROZEN — FINAL_CURRENT`.
