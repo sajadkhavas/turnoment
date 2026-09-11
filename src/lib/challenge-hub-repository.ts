@@ -1,7 +1,11 @@
-import { MockChallengeHubRepository, type ChallengeHubRepository } from "./challenge-hub-data";
+import { MockChallengeHubRepository } from "./challenge-hub-data";
 import { DjangoChallengeHubRepository } from "./challenge-hub-http-repository";
+import type { ChallengeHubRepository } from "./challenge-hub-contract";
 
-export const challengeHubRepository: ChallengeHubRepository =
-  import.meta.env.VITE_DATA_ADAPTER === "django"
-    ? new DjangoChallengeHubRepository()
-    : new MockChallengeHubRepository();
+function selectChallengeHubRepository(): ChallengeHubRepository {
+  const adapter = import.meta.env.VITE_DATA_ADAPTER?.trim().toLowerCase();
+  if (adapter === "django") return new DjangoChallengeHubRepository();
+  return new MockChallengeHubRepository();
+}
+
+export const challengeHubRepository = selectChallengeHubRepository();
