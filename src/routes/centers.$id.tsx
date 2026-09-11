@@ -1,97 +1,99 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { BadgeCheck, MapPin, Star } from "lucide-react";
+import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import {
+  GamingCenterDetailErrorState,
+  GamingCenterDetailPage,
+  GamingCenterDetailSkeleton,
+} from "@/components/centers/gaming-center-detail-page";
+import {
+  buildGamingCenterLocalBusinessJsonLd,
+  parseGamingCenterPublicId,
+} from "@/lib/gaming-center-detail-contract";
+import { gamingCenterDetailRepository } from "@/lib/gaming-center-detail-repository";
 import { TournamentLayout } from "@/components/tournament/tournament-layout";
-import { TournamentCard } from "@/components/home/tournament-card";
-import { getCenter, tournamentsOfCenter } from "@/lib/tournament-data";
-import { formatNumber } from "@/lib/format";
+
+function centerTitle(name: string, city: string) {
+  return `${name} | گیم‌نت و مرکز گیمینگ در ${city} | Turnoment`;
+}
+
+function centerDescription(name: string, city: string, district: string) {
+  return `${name} در ${city}، ${district}؛ امکانات مرکز، وضعیت تأیید و مسابقات حضوری پیش‌رو را در Turnoment ببین.`;
+}
 
 export const Route = createFileRoute("/centers/$id")({
-  loader: ({ params }) => {
-    const c = getCenter(params.id);
-    if (!c) throw notFound();
-    return { c, tournaments: tournamentsOfCenter(c.name) };
+  ssr: true,
+  loader: async ({ params }) => {
+    const publicId = parseGamingCenterPublicId(params.id);
+    if (!publicId) throw notFound();
+
+    const center = await gamingCenterDetailRepository.getByPublicId(publicId);
+    if (!center) throw notFound();
+    return { center };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "گیم‌نت یافت نشد | ایران مهر افزار" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "مرکز گیمینگ پیدا نشد | Turnoment" },
+          { name: "robots", content: "noindex,nofollow" },
+        ],
+      };
     }
-    const title = `${loaderData.c.name} | گیم‌نت تأییدشده`;
-    const description = `${loaderData.c.name} در ${loaderData.c.city}، ${loaderData.c.district} — امکانات، امتیاز کاربران و مسابقات حضوری پیش‌رو.`;
+
+    const { center } = loaderData;
+    const title = centerTitle(center.name, center.city.name);
+    const description = centerDescription(center.name, center.city.name, center.district);
+    const canonical = `/centers/${center.publicId}`;
+    const localBusiness = buildGamingCenterLocalBusinessJsonLd(center);
+
     return {
       meta: [
         { title },
         { name: "description", content: description },
+        { name: "robots", content: "index,follow" },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: canonical },
+        ...(center.coverImage ? [{ property: "og:image", content: center.coverImage }] : []),
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: canonical }],
+      scripts: localBusiness
+        ? [{ type: "application/ld+json", children: JSON.stringify(localBusiness) }]
+        : [],
     };
   },
-  notFoundComponent: CenterNotFound,
-  component: CenterDetail,
+  pendingComponent: GamingCenterDetailSkeleton,
+  errorComponent: GamingCenterDetailRouteError,
+  notFoundComponent: GamingCenterNotFound,
+  component: GamingCenterDetailRoute,
 });
 
-function CenterNotFound() {
-  return (
-    <TournamentLayout>
-      <div className="container mx-auto px-4 py-24 text-center">
-        <h1 className="text-2xl font-black">این گیم‌نت پیدا نشد</h1>
-        <Link to="/centers" className="mt-6 inline-flex h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground">
-          بازگشت به گیم‌نت‌ها
-        </Link>
-      </div>
-    </TournamentLayout>
-  );
+function GamingCenterDetailRoute() {
+  const { center } = Route.useLoaderData();
+  return <GamingCenterDetailPage center={center} />;
 }
 
-function CenterDetail() {
-  const { c, tournaments } = Route.useLoaderData();
+function GamingCenterDetailRouteError() {
+  const router = useRouter();
+  return <GamingCenterDetailErrorState onRetry={() => void router.invalidate()} />;
+}
 
+function GamingCenterNotFound() {
   return (
-    <TournamentLayout>
-      <div className="relative h-56 w-full overflow-hidden md:h-72">
-        <img src={c.image} alt={c.name} width={1280} height={720} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-      </div>
-
-      <div className="container mx-auto -mt-16 px-4">
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-black md:text-3xl">{c.name}</h1>
-            {c.verified && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-secondary/40 bg-secondary/10 px-2.5 py-1 text-[11px] font-bold text-secondary">
-                <BadgeCheck className="h-3.5 w-3.5" /> تأییدشده
-              </span>
-            )}
-          </div>
-          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-primary" />{c.city}، {c.district}</span>
-            <span className="flex items-center gap-1.5 font-mono-num"><Star className="h-4 w-4 text-warning" />{formatNumber(c.rating)} ({formatNumber(c.reviews)} نظر)</span>
-            <span className="font-mono-num text-secondary">{formatNumber(c.upcomingTournaments)} مسابقه پیش‌رو</span>
-          </div>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {c.equipment.map((e) => (
-              <li key={e} className="rounded-lg border border-border bg-background/60 px-2.5 py-1 text-xs text-muted-foreground">{e}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <section className="container mx-auto px-4 py-10">
-        <h2 className="mb-6 text-2xl font-black">مسابقات این گیم‌نت</h2>
-        {tournaments.length ? (
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {tournaments.map((t) => (
-              <TournamentCard key={t.id} t={t} />
-            ))}
-          </div>
-        ) : (
-          <p className="rounded-2xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-            فعلاً مسابقه‌ای برای این گیم‌نت ثبت نشده است.
-          </p>
-        )}
-      </section>
+    <TournamentLayout pageOwnsMain>
+      <main className="container mx-auto px-4 py-24 text-center">
+        <h1 className="text-2xl font-black">این مرکز گیمینگ پیدا نشد</h1>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-muted-foreground">
+          ممکن است آدرس این صفحه تغییر کرده باشد یا این مرکز دیگر در فهرست عمومی نباشد.
+        </p>
+        <Link
+          to="/centers"
+          className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          مشاهده مرکزهای گیمینگ
+        </Link>
+      </main>
     </TournamentLayout>
   );
 }
