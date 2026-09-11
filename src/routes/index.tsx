@@ -1,24 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TournamentLayout } from "@/components/tournament/tournament-layout";
-import { HomeHero } from "@/components/home/home-hero";
-import { PlatformBenefits } from "@/components/home/platform-benefits";
-import { PopularGames } from "@/components/home/popular-games";
-import { FeaturedTournaments } from "@/components/home/featured-tournaments";
-import { FeaturedShowdown } from "@/components/home/featured-showdown";
-import { FeaturedGamingCenters } from "@/components/home/featured-gaming-centers";
-import { PlayerRanking } from "@/components/home/player-ranking";
-import { HowItWorks } from "@/components/home/how-it-works";
-import { FinalCta } from "@/components/home/final-cta";
+import { PublicHomeErrorState, PublicHomePage, PublicHomeSkeleton } from "@/components/home/public-home-page";
+import { publicHomeRepository } from "@/lib/public-home-repository";
 
-const TITLE = "مسابقات گیمینگ حضوری | ایران مهر افزار";
-const DESCRIPTION =
-  "مسابقات حضوری بازی‌های محبوب را در گیم‌نت‌های معتبر پیدا کنید، آنلاین ثبت‌نام کنید، نتایج و رتبه‌بندی خود را دنبال کنید.";
+const TITLE = "مسابقات گیمینگ حضوری و تورنمنت‌های گیم‌نت | Turnoment";
+const DESCRIPTION = "مسابقات گیمینگ حضوری را بر اساس بازی، شهر و زمان پیدا کن؛ جزئیات رقابت و مرکز میزبان را ببین و از همان صفحه مسیر ثبت‌نام را ادامه بده.";
 
 export const Route = createFileRoute("/")({
+  ssr: true,
+  loader: () => publicHomeRepository.getHome(),
   head: () => ({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
+      { name: "robots", content: "index,follow" },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
@@ -26,21 +20,12 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
-  component: HomePage,
+  pendingComponent: PublicHomeSkeleton,
+  errorComponent: ({ reset }) => <PublicHomeErrorState onRetry={reset} />,
+  component: HomeRoute,
 });
 
-function HomePage() {
-  return (
-    <TournamentLayout>
-      <HomeHero />
-      <PlatformBenefits />
-      <PopularGames />
-      <FeaturedTournaments />
-      <FeaturedShowdown />
-      <FeaturedGamingCenters />
-      <PlayerRanking />
-      <HowItWorks />
-      <FinalCta />
-    </TournamentLayout>
-  );
+function HomeRoute() {
+  const data = Route.useLoaderData();
+  return <PublicHomePage data={data} />;
 }
