@@ -1,0 +1,156 @@
+name: F17 Public Tournament Discovery Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f17-public-tournament-discovery
+    paths:
+      - "src/routes/tournaments.index.tsx"
+      - "src/components/tournaments/**"
+      - "src/lib/tournament-discovery-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/workstreams/F17_*"
+      - ".github/workflows/f17-public-tournament-discovery-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/tournaments.index.tsx"
+      - "src/components/tournaments/**"
+      - "src/lib/tournament-discovery-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/workstreams/F17_*"
+      - ".github/workflows/f17-public-tournament-discovery-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  tournament-discovery-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Tournament discovery contract checks
+        run: bun run src/lib/tournament-discovery-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, search-state and responsive evidence
+        shell: bash
+        env:
+          VITE_DATA_ADAPTER: mock
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F17 visual QA."
+            exit 1
+          fi
+
+          mkdir -p artifacts/f17-tournament-discovery-qa
+          bun run dev -- --host 127.0.0.1 --port 4175 > /tmp/turnoment-f17.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          BASE_URL="http://127.0.0.1:4175/tournaments"
+          FILTERED_URL="http://127.0.0.1:4175/tournaments?game=eafc26&city=karaj&verified=true&sort=soonest"
+          EMPTY_URL="http://127.0.0.1:4175/tournaments?game=warcraft&city=karaj"
+
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$BASE_URL" > artifacts/f17-tournament-discovery-qa/base.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f17.log || true
+            exit 1
+          fi
+
+          curl -fsS "$FILTERED_URL" > artifacts/f17-tournament-discovery-qa/filtered.html
+          curl -fsS "$EMPTY_URL" > artifacts/f17-tournament-discovery-qa/empty.html
+
+          BASE_HTML="artifacts/f17-tournament-discovery-qa/base.html"
+          FILTERED_HTML="artifacts/f17-tournament-discovery-qa/filtered.html"
+          EMPTY_HTML="artifacts/f17-tournament-discovery-qa/empty.html"
+
+          grep -a -q "تورنمنت‌ها و مسابقات گیمینگ حضوری" "$BASE_HTML"
+          grep -a -q "تورنمنت‌ها و مسابقات گیمینگ حضوری | Turnoment" "$BASE_HTML"
+          grep -a -q 'name="robots" content="index,follow"' "$BASE_HTML"
+          grep -a -q 'rel="canonical" href="/tournaments"' "$BASE_HTML"
+          grep -a -q "جام قهرمانان کرج" "$BASE_HTML"
+          grep -a -q "جزئیات مسابقه" "$BASE_HTML"
+          grep -a -q "/games" "$BASE_HTML"
+          grep -a -q "/centers" "$BASE_HTML"
+          grep -a -q "/rules" "$BASE_HTML"
+
+          grep -a -q 'name="robots" content="noindex,follow"' "$FILTERED_HTML"
+          grep -a -q 'rel="canonical" href="/tournaments"' "$FILTERED_HTML"
+          grep -a -q "جام قهرمانان کرج" "$FILTERED_HTML"
+          grep -a -q "مرکز تأییدشده" "$FILTERED_HTML"
+
+          grep -a -q "مسابقه‌ای با این فیلترها پیدا نشد" "$EMPTY_HTML"
+
+          if grep -a -q "ایران مهر افزار\|iranmehrafzar\.ir\|بک‌اند\|API\|mock\|placeholder\|به‌زودی فعال می‌شود" "$BASE_HTML"; then
+            echo "Legacy brand or implementation-stage copy must not exist in F17 SSR."
+            exit 1
+          fi
+
+          BASE_MAIN_COUNT="$(grep -a -o '<main' "$BASE_HTML" | wc -l | tr -d ' ')"
+          FILTERED_MAIN_COUNT="$(grep -a -o '<main' "$FILTERED_HTML" | wc -l | tr -d ' ')"
+          EMPTY_MAIN_COUNT="$(grep -a -o '<main' "$EMPTY_HTML" | wc -l | tr -d ' ')"
+          test "$BASE_MAIN_COUNT" -eq 1
+          test "$FILTERED_MAIN_COUNT" -eq 1
+          test "$EMPTY_MAIN_COUNT" -eq 1
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1800" \
+              --screenshot="artifacts/f17-tournament-discovery-qa/base-${WIDTH}.png" \
+              "$BASE_URL" >/dev/null 2>&1
+
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1800" \
+              --screenshot="artifacts/f17-tournament-discovery-qa/filtered-${WIDTH}.png" \
+              "$FILTERED_URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f17-tournament-discovery-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 12
+
+      - name: Upload F17 tournament discovery QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f17-tournament-discovery-qa-${{ github.sha }}
+          path: artifacts/f17-tournament-discovery-qa
+          if-no-files-found: error
+          retention-days: 14
