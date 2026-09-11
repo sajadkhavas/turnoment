@@ -1,0 +1,134 @@
+name: F16 Public Home Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f16-public-home-discovery
+    paths:
+      - "src/routes/index.tsx"
+      - "src/components/home/**"
+      - "src/components/tournament/tournament-header.tsx"
+      - "src/components/tournament/tournament-footer.tsx"
+      - "src/lib/public-home-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/workstreams/F16_*"
+      - ".github/workflows/f16-public-home-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/index.tsx"
+      - "src/components/home/**"
+      - "src/components/tournament/tournament-header.tsx"
+      - "src/components/tournament/tournament-footer.tsx"
+      - "src/lib/public-home-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/workstreams/F16_*"
+      - ".github/workflows/f16-public-home-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  home-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Public Home contract checks
+        run: bun run src/lib/public-home-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, final-copy, link and responsive evidence
+        shell: bash
+        env:
+          VITE_DATA_ADAPTER: mock
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F16 visual QA."
+            exit 1
+          fi
+
+          mkdir -p artifacts/f16-home-qa
+          bun run dev -- --host 127.0.0.1 --port 4174 > /tmp/turnoment-f16-home.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          HOME_URL="http://127.0.0.1:4174/"
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$HOME_URL" > artifacts/f16-home-qa/home.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f16-home.log || true
+            exit 1
+          fi
+
+          HTML="artifacts/f16-home-qa/home.html"
+
+          grep -a -q "مسابقات گیمینگ حضوری نزدیکت را پیدا کن" "$HTML"
+          grep -a -q "مسابقات گیمینگ حضوری و تورنمنت‌های گیم‌نت" "$HTML"
+          grep -a -q 'name="robots" content="index,follow"' "$HTML"
+          grep -a -q 'rel="canonical" href="/"' "$HTML"
+          grep -a -q "پیدا کردن مسابقه" "$HTML"
+          grep -a -q "Turnoment" "$HTML"
+          grep -a -q "fc26-karaj-champions-cup" "$HTML"
+          grep -a -q "/centers/c1" "$HTML"
+          grep -a -q "/ranking" "$HTML"
+          grep -a -q "/host" "$HTML"
+          grep -a -q "eafc26" "$HTML"
+
+          if grep -a -q "ایران مهر افزار\|iranmehrafzar\.ir\|بک‌اند\|API\|mock\|placeholder\|به‌زودی فعال می‌شود" "$HTML"; then
+            echo "Legacy brand or implementation-stage copy must not exist in F16 Home SSR."
+            exit 1
+          fi
+
+          MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+          test "$MAIN_COUNT" -eq 1
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1600" \
+              --screenshot="artifacts/f16-home-qa/home-${WIDTH}.png" \
+              "$HOME_URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f16-home-qa -maxdepth 1 -type f -name 'home-*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 6
+
+      - name: Upload F16 Home QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f16-home-qa-${{ github.sha }}
+          path: artifacts/f16-home-qa
+          if-no-files-found: error
+          retention-days: 14
