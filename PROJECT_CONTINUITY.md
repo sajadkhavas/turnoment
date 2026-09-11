@@ -28,25 +28,21 @@ Repository: `sajadkhavas/turnoment`
 
 Current accepted implementation main:
 
-`2b66c5140511febaa98e96d93351cfdb62773bbf`
+`22e4c67425f2bf0cefe9079b2e014c2395f6448a`
 
-That SHA is the merged F16 implementation and has passed both required post-main implementation gates.
-
-Previous terminal frozen main before F16:
-
-`008f4fbd959138e3abe6bf85078f6cf700319bd2` — F15 terminal frozen main.
+That SHA is the merged F17 `/tournaments` implementation and has passed the required post-main implementation gates.
 
 Active governance workstream:
 
-`F16 — Public Home Discovery`
+`F17 — Public Tournament Discovery`
 
-Route: `/`
+Route: `/tournaments`
 
-Tracking Issue: `#81` — OPEN until terminal frozen-main evidence exists.
+Tracking Issue: `#84` — MUST remain open until terminal frozen-main evidence exists.
 
-Implementation branch: `phase/f16-public-home-discovery`
+Implementation branch: `phase/f17-public-tournament-discovery`
 
-Closeout branch: `closeout/f16-public-home-discovery`
+Closeout branch: `closeout/f17-public-tournament-discovery`
 
 Target: `FINAL_CURRENT`
 
@@ -54,245 +50,234 @@ Current workstream status:
 
 `MERGED / CLOSEOUT IN PROGRESS`
 
-Route acceptance status may be promoted non-recursively to `FINAL_CURRENT` because implementation is merged and required post-main implementation QA is green. The F16 workstream itself is not terminally `DONE / MERGED / FROZEN` until closeout merge, terminal main QA/artifacts/digests, exact live-main verification and Issue #81 closure are complete.
+Route acceptance may be promoted non-recursively to `FINAL_CURRENT` because implementation is merged and required post-main implementation QA is green. The F17 workstream itself is not terminally `DONE / MERGED / FROZEN` until closeout merge, terminal frozen-main QA/artifacts/digests, exact live-main verification and Issue #84 closure are complete.
 
 Runtime truth remains:
 
 `FRONTEND MOCK / BACKEND PENDING`
 
-until the authorized backend domain phases implement `GET /api/v1/discovery/home/`.
+until an authorized backend domain phase implements `GET /api/v1/tournaments/`.
 
 ## 3. Previous terminal frontend truth
 
-F01–F15 remain accepted/frozen according to their route/workstream records. Most recent prior terminal workstream:
+F01–F16 remain accepted/frozen according to their route/workstream records. Most recent prior terminal workstream:
 
-F15 `/dashboard/challenges`:
-- status `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
-- Issue `#77` — CLOSED / COMPLETED;
-- implementation PR `#79` — MERGED;
-- implementation merge `5db25c291a250a94676e143ba11642c86b2f8152`;
-- closeout PR `#80` — MERGED;
-- frozen main `008f4fbd959138e3abe6bf85078f6cf700319bd2`;
-- terminal Frontend Quality Gate `34589429398` — PASS;
-- terminal artifact `10195137753`;
-- digest `sha256:61e8e493f8be1ea5c0262afa4cddecba8dc126a7c5bba0ba4b6e916499ecbbd0`.
+F16 `/`:
+- status `DONE / MERGED / FROZEN — FINAL_CURRENT`;
+- Issue `#81` — CLOSED / COMPLETED;
+- implementation PR `#82` — MERGED;
+- implementation merge `2b66c5140511febaa98e96d93351cfdb62773bbf`;
+- closeout PR `#83` — MERGED;
+- frozen main `fb87a7d84470db6ed1eba03ce0251c5f1eb6b7a9`;
+- terminal Frontend Quality Gate `34604894800` — PASS, artifact `10265894586`, digest `sha256:95703556b9372fe843200dc3a8e468fc46e6e4a0d6fa976b4bd177e57164047c`;
+- terminal F16 Public Home Quality Gate `34604894703` — PASS, artifact `10265414493`, digest `sha256:233d5cafc550d6a05190519074e0d21a44630876d0d0addd2082d9a0336a5cd8`.
 
-Do not reopen or rebuild frozen F01–F15 routes from memory. Any future material change requires a new controlled workstream and exact-source audit.
+Do not reopen or rebuild frozen F01–F16 routes from memory. Any future material change requires a new controlled workstream and exact-source audit.
 
-## 4. F16 permanent architecture truth
+## 4. F17 permanent architecture truth
 
 Permanent boundary:
 
-`public / route → SSR loader → typed PublicHomeRepository → runtime-validated public-home projection → Home UI`
+`validated URL search → loaderDeps → SSR loader → typed TournamentDiscoveryRepository → runtime-validated discovery projection → UI`
 
 Backend/repository owns:
-- aggregate discovery stats when exposed;
-- stable game identity/slug and active-tournament counts;
-- Home finder game/city/date options that come from domain data;
-- featured tournament identity, venue, lifecycle, registration/capacity/fee/prize truth;
-- gaming-center identity, verification, location, equipment/review projection and upcoming-tournament counts;
-- ranking identity/rank/rating/result-derived values;
-- optional featured-showdown identity/timing/player/rating projection;
-- stable IDs/slugs used for navigation/search relations.
+- API query validation, filtering, ordering and pagination;
+- stable tournament/game/venue identity;
+- lifecycle and registration state;
+- gaming-center verification/location;
+- schedule/timezone/display-date projection;
+- capacity limit/registered/remaining truth;
+- entry fee and fixed prize;
+- optional featured tournament identity.
 
 Frontend owns:
-- final static Persian explanatory copy and information hierarchy;
-- temporary finder form state before URL navigation;
-- responsive/accessibility presentation;
-- deterministic QA fixture behind the same permanent repository contract.
+- safe normalization of shareable URL search state;
+- reset-to-page-1 navigation when inventory facets change;
+- final static Persian labels/copy and information hierarchy;
+- presentation/formatting/accessibility/responsive behavior;
+- base-vs-faceted canonical/robots policy;
+- deterministic fixture repository for dev/test/visual QA only.
 
-Frontend MUST NOT calculate verification, lifecycle, capacity truth, rank/rating, result/winner or aggregate site statistics from local arrays.
+Frontend MUST NOT become authoritative for filtering/sorting/pagination, verification, tournament lifecycle, registration/capacity, fee/prize or featured identity.
 
 ## 5. Production adapter law
 
-F16 repository selection is explicit:
-- `VITE_DATA_ADAPTER=mock` → deterministic dev/test/visual-QA fixture;
-- `VITE_DATA_ADAPTER=django` → production HTTP repository;
-- when adapter is unspecified, production defaults to Django/HTTP while development defaults to fixture.
+Production uses the HTTP repository against the planned anonymous-safe/read-only endpoint:
 
-Production therefore never silently falls back to fabricated Home records when the backend is unavailable.
+`GET /api/v1/tournaments/`
 
-Planned anonymous-safe/read-only endpoint:
+Deterministic fixture data is limited to dev/test/visual QA behind the same typed contract. Production MUST NOT silently fall back to fabricated tournament records when the backend is unavailable.
 
-`GET /api/v1/discovery/home/`
-
-No private account/payment/moderation data belongs in that projection.
-
-## 6. F16 implementation — accepted on main
+## 6. F17 implementation — accepted on main
 
 Frontend START_SHA:
 
-`008f4fbd959138e3abe6bf85078f6cf700319bd2`
+`fb87a7d84470db6ed1eba03ce0251c5f1eb6b7a9`
 
 Final reviewed implementation head:
 
-`41aeba987fa4435832361db95d2e232817c668b3`
+`e160029e30cba55543abffc4a7974f261ecd2ad4`
 
 Implementation compare:
 - ahead `1` / behind `0`;
 - exactly one implementation commit;
-- exactly 15 changed files;
-- no lockfile mutation;
-- no dependency/version mutation.
+- exactly 12 changed files;
+- `bun.lock` unchanged;
+- no dependency/version mutation;
+- F02 `/games/$slug` and shared `src/components/tournaments/tournament-discovery-card.tsx` outside the final diff.
 
 Implementation PR:
 
-`#82` — MERGED with expected-head lock.
+`#87` — MERGED with expected-head lock.
 
 Implementation merge / accepted main:
 
-`2b66c5140511febaa98e96d93351cfdb62773bbf`
+`22e4c67425f2bf0cefe9079b2e014c2395f6448a`
 
 Pre-merge conditions:
 - PR mergeable `true`;
 - unresolved review threads `0`;
-- live frontend `main` still exact F16 START_SHA immediately before merge.
+- live frontend `main` still exact F17 START_SHA immediately before merge;
+- expected head `e160029e30cba55543abffc4a7974f261ecd2ad4` used for merge.
 
-## 7. F16 exact-head acceptance evidence
+## 7. F17 exact-head acceptance evidence
 
-Exact implementation head `41aeba987fa4435832361db95d2e232817c668b3`:
-
-Normal Frontend Quality Gate:
-- run `34592421423` — PASS;
-- artifact `10196275291`;
-- digest `sha256:41799e4d45b4351fdb3f87edb7513c1af918858087d04661c618ab6721bbef5a`.
-
-Focused F16 Public Home Quality Gate:
-- run `34592421509` — PASS;
-- artifact `10196188910`;
-- digest `sha256:1a6ff22263d98927f784c5d5facff97978b125370cee0496052d32e9627a4651`;
-- focused artifact contains SSR `home.html` plus exactly six screenshots at `375 / 390 / 430 / 768 / 1024 / 1440`;
-- manual six-width visual inspection PASS: no observed horizontal overflow, clipping or overlap; RTL hierarchy, Hero, CTAs, stats, finder and explanatory cards remain coherent.
-
-## 8. F16 PR-context acceptance evidence
-
-PR-context runs for PR #82:
-- Frontend Quality Gate `34598183137` — PASS;
-  - artifact `10262957454`;
-  - digest `sha256:0e563511f2c20e042ed27d025395b9fd40a4ce28d2f9e2f04cdcc057bc706a8e`;
-- F16 Public Home Quality Gate `34598183138` — PASS;
-  - artifact `10263646547`;
-  - digest `sha256:52cc118d27e789894295523c8b6cf38bd3c0b98e098790673ec2734c1cf910e9`.
-
-## 9. F16 post-main implementation evidence
-
-Exact accepted implementation main `2b66c5140511febaa98e96d93351cfdb62773bbf`:
+Exact implementation head `e160029e30cba55543abffc4a7974f261ecd2ad4`:
 
 Normal Frontend Quality Gate:
-- run `34598728780` — PASS including full browser regression;
-- artifact `10263148439`;
-- digest `sha256:6522b08fc635fbcef7844257d37083681a4407b3de4afa14eebc51034b003fda`.
+- run `34615882813` — PASS;
+- artifact `10270855890`;
+- digest `sha256:d92129eb07b13ba1be92ce8c5b3ebe658d16354868369bd91e8978a51ce82e2c`.
 
-Focused F16 Public Home Quality Gate:
-- run `34598728817` — PASS;
-- artifact `10263087863`;
-- digest `sha256:6337d86bbaa94e83ced301825445483c5b59c91a93426480a1d4ff810c18dd3d`.
+Focused F17 Public Tournament Discovery Quality Gate:
+- run `34615882561` — PASS;
+- artifact `10270585437`;
+- digest `sha256:a07a4c861fca713328c448d79b2e646d5c2490366ffab8f3e1ab1f410c56938b`;
+- artifact contains base/filtered SSR evidence plus exactly 12 screenshots across `375 / 390 / 430 / 768 / 1024 / 1440`;
+- manual visual inspection PASS: no observed horizontal overflow, clipping or overlap.
 
-Live frontend `main` was reverified exact `2b66c5140511febaa98e96d93351cfdb62773bbf` before closeout branch creation.
+## 8. F17 PR-context acceptance evidence
 
-## 10. F16 product/SEO acceptance truth
+Implementation PR #87 exact head remained `e160029e30cba55543abffc4a7974f261ecd2ad4`.
 
-Final Home H1:
+- Frontend Quality Gate `34616599072` — PASS;
+  - artifact `10271475959`;
+  - digest `sha256:32ef3ddedb1032335bd3190ad7db91c6dc46d5b4f170a65536dbd849d17ea8b8`;
+- F17 Public Tournament Discovery Quality Gate `34616599109` — PASS;
+  - artifact `10271306271`;
+  - digest `sha256:a38952b3d731428baaff299f953446644fb5672f4010f9955ee52d2eca70d8b6`;
+- F16 Public Home regression gate `34616599011` — PASS;
+  - artifact `10271261396`;
+  - digest `sha256:3e81cbca21726e2aee8c5bfc4fe9f27574fd4d13d8d01473ef82253173f9938e`.
 
-`مسابقات گیمینگ حضوری نزدیکت را پیدا کن`
+## 9. F17 post-main implementation evidence
+
+Exact accepted implementation main `22e4c67425f2bf0cefe9079b2e014c2395f6448a`:
+
+- Frontend Quality Gate `34617140049` — PASS including full browser regression;
+  - artifact `10270983180`;
+  - digest `sha256:0ee55d941a16e51812ae89a0e66402c45dacaf70c6a1b5c60396528c86fb6c94`;
+- F17 Public Tournament Discovery Quality Gate `34617140093` — PASS;
+  - artifact `10270487803`;
+  - digest `sha256:a1752a6cd4deb55e5921cbe68b100d2f3d4689584fa279653521bce334b30c4e`;
+- F16 Public Home regression gate `34617140003` — PASS;
+  - artifact `10270367871`;
+  - digest `sha256:c6007f3c04679ae436670be18e96db259aca9391410dc2370bb549e57466b3a1`.
+
+Live frontend `main` was reverified exact `22e4c67425f2bf0cefe9079b2e014c2395f6448a` before closeout branch creation.
+
+## 10. F17 product / SEO acceptance truth
+
+Final H1:
+
+`تورنمنت‌ها و مسابقات گیمینگ حضوری`
 
 Final title:
 
-`مسابقات گیمینگ حضوری و تورنمنت‌های گیم‌نت | Turnoment`
+`تورنمنت‌ها و مسابقات گیمینگ حضوری | Turnoment`
 
 Indexing:
-- canonical `/`;
-- robots `index,follow`;
-- public important content SSR-rendered.
+- base `/tournaments` canonical `/tournaments`, robots `index,follow`;
+- normalized filtered/sorted/paginated variants use `noindex,follow` and canonical `/tournaments`;
+- primary public inventory is SSR-rendered;
+- Event structured data is intentionally omitted from this multi-event listing route; leaf tournament detail is the future evaluation surface.
 
 Search-intent boundary:
-- `/` broad discovery gateway + explanation;
-- `/tournaments` full tournament search/filter inventory;
+- `/` broad discovery gateway;
+- `/tournaments` full tournament inventory/filter intent;
 - `/games` game catalog;
-- `/centers` center discovery;
-- `/ranking` full ranking;
-- `/host` host acquisition.
+- `/centers` gaming-center discovery;
+- `/tournaments/$id` one tournament detail/participation context;
+- `/rules` rules/product-policy surface.
 
-The visible Tournament shell was also corrected during F16:
-- legacy `ایران مهر افزار` branding removed from the active shell;
-- fabricated phone/email/address removed;
-- dead social `#` links removed;
-- Turnoment/product-route copy retained without inventing contact/social facts.
+No unsupported search-volume, ranking guarantee, popularity superlative or invented schema fact is claimed.
 
-No Organization JSON-LD is emitted until stable absolute production site/logo identity is explicitly available. No search-volume/difficulty or unsupported superlative is claimed.
+## 11. F17 official-document decisions
 
-## 11. F16 official-document decisions
+Current official references reviewed and applied during F17:
+- TanStack Router search parameter validation and navigation;
+- TanStack Router data loading / `loaderDeps`;
+- TanStack Router document head management;
+- Google Search Central canonicalization and structured-data guidance;
+- Google Crawling Infrastructure faceted-navigation guidance;
+- W3C WCAG 2.2, including keyboard focus and target-size guidance.
 
-Current official references reviewed and applied:
-- TanStack Start Selective SSR: `https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr`;
-- TanStack Router Data Loading: `https://tanstack.com/router/latest/docs/guide/data-loading`;
-- TanStack Router document head guidance;
-- Google Search Central canonicalization/title/snippet/helpful-content/internal-link/structured-data guidance;
-- W3C WCAG 2.2 including focus visibility/obscuring and target-size minimum guidance.
+Applied decisions include validated shareable search state, SSR loader ownership, deterministic loader deps, route-owned metadata, non-indexable faceted variants, semantic/crawlable links, visible focus, touch-safe controls and no unsupported Event structured data on the listing page.
 
-Applied decisions:
-- Home remains SSR-renderable;
-- route loader coordinates dynamic public projection;
-- route head owns final metadata;
-- dynamic discovery links remain semantic/crawlable;
-- controls keep visible keyboard focus and touch-safe targets;
-- structured data is omitted when stable supporting facts are unavailable.
-
-## 12. Backend F16 alignment — terminal documentation truth
+## 12. Backend F17 alignment — terminal documentation truth
 
 Backend repo: `sajadkhavas/turnoment-backend`.
 
-- backend START `c72ec545782a25719009ae329d74ffd13259d020`;
-- Issue `#29` — CLOSED / COMPLETED (documentation alignment only);
-- docs head `0338af8432d16a92ebafe85160e1d45f8ae3c8db`;
-- PR `#30` — MERGED;
-- PR Backend Quality Gate `34591383203` — PASS Python 3.12/3.14;
-- accepted backend merge/main `335211d711c197a440e086bc570b86f2c5cd65f8`;
-- post-main Backend Quality Gate `34591528685` — PASS Python 3.12/3.14;
-- live backend main reverified exact accepted SHA;
+- backend START `335211d711c197a440e086bc570b86f2c5cd65f8`;
+- Issue `#31` — CLOSED / COMPLETED;
+- docs head `1566574c26a747edee785fcc2ff76f014fc63b3e`;
+- PR `#32` — MERGED;
+- PR-context Backend Quality Gate `34609152989` — PASS Python 3.12/3.14;
+- accepted backend merge/main `a5644ae4b4e64908088f389e43155c268fe6e29d`;
+- post-main Backend Quality Gate `34609435404` — PASS Python 3.12/3.14;
 - no runtime Python/models/migrations/serializers/views/URLs/dependency/phase-registry mutation.
 
 Backend NEXT remains exactly:
 
 `P02 — Games / Catalog Foundation`
 
-F16 backend alignment does not mean the Home endpoint is live.
+F17 backend alignment does not mean the tournament-discovery endpoint is live.
 
 ## 13. Active closeout boundary
 
 Closeout branch:
 
-`closeout/f16-public-home-discovery`
+`closeout/f17-public-tournament-discovery`
 
 Authorized closeout diff is Markdown-only and must be exactly:
 1. `PROJECT_CONTINUITY.md`;
 2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
-3. `docs/workstreams/F16_PUBLIC_HOME.md`;
-4. `docs/workstreams/F16_CLOSEOUT.md`.
+3. `docs/workstreams/F17_PUBLIC_TOURNAMENT_DISCOVERY.md`;
+4. `docs/workstreams/F17_CLOSEOUT.md`.
 
 Closeout MUST NOT mutate source, package files, lockfiles, workflows or runtime configuration.
 
 Non-recursive rule:
 - committed closeout docs record only evidence that already exists;
-- the future closeout merge/frozen-main SHA and terminal post-closeout CI/artifact/digest belong in Issue #81 after they exist;
+- the future closeout merge/frozen-main SHA and terminal post-closeout CI/artifact/digest belong in Issue #84 after they exist;
 - do not create a recursive documentation PR merely to self-record its own SHA.
 
-F16 may be reported as `DONE / MERGED / FROZEN — FINAL_CURRENT` only after closeout PR merge, terminal main full + focused QA/artifacts/digests, exact live-main verification and Issue #81 closure as completed.
+F17 may be reported as `DONE / MERGED / FROZEN — FINAL_CURRENT` only after closeout PR merge, terminal main full + focused F17 QA/artifacts/digests, exact live-main verification and Issue #84 closure as completed.
 
 ## 14. Exact NEXT
 
-1. verify closeout compare is one commit / exactly four Markdown files;
-2. open closeout PR without auto-closing Issue #81;
-3. require PR-context full + focused gates PASS;
+1. verify closeout compare is ahead 1 / behind 0 / one commit / exactly four Markdown files;
+2. open closeout PR without auto-closing Issue #84;
+3. require PR-context full + focused F17 gates PASS and retain any triggered frozen-route regression gate;
 4. require mergeable=true, unresolved review threads=0 and exact implementation-main lock;
 5. expected-head merge closeout;
-6. require terminal frozen-main full + focused QA and artifact/digest evidence;
+6. require terminal frozen-main full + focused F17 QA and artifact/digest evidence;
 7. reverify exact live frontend main;
-8. record terminal evidence in Issue #81 and close completed;
-9. only then continue public recertification with `/tournaments`.
+8. record terminal evidence in Issue #84 and close completed;
+9. only then continue public recertification with `/games`.
 
-Remaining current-law public order after F16 terminal freeze:
+Remaining current-law public order after F17 terminal freeze:
 
-`/tournaments` → `/games` → `/centers` → `/centers/$id` → `/ranking` → `/players/$username` → `/host` → `/rules`.
+`/games` → `/centers` → `/centers/$id` → `/ranking` → `/players/$username` → `/host` → `/rules`.
 
 `/tournaments/$id` remains `FINAL_PRE_SEO` until a later limited SEO/current-law recertification. Legacy commerce/service/content routes remain `LEGACY_REVIEW` pending explicit product decision.
