@@ -7,7 +7,7 @@ import { playerSessionRepository } from "@/lib/player-session";
 
 const MATCH_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/;
 
-export const Route = createFileRoute("/matches/$id_/dispute")({
+export const Route = createFileRoute("/matches/$id/dispute")({
   ssr: true,
   beforeLoad: async ({ params }) => {
     if (!MATCH_ID_PATTERN.test(params.id)) throw notFound();
