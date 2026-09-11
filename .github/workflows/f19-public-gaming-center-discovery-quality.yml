@@ -1,0 +1,161 @@
+name: F19 Public Gaming Center Discovery Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f19-public-gaming-center-discovery
+    paths:
+      - "src/routes/centers.index.tsx"
+      - "src/components/centers/gaming-center-discovery-page.tsx"
+      - "src/lib/gaming-center-discovery-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F19_*"
+      - ".github/workflows/f19-public-gaming-center-discovery-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/centers.index.tsx"
+      - "src/components/centers/gaming-center-discovery-page.tsx"
+      - "src/lib/gaming-center-discovery-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F19_*"
+      - ".github/workflows/f19-public-gaming-center-discovery-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  gaming-center-discovery-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Gaming center discovery contract checks
+        run: bun run src/lib/gaming-center-discovery-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, search-state and responsive evidence
+        shell: bash
+        env:
+          VITE_DATA_ADAPTER: mock
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F19 visual QA."
+            exit 1
+          fi
+
+          mkdir -p artifacts/f19-gaming-center-discovery-qa
+          bun run dev -- --host 127.0.0.1 --port 4177 > /tmp/turnoment-f19.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          BASE_URL="http://127.0.0.1:4177/centers"
+          FILTERED_URL="http://127.0.0.1:4177/centers?city=tehran"
+          PAGED_URL="http://127.0.0.1:4177/centers?page=2"
+
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$BASE_URL" > artifacts/f19-gaming-center-discovery-qa/base.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f19.log || true
+            exit 1
+          fi
+
+          curl -fsS "$FILTERED_URL" > artifacts/f19-gaming-center-discovery-qa/filtered.html
+          curl -fsS "$PAGED_URL" > artifacts/f19-gaming-center-discovery-qa/paged.html
+
+          BASE_HTML="artifacts/f19-gaming-center-discovery-qa/base.html"
+          FILTERED_HTML="artifacts/f19-gaming-center-discovery-qa/filtered.html"
+          PAGED_HTML="artifacts/f19-gaming-center-discovery-qa/paged.html"
+
+          grep -a -q "گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات" "$BASE_HTML"
+          grep -a -q "گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات | Turnoment" "$BASE_HTML"
+          grep -a -q 'name="robots" content="index,follow"' "$BASE_HTML"
+          grep -a -q 'rel="canonical" href="/centers"' "$BASE_HTML"
+          grep -a -q "Arena Gaming Center" "$BASE_HTML"
+          grep -a -q "Nova Gaming" "$BASE_HTML"
+          grep -a -q "/centers/c1" "$BASE_HTML"
+          grep -a -q "/host" "$BASE_HTML"
+          grep -a -q "/tournaments" "$BASE_HTML"
+          grep -a -q "/games" "$BASE_HTML"
+
+          grep -a -q 'name="robots" content="noindex,follow"' "$FILTERED_HTML"
+          grep -a -q 'rel="canonical" href="/centers"' "$FILTERED_HTML"
+          grep -a -q "Nova Gaming" "$FILTERED_HTML"
+          grep -a -q "Pixel House" "$FILTERED_HTML"
+          if grep -a -q "Arena Gaming Center" "$FILTERED_HTML"; then
+            echo "City filtering must remain repository-owned and reflected in SSR output."
+            exit 1
+          fi
+
+          grep -a -q 'name="robots" content="noindex,follow"' "$PAGED_HTML"
+          grep -a -q "Pixel House" "$PAGED_HTML"
+          grep -a -q "Gohardasht Play" "$PAGED_HTML"
+
+          for HTML in "$BASE_HTML" "$FILTERED_HTML" "$PAGED_HTML"; do
+            if grep -a -q "ایران مهر افزار\|iranmehrafzar\.ir\|بک‌اند\|API\|mock\|placeholder\|امتیاز کاربران" "$HTML"; then
+              echo "Legacy brand, implementation-stage copy, or unsupported rating copy must not exist in F19 SSR."
+              exit 1
+            fi
+            MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+            test "$MAIN_COUNT" -eq 1
+          done
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1800" \
+              --screenshot="artifacts/f19-gaming-center-discovery-qa/centers-${WIDTH}.png" \
+              "$BASE_URL" >/dev/null 2>&1
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},1800" \
+              --screenshot="artifacts/f19-gaming-center-discovery-qa/centers-tehran-${WIDTH}.png" \
+              "$FILTERED_URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f19-gaming-center-discovery-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 12
+
+      - name: Upload F19 gaming center discovery QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f19-gaming-center-discovery-qa-${{ github.sha }}
+          path: artifacts/f19-gaming-center-discovery-qa
+          if-no-files-found: error
+          retention-days: 14
