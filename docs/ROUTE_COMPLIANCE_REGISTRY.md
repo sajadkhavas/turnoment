@@ -6,21 +6,15 @@
 
 Last audit: `2026-09-11`
 
-Current accepted frontend baseline before active F18:
+Current accepted implementation main before F18 closeout:
 
-`73955783add94c562f4eea0bb55300aab077c342` — F17 terminal frozen main.
+`112c3bbd2df7ca3988c81efa4dfb6ad569f621c2`
 
-F17 terminal evidence:
-- Issue #84 CLOSED / COMPLETED;
-- implementation PR #87 MERGED;
-- closeout PR #88 MERGED;
-- terminal Frontend Quality Gate `34618556371` PASS, artifact `10271498535`, digest `sha256:100caa7b4d63f2135008cb0295e5ffdeac55b0b944863731acb34f90f9a0891c`;
-- terminal F17 focused gate `34618556522` PASS, artifact `10271735232`, digest `sha256:a6b549f6bbbd84f0ad46601a6a6fe0077109fd6ef73baf18c633a4a229920aa8`;
-- exact frozen main `73955783add94c562f4eea0bb55300aab077c342`.
+Active governance workstream:
 
-Active current-law workstream:
+`F18 — Public Game Catalog` — Issue #89 — closeout branch `closeout/f18-public-game-catalog`.
 
-`F18 — Public Game Catalog` — Issue #89 — branch `phase/f18-public-game-catalog` — START `73955783add94c562f4eea0bb55300aab077c342`.
+The F18 implementation is merged and required post-main implementation QA is green. Therefore `/games` is promoted non-recursively to `FINAL_CURRENT`, while the F18 workstream remains `MERGED / CLOSEOUT IN PROGRESS` until closeout merge and terminal frozen-main evidence are recorded in Issue #89.
 
 ## Status meanings
 
@@ -37,9 +31,9 @@ Active current-law workstream:
 
 | Route | Status | Evidence / exact truth |
 |---|---|---|
-| `/` | `FINAL_CURRENT` | F16 terminally frozen. Issue #81 CLOSED / COMPLETED; frozen main `fb87a7d84470db6ed1eba03ce0251c5f1eb6b7a9`; terminal full gate `34604894800` PASS; terminal focused F16 gate `34604894703` PASS. Permanent boundary: SSR loader → typed `PublicHomeRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/tournaments` | `FINAL_CURRENT` | F17 terminally frozen. Issue #84 CLOSED / COMPLETED; PR #87 MERGED; implementation merge `22e4c67425f2bf0cefe9079b2e014c2395f6448a`; closeout PR #88 MERGED; frozen main `73955783add94c562f4eea0bb55300aab077c342`; terminal full gate `34618556371` PASS; terminal focused gate `34618556522` PASS. Permanent boundary: validated URL search → loaderDeps → SSR loader → typed `TournamentDiscoveryRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/games` | `IN_PROGRESS` | F18 current-law recertification. Issue #89 OPEN; START `73955783add94c562f4eea0bb55300aab077c342`; branch `phase/f18-public-game-catalog`; permanent target boundary `/games → SSR loader → typed GameCatalogRepository → runtime-validated catalog projection → UI`; planned production `GET /api/v1/games/`; runtime remains `FRONTEND MOCK / BACKEND PENDING` until P02 implementation. F02 `/games/$slug` is frozen and protected outside F18 diff. |
+| `/` | `FINAL_CURRENT` | F16 terminally frozen. Issue #81 CLOSED / COMPLETED. Permanent boundary: SSR loader → typed `PublicHomeRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/tournaments` | `FINAL_CURRENT` | F17 terminally frozen. Issue #84 CLOSED / COMPLETED; implementation PR #87 MERGED; closeout PR #88 MERGED; frozen main `73955783add94c562f4eea0bb55300aab077c342`. Permanent boundary: validated URL search → loaderDeps → SSR loader → typed `TournamentDiscoveryRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/games` | `FINAL_CURRENT` | F18 implementation merged in PR #90 at `112c3bbd2df7ca3988c81efa4dfb6ad569f621c2`; post-main full gate `34631796666` PASS and focused F18 gate `34631796765` PASS. Permanent boundary `/games → SSR loader → typed GameCatalogRepository → runtime-validated catalog projection → UI`. Route-level acceptance is current; workstream closeout/terminal freeze still pending Issue #89 terminal evidence. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout accepted; private session/repository/runtime contract. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen; Issue #38 completed. |
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen; Issue #41 completed. |
@@ -56,7 +50,7 @@ Active current-law workstream:
 | `/register` | `FINAL_PRIVATE` | F08 terminally frozen; Issue #53 completed. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 terminally accepted before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final tournament-registration action route; private noindex and Session/CSRF boundary accepted. |
-| `/games/$slug` | `FINAL_CURRENT` | F02 technical + SEO/final-copy acceptance terminally recorded. Frozen dependency for F18; must remain outside F18 implementation diff unless separately authorized. |
+| `/games/$slug` | `FINAL_CURRENT` | F02 technical + SEO/final-copy acceptance terminally recorded. Frozen dependency for F18 and kept outside F18 implementation diff. |
 
 ## B. Public competitive routes requiring current-law recertification
 
@@ -69,7 +63,7 @@ Active current-law workstream:
 | `/host` | `NEEDS_RECERTIFICATION` | Public acquisition route has not passed current final page + SEO gates. |
 | `/rules` | `NEEDS_RECERTIFICATION` | Must be reconciled with authoritative ruleset/product copy and current evidence law. |
 
-## C. Active F18 public Game Catalog truth
+## C. Accepted F18 Public Game Catalog truth
 
 Permanent route architecture:
 
@@ -103,7 +97,18 @@ SEO/final-copy lock:
 - SSR primary catalog;
 - no unsupported rich-result schema or popularity/search-volume/ranking/superlative claims.
 
-F18 remains `IN_PROGRESS` until exact-head QA, implementation PR, post-main QA, documentation-only closeout, terminal frozen-main QA and Issue #89 completion exist.
+Implementation acceptance evidence:
+- START `73955783add94c562f4eea0bb55300aab077c342`;
+- reviewed head `e44a3ba812a937aa41d5dbeb17c21b8ed641510d`;
+- PR #90 MERGED;
+- implementation merge/main `112c3bbd2df7ca3988c81efa4dfb6ad569f621c2`;
+- exact-head full `34630735395` PASS and focused F18 `34630735403` PASS;
+- PR-context full `34631270914` PASS and focused F18 `34631270926` PASS;
+- post-main full `34631796666` PASS and focused F18 `34631796765` PASS;
+- post-main F17 and F16 regression gates PASS;
+- live main reverified exact implementation merge before closeout.
+
+F18 workstream remains `MERGED / CLOSEOUT IN PROGRESS` until its documentation-only closeout is merged and terminal frozen-main evidence is recorded in Issue #89.
 
 ## D. Accepted F17 Public Tournament Discovery truth
 
@@ -167,7 +172,7 @@ Competitive truth retained:
 
 ## G. Compliance priorities / NEXT
 
-Immediate active task: complete F18 `/games` exact-head QA and acceptance chain without mutating frozen F02 `/games/$slug`.
+Immediate active task: finish F18 documentation-only closeout and terminal frozen-main evidence without mutating accepted source/runtime files.
 
 After F18 terminal freeze, next public recertification order is:
 
@@ -182,9 +187,9 @@ Backend NEXT independently remains:
 ## H. Registry maintenance law
 
 - A route cannot be promoted from chat memory.
-- `IN_PROGRESS` is mandatory while any required implementation/merge/terminal gate is missing.
-- A merged implementation with required green post-implementation main gates may be promoted non-recursively in closeout governance.
-- Terminal `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal main CI recorded in its tracking Issue.
+- `IN_PROGRESS` is mandatory while implementation/post-main acceptance is missing.
+- A merged implementation with required green post-main gates may be promoted non-recursively to route-level `FINAL_CURRENT` in closeout governance.
+- Workstream terminal `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal main CI recorded in its tracking Issue.
 - New/placeholder/legacy routes remain visible until accepted or intentionally removed.
 - If implementation truth and this registry conflict, treat the route as not final until reconciled.
 - Do not create recursive documentation-only commits merely to record the SHA of the commit containing that same record; terminal closeout SHA/CI belongs in the tracking Issue after merge.
