@@ -33,6 +33,7 @@ import { Route as ServicesRequestRouteImport } from './routes/services.request'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
 import { Route as PlayersUsernameRouteImport } from './routes/players.$username'
 import { Route as PaymentResultRouteImport } from './routes/payment.result'
+import { Route as GamesSlugRouteImport } from './routes/games.$slug'
 import { Route as DashboardWishlistRouteImport } from './routes/dashboard.wishlist'
 import { Route as DashboardTournamentsRouteImport } from './routes/dashboard.tournaments'
 import { Route as DashboardTeamsRouteImport } from './routes/dashboard.teams'
@@ -49,6 +50,9 @@ import { Route as DashboardAchievementsRouteImport } from './routes/dashboard.ac
 import { Route as CentersIdRouteImport } from './routes/centers.$id'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as TournamentsIdRegisterRouteImport } from './routes/tournaments.$id_.register'
+import { Route as MatchesIdResultRouteImport } from './routes/matches.$id_.result'
+import { Route as MatchesIdDisputeRouteImport } from './routes/matches.$id_.dispute'
 
 const RulesRoute = RulesRouteImport.update({
   id: '/rules',
@@ -170,6 +174,11 @@ const PaymentResultRoute = PaymentResultRouteImport.update({
   path: '/payment/result',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesSlugRoute = GamesSlugRouteImport.update({
+  id: '/games/$slug',
+  path: '/games/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardWishlistRoute = DashboardWishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
@@ -250,6 +259,21 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TournamentsIdRegisterRoute = TournamentsIdRegisterRouteImport.update({
+  id: '/tournaments/$id_/register',
+  path: '/tournaments/$id/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchesIdResultRoute = MatchesIdResultRouteImport.update({
+  id: '/matches/$id_/result',
+  path: '/matches/$id/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchesIdDisputeRoute = MatchesIdDisputeRouteImport.update({
+  id: '/matches/$id_/dispute',
+  path: '/matches/$id/dispute',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -280,6 +304,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/teams': typeof DashboardTeamsRoute
   '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
+  '/games/$slug': typeof GamesSlugRoute
   '/payment/result': typeof PaymentResultRoute
   '/players/$username': typeof PlayersUsernameRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -292,6 +317,9 @@ export interface FileRoutesByFullPath {
   '/products/': typeof ProductsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/tournaments/': typeof TournamentsIndexRoute
+  '/matches/$id/dispute': typeof MatchesIdDisputeRoute
+  '/matches/$id/result': typeof MatchesIdResultRoute
+  '/tournaments/$id/register': typeof TournamentsIdRegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -321,6 +349,7 @@ export interface FileRoutesByTo {
   '/dashboard/teams': typeof DashboardTeamsRoute
   '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
+  '/games/$slug': typeof GamesSlugRoute
   '/payment/result': typeof PaymentResultRoute
   '/players/$username': typeof PlayersUsernameRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -333,6 +362,9 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsIndexRoute
   '/services': typeof ServicesIndexRoute
   '/tournaments': typeof TournamentsIndexRoute
+  '/matches/$id/dispute': typeof MatchesIdDisputeRoute
+  '/matches/$id/result': typeof MatchesIdResultRoute
+  '/tournaments/$id/register': typeof TournamentsIdRegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -364,6 +396,7 @@ export interface FileRoutesById {
   '/dashboard/teams': typeof DashboardTeamsRoute
   '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/dashboard/wishlist': typeof DashboardWishlistRoute
+  '/games/$slug': typeof GamesSlugRoute
   '/payment/result': typeof PaymentResultRoute
   '/players/$username': typeof PlayersUsernameRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -376,6 +409,9 @@ export interface FileRoutesById {
   '/products/': typeof ProductsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/tournaments/': typeof TournamentsIndexRoute
+  '/matches/$id_/dispute': typeof MatchesIdDisputeRoute
+  '/matches/$id_/result': typeof MatchesIdResultRoute
+  '/tournaments/$id_/register': typeof TournamentsIdRegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -408,6 +444,7 @@ export interface FileRouteTypes {
     | '/dashboard/teams'
     | '/dashboard/tournaments'
     | '/dashboard/wishlist'
+    | '/games/$slug'
     | '/payment/result'
     | '/players/$username'
     | '/products/$slug'
@@ -420,6 +457,9 @@ export interface FileRouteTypes {
     | '/products/'
     | '/services/'
     | '/tournaments/'
+    | '/matches/$id/dispute'
+    | '/matches/$id/result'
+    | '/tournaments/$id/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -449,6 +489,7 @@ export interface FileRouteTypes {
     | '/dashboard/teams'
     | '/dashboard/tournaments'
     | '/dashboard/wishlist'
+    | '/games/$slug'
     | '/payment/result'
     | '/players/$username'
     | '/products/$slug'
@@ -461,6 +502,9 @@ export interface FileRouteTypes {
     | '/products'
     | '/services'
     | '/tournaments'
+    | '/matches/$id/dispute'
+    | '/matches/$id/result'
+    | '/tournaments/$id/register'
   id:
     | '__root__'
     | '/'
@@ -491,6 +535,7 @@ export interface FileRouteTypes {
     | '/dashboard/teams'
     | '/dashboard/tournaments'
     | '/dashboard/wishlist'
+    | '/games/$slug'
     | '/payment/result'
     | '/players/$username'
     | '/products/$slug'
@@ -503,6 +548,9 @@ export interface FileRouteTypes {
     | '/products/'
     | '/services/'
     | '/tournaments/'
+    | '/matches/$id_/dispute'
+    | '/matches/$id_/result'
+    | '/tournaments/$id_/register'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -521,6 +569,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
   CentersIdRoute: typeof CentersIdRoute
+  GamesSlugRoute: typeof GamesSlugRoute
   PaymentResultRoute: typeof PaymentResultRoute
   PlayersUsernameRoute: typeof PlayersUsernameRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
@@ -532,6 +581,9 @@ export interface RootRouteChildren {
   ProductsIndexRoute: typeof ProductsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
   TournamentsIndexRoute: typeof TournamentsIndexRoute
+  MatchesIdDisputeRoute: typeof MatchesIdDisputeRoute
+  MatchesIdResultRoute: typeof MatchesIdResultRoute
+  TournamentsIdRegisterRoute: typeof TournamentsIdRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -704,6 +756,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentResultRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games/$slug': {
+      id: '/games/$slug'
+      path: '/games/$slug'
+      fullPath: '/games/$slug'
+      preLoaderRoute: typeof GamesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/wishlist': {
       id: '/dashboard/wishlist'
       path: '/wishlist'
@@ -816,6 +875,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tournaments/$id_/register': {
+      id: '/tournaments/$id_/register'
+      path: '/tournaments/$id/register'
+      fullPath: '/tournaments/$id/register'
+      preLoaderRoute: typeof TournamentsIdRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/matches/$id_/result': {
+      id: '/matches/$id_/result'
+      path: '/matches/$id/result'
+      fullPath: '/matches/$id/result'
+      preLoaderRoute: typeof MatchesIdResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/matches/$id_/dispute': {
+      id: '/matches/$id_/dispute'
+      path: '/matches/$id/dispute'
+      fullPath: '/matches/$id/dispute'
+      preLoaderRoute: typeof MatchesIdDisputeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -873,6 +953,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
   CentersIdRoute: CentersIdRoute,
+  GamesSlugRoute: GamesSlugRoute,
   PaymentResultRoute: PaymentResultRoute,
   PlayersUsernameRoute: PlayersUsernameRoute,
   ProductsSlugRoute: ProductsSlugRoute,
@@ -884,6 +965,9 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsIndexRoute: ProductsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
   TournamentsIndexRoute: TournamentsIndexRoute,
+  MatchesIdDisputeRoute: MatchesIdDisputeRoute,
+  MatchesIdResultRoute: MatchesIdResultRoute,
+  TournamentsIdRegisterRoute: TournamentsIdRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
