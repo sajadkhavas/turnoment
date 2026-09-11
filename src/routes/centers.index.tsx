@@ -1,44 +1,78 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { TournamentLayout } from "@/components/tournament/tournament-layout";
-import { GamingCenterCard } from "@/components/home/gaming-center-card";
-import { gamingCenters } from "@/lib/tournament-data";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  GamingCenterDiscoveryErrorState,
+  GamingCenterDiscoveryPage,
+  GamingCenterDiscoverySkeleton,
+} from "@/components/centers/gaming-center-discovery-page";
+import {
+  buildGamingCenterDiscoveryQuery,
+  compactGamingCenterDiscoverySearch,
+  hasGamingCenterDiscoveryFacets,
+  normalizeGamingCenterDiscoverySearch,
+  type GamingCenterDiscoverySearch,
+} from "@/lib/gaming-center-discovery-contract";
+import { gamingCenterDiscoveryRepository } from "@/lib/gaming-center-discovery-repository";
 
-const TITLE = "گیم‌نت‌های تأییدشده | ایران مهر افزار";
-const DESCRIPTION = "فهرست گیم‌نت‌های تأییدشده میزبان مسابقات حضوری با امکانات، امتیاز کاربران و تعداد مسابقات پیش‌رو.";
+const TITLE = "گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات | Turnoment";
+const DESCRIPTION = "گیم‌نت‌ها و مراکز گیمینگ میزبان مسابقات را بر اساس شهر پیدا کن، امکانات و وضعیت تأیید هر مرکز را ببین و مسیر مسابقات حضوری را دنبال کن.";
 
 export const Route = createFileRoute("/centers/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: "/centers" }],
-  }),
-  component: CentersPage,
+  ssr: true,
+  validateSearch: normalizeGamingCenterDiscoverySearch,
+  loaderDeps: ({ search }) => buildGamingCenterDiscoveryQuery(search),
+  loader: ({ deps }) => gamingCenterDiscoveryRepository.getDiscovery(deps),
+  head: ({ match }) => {
+    const faceted = hasGamingCenterDiscoveryFacets(match.search as GamingCenterDiscoverySearch);
+    return {
+      meta: [
+        { title: TITLE },
+        { name: "description", content: DESCRIPTION },
+        { name: "robots", content: faceted ? "noindex,follow" : "index,follow" },
+        { property: "og:title", content: TITLE },
+        { property: "og:description", content: DESCRIPTION },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: "/centers" }],
+    };
+  },
+  pendingComponent: GamingCenterDiscoverySkeleton,
+  errorComponent: ({ reset }) => <GamingCenterDiscoveryErrorState onRetry={reset} />,
+  component: CentersRoute,
 });
 
-function CentersPage() {
-  return (
-    <TournamentLayout>
-      <section className="border-b border-border bg-gradient-to-l from-secondary/15 to-transparent">
-        <div className="container mx-auto px-4 py-12">
-          <h1 className="text-3xl font-black md:text-4xl">گیم‌نت‌های تأییدشده</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{DESCRIPTION}</p>
-          <Link to="/host" className="mt-6 inline-flex h-11 items-center rounded-xl border border-border bg-surface px-5 text-sm font-bold hover:border-primary hover:text-primary">
-            ثبت گیم‌نت
-          </Link>
-        </div>
-      </section>
+function CentersRoute() {
+  const data = Route.useLoaderData();
+  const navigate = useNavigate({ from: Route.fullPath });
 
-      <div className="container mx-auto grid gap-5 px-4 py-10 md:grid-cols-2 lg:grid-cols-3">
-        {gamingCenters.map((c) => (
-          <GamingCenterCard key={c.id} c={c} />
-        ))}
-      </div>
-    </TournamentLayout>
+  const changeCity = (city?: string) => {
+    void navigate({
+      search: compactGamingCenterDiscoverySearch({ city, page: 1 }),
+      replace: true,
+    });
+  };
+
+  const changePage = (page: number) => {
+    void navigate({
+      search: compactGamingCenterDiscoverySearch({
+        city: data.activeQuery.city,
+        page: Math.max(1, page),
+      }),
+      replace: true,
+    });
+  };
+
+  const resetSearch = () => {
+    void navigate({ search: {}, replace: true });
+  };
+
+  return (
+    <GamingCenterDiscoveryPage
+      data={data}
+      query={data.activeQuery}
+      onCityChange={changeCity}
+      onPageChange={changePage}
+      onReset={resetSearch}
+    />
   );
 }
