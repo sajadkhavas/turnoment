@@ -1,36 +1,48 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  PlayerProfileErrorState,
+  PlayerProfilePage,
+  PlayerProfileSkeleton,
+} from "@/components/dashboard/player-profile-page";
+import { playerProfileRepository } from "@/lib/player-profile-repository";
 
 export const Route = createFileRoute("/dashboard/profile")({
-  component: Profile,
+  loader: async () => {
+    const result = await playerProfileRepository.getProfile();
+    if (result.state !== "authenticated") {
+      throw redirect({
+        to: "/login",
+        search: { redirect: "/dashboard/profile" },
+      });
+    }
+    return result.player;
+  },
+  head: () => ({
+    meta: [
+      { title: "پروفایل بازیکن — ایران مهر افزار" },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+  }),
+  pendingComponent: PlayerProfileSkeleton,
+  errorComponent: PlayerProfileErrorState,
+  component: PlayerProfileRoute,
 });
 
-function Profile() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-black">پروفایل من</h1>
-      <form className="space-y-4 rounded-2xl border border-border bg-card p-6" onSubmit={(e) => e.preventDefault()}>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field label="نام و نام خانوادگی" value="علی محمدی" />
-          <Field label="ایمیل" value="ali@example.com" />
-          <Field label="شماره موبایل" value="09123456789" />
-          <Field label="تاریخ تولد" value="۱۳۷۵/۰۵/۱۲" />
-        </div>
-        <h2 className="pt-4 text-sm font-bold">تغییر رمز عبور</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field label="رمز فعلی" type="password" />
-          <Field label="رمز جدید" type="password" />
-        </div>
-        <button type="submit" className="rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:glow-violet-strong">ذخیره تغییرات</button>
-      </form>
-    </div>
-  );
-}
+function PlayerProfileRoute() {
+  const player = Route.useLoaderData();
+  const navigate = useNavigate({ from: Route.fullPath });
 
-function Field({ label, value, type = "text" }: { label: string; value?: string; type?: string }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-bold text-muted-foreground">{label}</span>
-      <input type={type} defaultValue={value} className="w-full rounded-lg border border-border bg-elevated px-3 py-2.5 text-sm focus:border-primary focus:outline-none" />
-    </label>
+    <PlayerProfilePage
+      initialPlayer={player}
+      repository={playerProfileRepository}
+      onSessionExpired={() => {
+        void navigate({
+          to: "/login",
+          search: { redirect: "/dashboard/profile" },
+          replace: true,
+        });
+      }}
+    />
   );
 }
