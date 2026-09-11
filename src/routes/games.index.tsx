@@ -1,17 +1,22 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { TournamentLayout } from "@/components/tournament/tournament-layout";
-import { popularGames, allTournaments } from "@/lib/tournament-data";
-import { formatNumber } from "@/lib/format";
-import { publicGameSlug } from "@/lib/game-slugs";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  GameCatalogErrorState,
+  GameCatalogPage,
+  GameCatalogSkeleton,
+} from "@/components/games/game-catalog-page";
+import { gameCatalogRepository } from "@/lib/game-catalog-repository";
 
-const TITLE = "بازی‌های مسابقات | ایران مهر افزار";
-const DESCRIPTION = "بازی‌هایی که مسابقات حضوری آن‌ها در گیم‌نت‌های تأییدشده برگزار می‌شود؛ از EA FC 26 و Tekken 8 تا Counter-Strike 2.";
+const TITLE = "بازی‌های مسابقات گیمینگ حضوری | Turnoment";
+const DESCRIPTION = "فهرست بازی‌های رقابتی Turnoment را ببین و برای هر بازی، مسابقات حضوری، فرمت‌های رقابت و مسیرهای مرتبط را بررسی کن.";
 
 export const Route = createFileRoute("/games/")({
+  ssr: true,
+  loader: () => gameCatalogRepository.getCatalog(),
   head: () => ({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
+      { name: "robots", content: "index,follow" },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
@@ -19,41 +24,12 @@ export const Route = createFileRoute("/games/")({
     ],
     links: [{ rel: "canonical", href: "/games" }],
   }),
-  component: GamesPage,
+  pendingComponent: GameCatalogSkeleton,
+  errorComponent: ({ reset }) => <GameCatalogErrorState onRetry={reset} />,
+  component: GamesRoute,
 });
 
-function GamesPage() {
-  return (
-    <TournamentLayout>
-      <section className="border-b border-border bg-gradient-to-l from-primary/15 to-transparent">
-        <div className="container mx-auto px-4 py-12">
-          <h1 className="text-3xl font-black md:text-4xl">بازی‌های مسابقات</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">{DESCRIPTION}</p>
-        </div>
-      </section>
-
-      <div className="container mx-auto grid gap-5 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3">
-        {popularGames.map((g) => {
-          const count = allTournaments.filter((t) => t.gameId === g.id).length;
-          return (
-            <article key={g.id} className="overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/60">
-              <img src={g.image} alt={g.name} loading="lazy" width={768} height={432} className="h-40 w-full object-cover" />
-              <div className="p-5">
-                <h2 className="truncate text-base font-bold">{g.name}</h2>
-                <p className="mt-1 text-xs text-muted-foreground">{g.platform}</p>
-                <p className="mt-3 font-mono-num text-xs text-secondary">{formatNumber(count)} مسابقه در فهرست</p>
-                <Link
-                  to="/games/$slug"
-                  params={{ slug: publicGameSlug(g.id) }}
-                  className="mt-4 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground transition-all hover:glow-violet-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  صفحه بازی
-                </Link>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </TournamentLayout>
-  );
+function GamesRoute() {
+  const data = Route.useLoaderData();
+  return <GameCatalogPage data={data} />;
 }
