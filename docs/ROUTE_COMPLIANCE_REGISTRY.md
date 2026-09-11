@@ -4,34 +4,32 @@
 >
 > Every chat/agent modifying an existing route MUST read this registry together with `PROJECT_CONTINUITY.md`, `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`, and when applicable `SEO_FINAL_COPY_PROTOCOL.md`.
 
-Last audit: `2026-09-11`
+Last audit: `2026-09-12`
 
-Current terminal frontend baseline before active F19:
+Current live frontend `main` at F19 closeout creation:
+
+`b3d6360af21c1c86a06a95cdbe20ac30ac42c84c` — accepted F19 implementation merge/main.
+
+Last terminal frozen frontend baseline before the F19 closeout remains:
 
 `41bdbb90f127474ecabd61cb5ceda5db1b91ae49` — F18 terminal frozen main.
 
-F18 terminal evidence:
-- Issue #89 CLOSED / COMPLETED;
-- implementation PR #90 MERGED;
-- closeout PR #91 MERGED;
-- terminal Frontend Quality Gate `34633797889` PASS, artifact `10276883583`, digest `sha256:c744532c931fde55fdc27c66b0f8c8eb5d7ea1de1ec2329ddb01ca21f5471826`;
-- terminal focused F18 gate `34633797871` PASS, artifact `10276653827`, digest `sha256:1a2de3b501d690cc72faf1c1f1238daa0a71647a7f1d131bb30b9668619180da`;
-- exact frozen main `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`.
+Active closeout workstream:
 
-Active current-law workstream:
-
-`F19 — Public Gaming Center Discovery` — Issue #92 — branch `phase/f19-public-gaming-center-discovery` — START `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`.
+`F19 — Public Gaming Center Discovery` — Issue #92 OPEN — implementation PR #93 MERGED — implementation merge `b3d6360af21c1c86a06a95cdbe20ac30ac42c84c` — closeout branch `closeout/f19-public-gaming-center-discovery`.
 
 ## Status meanings
 
-- `FINAL_CURRENT` — accepted under the current applicable protocol set, including current SEO/final-copy law for public/indexable pages.
+- `FINAL_CURRENT` — route implementation is accepted under the current applicable protocol set, including current SEO/final-copy law for public/indexable pages.
 - `FINAL_PRIVATE` — final private/noindex route; public SEO research is not applicable, but final architecture/UX/contracts are accepted.
 - `FINAL_PRE_SEO` — technically/factually final under page protocol but frozen before the stricter SEO final-copy law.
-- `IN_PROGRESS` — active controlled workstream exists; not final until its full acceptance chain is complete.
+- `IN_PROGRESS` — active controlled implementation workstream exists; not final until its required route-level acceptance gates are complete.
 - `NEEDS_RECERTIFICATION` — route exists but has not passed the full current-law evidence chain.
 - `PLACEHOLDER` — intentionally incomplete/temporary product surface; must be rebuilt before product acceptance.
 - `REBUILD` — known product/architecture truth is wrong and must be rebuilt rather than patched as-is.
 - `LEGACY_REVIEW` — inherited non-Turnoment/ecommerce/general-site route; not an approved competitive architecture reference.
+
+Route-level `FINAL_CURRENT` does not by itself mean the owning workstream is terminally `DONE / MERGED / FROZEN`. Terminal workstream status additionally requires closeout merge + terminal frozen-main CI/artifact evidence recorded in the tracking Issue.
 
 ## A. Accepted / active competitive routes
 
@@ -39,8 +37,8 @@ Active current-law workstream:
 |---|---|---|
 | `/` | `FINAL_CURRENT` | F16 terminally frozen. Issue #81 CLOSED / COMPLETED. Permanent boundary: SSR loader → typed `PublicHomeRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
 | `/tournaments` | `FINAL_CURRENT` | F17 terminally frozen. Issue #84 CLOSED / COMPLETED; frozen main `73955783add94c562f4eea0bb55300aab077c342`. Permanent boundary: validated URL search → loaderDeps → SSR loader → typed `TournamentDiscoveryRepository` → runtime-validated projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/games` | `FINAL_CURRENT` | F18 terminally frozen. Issue #89 CLOSED / COMPLETED; implementation PR #90 MERGED; closeout PR #91 MERGED; frozen main `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`; terminal full gate `34633797889` PASS; terminal focused gate `34633797871` PASS. Permanent boundary: `/games → SSR loader → typed GameCatalogRepository → runtime-validated catalog projection → UI`. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/centers` | `IN_PROGRESS` | F19 current-law recertification. Issue #92 OPEN; START `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`; branch `phase/f19-public-gaming-center-discovery`; target permanent boundary `validated URL search → loaderDeps → SSR loader → typed GamingCenterDiscoveryRepository → runtime-validated directory projection → UI`; planned `GET /api/v1/centers/`; runtime remains `FRONTEND MOCK / BACKEND PENDING`. `/centers/$id` is protected as a separate next workstream. |
+| `/games` | `FINAL_CURRENT` | F18 terminally frozen. Issue #89 CLOSED / COMPLETED; implementation PR #90 MERGED; closeout PR #91 MERGED; frozen main `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/centers` | `FINAL_CURRENT` | F19 route-level implementation accepted. Issue #92 remains OPEN only for non-recursive closeout/terminal freeze. Implementation PR #93 MERGED with expected head `79c084611fb6dbe3617ba9a58f100934b9272587`; implementation merge/main `b3d6360af21c1c86a06a95cdbe20ac30ac42c84c`; post-main Full/F19/F18/F17/F16 gates PASS. Permanent boundary: validated URL search → loaderDeps → SSR loader → typed `GamingCenterDiscoveryRepository` → runtime-validated directory projection → UI. Runtime remains `FRONTEND MOCK / BACKEND PENDING`. `/centers/$id` is protected as the separate next workstream. |
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout accepted; private session/repository/runtime contract. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen; Issue #38 completed. |
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen; Issue #41 completed. |
@@ -69,7 +67,7 @@ Active current-law workstream:
 | `/host` | `NEEDS_RECERTIFICATION` | Public acquisition route has not passed current final page + SEO gates. |
 | `/rules` | `NEEDS_RECERTIFICATION` | Must be reconciled with authoritative ruleset/product copy and current evidence law. |
 
-## C. Active F19 Public Gaming Center Discovery truth
+## C. Accepted F19 Public Gaming Center Discovery truth
 
 Permanent route architecture:
 
@@ -108,10 +106,22 @@ SEO/final-copy lock:
 - base robots `index,follow`;
 - current city/page variants `noindex,follow` + canonical `/centers`;
 - SSR primary directory;
-- no LocalBusiness structured data on this multi-entity listing;
+- no `LocalBusiness` structured data on this multi-entity listing;
 - no unsupported popularity/rating/review/superlative claims.
 
-F19 remains `IN_PROGRESS` until exact-head QA, implementation PR, post-main QA, documentation-only closeout, terminal frozen-main QA and Issue #92 completion exist.
+Exact F19 route acceptance evidence:
+- START `41bdbb90f127474ecabd61cb5ceda5db1b91ae49`;
+- final reviewed implementation head `79c084611fb6dbe3617ba9a58f100934b9272587`;
+- implementation PR #93 MERGED;
+- implementation merge/main `b3d6360af21c1c86a06a95cdbe20ac30ac42c84c`;
+- pre-merge mergeable `true`, unresolved review threads `0`, exact main lock retained;
+- post-main Full `34648835775` PASS;
+- post-main F19 `34648835745` PASS;
+- post-main F18 `34648835820` PASS;
+- post-main F17 `34648835901` PASS;
+- post-main F16 `34648835803` PASS.
+
+The route may therefore be promoted non-recursively to `FINAL_CURRENT`. F19 workstream terminal freeze still requires the closeout merge and terminal frozen-main evidence in Issue #92.
 
 ## D. Accepted F18 Public Game Catalog truth
 
@@ -192,7 +202,7 @@ Competitive truth retained:
 
 ## H. Compliance priorities / NEXT
 
-Immediate active task: complete F19 `/centers` exact-head QA and acceptance chain without mutating `/centers/$id` or frozen F16/F17/F18/F02 source.
+Immediate active task: finish the F19 documentation-only closeout and terminal freeze without mutating `/centers/$id` or frozen F16/F17/F18/F02 source.
 
 After F19 terminal freeze, next public recertification order is:
 
@@ -207,9 +217,9 @@ Backend NEXT independently remains:
 ## I. Registry maintenance law
 
 - A route cannot be promoted from chat memory.
-- `IN_PROGRESS` is mandatory while any required implementation/merge/terminal gate is missing.
-- A merged implementation with required green post-implementation main gates may be promoted non-recursively in closeout governance.
-- Terminal `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal main CI recorded in its tracking Issue.
+- `IN_PROGRESS` is mandatory while required route-level implementation/merge/post-main evidence is missing.
+- A merged implementation with required green post-implementation main gates may be promoted non-recursively to `FINAL_CURRENT` in closeout governance.
+- Terminal workstream `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal main CI recorded in its tracking Issue.
 - New/placeholder/legacy routes remain visible until accepted or intentionally removed.
 - If implementation truth and this registry conflict, treat the route as not final until reconciled.
 - Do not create recursive documentation-only commits merely to record the SHA of the commit containing that same record; terminal closeout SHA/CI belongs in the tracking Issue after merge.
