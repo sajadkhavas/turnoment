@@ -1,6 +1,6 @@
 # F14 — Player Teams Hub
 
-Status: `IN PROGRESS — IMPLEMENTATION / EXACT-HEAD QA`
+Status: `MERGED / CLOSEOUT IN PROGRESS`
 
 Route: `/dashboard/teams`
 
@@ -9,6 +9,8 @@ Tracking Issue: `#71`
 START_SHA: `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`
 
 Implementation branch: `phase/f14-player-teams`
+
+Closeout branch: `closeout/f14-player-teams`
 
 Target: `FINAL_PRIVATE`
 
@@ -28,7 +30,7 @@ Exact frontend main at start:
 
 `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`
 
-This is terminal F13 frozen main. F13 Issue #68 is CLOSED / COMPLETED; terminal Frontend Quality Gate `34537474356` PASS and artifact `10176084983` has digest `sha256:f7af1a069ed839cdec7da9bfa6b2f2ee0b8d95c8609811e24903aa2c9d01397b`.
+That SHA is terminal F13 frozen main. F13 Issue #68 is CLOSED / COMPLETED; terminal Frontend Quality Gate `34537474356` PASS and artifact `10176084983` has digest `sha256:f7af1a069ed839cdec7da9bfa6b2f2ee0b8d95c8609811e24903aa2c9d01397b`.
 
 The existing `/dashboard/teams` route was only `DashboardSectionPlaceholder`, with no loader, repository, runtime contract, roster projection, pagination or final Teams UI. No earlier F14/Teams Issue, PR or branch existed.
 
@@ -36,7 +38,7 @@ The existing `/dashboard/teams` route was only `DashboardSectionPlaceholder`, wi
 
 ## 2. Existing product truth audit
 
-Accepted project contracts already establish only these team truths:
+Accepted project contracts established only these team truths before F14:
 - stable `teamId` and `teamName` in tournament participation;
 - current-player team role can be `captain | member`;
 - team-mode registration can expose `memberCount`/eligible-team projection;
@@ -44,7 +46,7 @@ Accepted project contracts already establish only these team truths:
 
 F14 MUST NOT fold tournament history into authoritative current team membership or current role.
 
-The registry's earlier broad “Team / Clan operations” description does not authorize inventing a mutation model. F14 therefore finalizes the evidence-supported read hub only. Team management commands require a later explicit product/domain contract.
+The registry's earlier broad “Team / Clan operations” description did not authorize inventing a mutation model. F14 therefore finalized the evidence-supported read hub only. Team management commands require a later explicit product/domain contract.
 
 ## 3. Official documentation audit
 
@@ -90,34 +92,29 @@ Frontend owns:
 - responsive/accessibility behavior;
 - deterministic QA fixture behind the same interface.
 
-## 5. Query contract
+## 5. Query / projection truth
 
 Validated search:
 - `team=<stable-team-id>`; absence allows the repository/backend to return the authoritative default membership;
 - `page=<positive-integer>`; absence = page 1.
 
-Invalid client search is normalized away. Backend validation/authorization remains authoritative.
+A requested stable team ID that is not in the current player's permitted membership projection returns `selectionState=unavailable`; UI exposes only the caller's valid memberships and a reset path. It does not reveal whether an external team exists.
 
-A requested stable team ID that is not in the current player's permitted membership projection returns `selectionState=unavailable`; UI exposes only the caller's other valid memberships and a reset path. It does not reveal whether an external team exists.
-
-## 6. Projection
+Projection:
 
 ```text
 player
   playerId
   gamerTag
-
 summary
   totalTeams
   captainOf
   memberOf
-
 memberships[]
   teamId
   name
   role                 # captain | member
   memberCount
-
 selectionState         # none | selected | unavailable
 selectedTeam?
   teamId
@@ -134,22 +131,9 @@ selectedTeam?
     totalItems
 ```
 
-Runtime validation rejects:
-- role summary counts that do not partition memberships;
-- summary total that differs from membership list size;
-- duplicate membership team IDs;
-- selected team outside returned memberships;
-- selected name/role/member-count drift;
-- member-count vs roster-total drift;
-- impossible pagination;
-- duplicate roster player IDs;
-- multiple captains on one roster page;
-- complete single-page roster without exactly one captain;
-- current-player roster role inconsistent with selected-team role;
-- selected state without selectedTeam;
-- none state with nonzero memberships.
+Runtime validation rejects summary/membership drift, duplicate stable IDs, selected-team drift, impossible pagination, duplicate roster identities, captain inconsistencies, and current-player role mismatch.
 
-## 7. Explicitly deferred behavior
+## 6. Explicitly deferred behavior
 
 F14 does not introduce:
 - create/rename/delete team;
@@ -166,7 +150,7 @@ F14 does not introduce:
 
 A future command workstream must define capability projection, server authorization, P01 CSRF, stale/concurrency handling, idempotency where relevant and typed outcomes before these controls may appear as real product actions.
 
-## 8. Backend cross-repo alignment — terminal
+## 7. Backend cross-repo alignment — terminal
 
 Backend repo: `sajadkhavas/turnoment-backend`.
 
@@ -181,7 +165,6 @@ Terminal evidence:
 - PR Backend Quality Gate `34539140468` — PASS on Python 3.12 and 3.14;
 - mergeable before merge `true`;
 - review threads before merge `0`;
-- pre-merge backend main exact START;
 - expected-head merge used;
 - accepted backend main `1977db3c9995336166907b9fd85ac26093e6c254`;
 - post-main Backend Quality Gate `34539329509` — PASS on Python 3.12 and 3.14;
@@ -191,65 +174,78 @@ Planned future endpoint: `GET /api/v1/me/teams/`.
 
 No runtime Python/model/migration/serializer/view/URL/dependency/phase-registry implementation was added. Backend NEXT remains `P02 — Games / Catalog Foundation`. Runtime remains `FRONTEND MOCK / BACKEND PENDING`.
 
-## 9. Required UI states
+## 8. Accepted frontend implementation evidence
 
-F14 owns:
-- loading/pending skeleton;
-- populated memberships and selected roster;
-- no-membership empty state;
-- unavailable/stale team-selection reset state;
-- error/retry state;
-- unauthenticated/session-expired redirect to Login;
-- team switcher;
-- roster pagination.
+- implementation head: `2b66225dea1d30bb15a5dd7429fccab768440100`;
+- compare from START: ahead 1 / behind 0 / exactly one commit / exactly 11 F14-owned files;
+- dependency/version drift: NONE;
+- exact-head Frontend Quality Gate `34539835524` — PASS;
+- exact-head artifact `10176949167`;
+- exact-head digest `sha256:c139d6bdc7a170966b2cc1bd1800cb43d45b065fc5ddcfaffe5c6d2ee89a41d1`;
+- manual visual QA at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS;
+- browser regression: 90 screenshots;
+- implementation PR `#72`;
+- PR-context Frontend Quality Gate `34540376537` — PASS;
+- PR-context artifact `10177139859`;
+- PR-context digest `sha256:fc8651125bf59c1311baa63d49dc6f9285a7172e194f97bd6800b694f329f4a1`;
+- PR mergeable before merge: true;
+- unresolved review threads before merge: 0;
+- exact pre-merge `main`: START_SHA;
+- expected-head implementation merge used;
+- implementation merge / closeout base: `7ac7028d99d7088d0d3e079602a8ea3820ddb599`;
+- post-main Frontend Quality Gate `34568920416` — PASS;
+- post-main artifact `10187123251`;
+- post-main digest `sha256:8596f2fcbc58a7e290ce5d82cb43bae62a35e0defcd59887ed9bb411c6c1b2ac`.
 
-No mutation state exists because F14 is read-only.
+The implementation and route architecture are accepted. `/dashboard/teams` may be promoted non-recursively to `FINAL_PRIVATE` in closeout governance.
 
-## 10. Accessibility / responsive acceptance
+## 9. Accessibility / responsive acceptance
 
-Required widths:
+Accepted widths:
 `375 / 390 / 430 / 768 / 1024 / 1440`
 
-Acceptance requires:
-- no horizontal overflow/clipping;
-- safe Persian and LTR gamer-tag wrapping/truncation;
-- touch-safe team/pagination controls;
+Acceptance evidence includes:
+- no horizontal overflow/clipping observed;
+- safe Persian and LTR gamer-tag wrapping;
+- touch-safe membership/pagination controls;
 - visible focus states;
-- semantic headings/list/navigation/status roles;
+- semantic headings/list/status content;
 - role meaning visible as text, never color-only;
-- stable mobile/desktop hierarchy.
+- stable mobile/tablet/desktop hierarchy.
 
-## 11. Quality/evidence gate
+## 10. Closeout boundary
 
-Before implementation merge:
-1. exact compare reviewed;
-2. only F14-owned files changed;
-3. no Challenge Hub/Detail mutations;
-4. no dependency drift; `package.json` only appends F14 contract test;
-5. frozen install PASS;
-6. lint PASS;
-7. production build/route generation PASS;
-8. typecheck PASS;
-9. F14 runtime contract tests PASS;
-10. SSR/noindex/final-copy browser gate PASS;
-11. browser regression expands 84 → 90 screenshots by adding F14 at all six widths;
-12. manual six-width visual QA PASS;
-13. implementation PR CI green, mergeable true, review threads 0;
-14. expected-head implementation merge;
-15. post-main QA/artifact green;
-16. documentation-only closeout + terminal frozen-main QA before Issue #71 may close.
+Closeout is documentation-only and must contain exactly four Markdown files:
+1. `PROJECT_CONTINUITY.md`
+2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`
+3. `docs/workstreams/F14_PLAYER_TEAMS.md`
+4. `docs/workstreams/F14_CLOSEOUT.md`
+
+Forbidden in closeout:
+- runtime/application source changes;
+- `.github/workflows` changes;
+- `package.json`/lockfile/dependency changes;
+- contract/repository/adapter/fixture/test changes;
+- Challenge Hub/Detail changes;
+- backend changes.
+
+## 11. Non-recursive completion law
+
+Committed closeout documentation intentionally does not self-record its own future merge SHA or terminal frozen-main run/artifact/digest. Those facts only exist after closeout merge and therefore belong in Issue #71.
+
+Until terminal frozen-main QA is green and Issue #71 closes `completed`, F14 remains:
+
+`MERGED / CLOSEOUT IN PROGRESS`
 
 ## 12. Exact NEXT
 
-1. accept only one clean F14 implementation commit from exact START_SHA;
-2. compare must prove only the 11 owned files, one commit ahead / zero behind and no dependency/Challenge drift;
-3. require exact-head Frontend Quality Gate PASS and manually inspect all six F14 screenshots;
-4. open implementation PR without auto-closing Issue #71;
-5. require PR CI green, mergeable true, review threads 0 and exact pre-merge main lock;
-6. expected-head implementation merge;
-7. require post-main gate/artifact/digest;
-8. create documentation-only closeout from exact implementation merge;
-9. require closeout PR gate + expected-head merge + terminal frozen-main gate/artifact/digest;
-10. reverify live main;
-11. record terminal evidence in Issue #71 and close completed;
-12. only then report `F14 — DONE / MERGED / FROZEN — FINAL_PRIVATE`.
+1. closeout compare must prove one commit ahead / zero behind and exactly four Markdown files;
+2. closeout PR full Frontend Quality Gate must pass;
+3. closeout PR must be mergeable and unresolved review threads must be zero;
+4. pre-merge `main` must remain exact implementation merge `7ac7028d99d7088d0d3e079602a8ea3820ddb599`;
+5. closeout must merge with expected-head lock;
+6. terminal frozen-main Frontend Quality Gate must pass;
+7. terminal artifact/digest must belong to exact frozen main SHA;
+8. live `main` must be reverified exact frozen SHA;
+9. Issue #71 must record terminal evidence and close `completed`;
+10. only then report `F14 — DONE / MERGED / FROZEN — FINAL_PRIVATE`.

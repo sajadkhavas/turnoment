@@ -6,11 +6,11 @@
 
 Last audit: `2026-09-11`
 
-Audit baseline: `638d3de4006372e8ec2604152a7523a10f39ea63` — F13 implementation merge; post-implementation main Frontend Quality Gate `34536367379` PASS; artifact `10175682558`; digest `sha256:263e59b171afa14882c7b0e454dff927647128a33be0909147ebfd1ff25f9254`.
+Audit baseline: `7ac7028d99d7088d0d3e079602a8ea3820ddb599` — F14 implementation merge; post-implementation main Frontend Quality Gate `34568920416` PASS; artifact `10187123251`; digest `sha256:8596f2fcbc58a7e290ce5d82cb43bae62a35e0defcd59887ed9bb411c6c1b2ac`.
 
-F13 `/dashboard/achievements` is promoted non-recursively to `FINAL_PRIVATE` because its implementation is merged and required post-implementation main QA is green. The F13 workstream itself is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout merge plus terminal frozen-main CI/artifact/digest are recorded in Issue #68.
+F14 `/dashboard/teams` is promoted non-recursively to `FINAL_PRIVATE` because its implementation is merged and required post-implementation main QA is green. The F14 workstream itself is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout merge plus terminal frozen-main CI/artifact/digest are recorded in Issue #71.
 
-F12 terminal truth: frozen main `a058de708c755d98e7180ffee616b50cbdd8598c`; terminal gate `34520157521` PASS; artifact `10169424034`; digest `sha256:167894d704c2c548f6cf40102bb67f2f584afeff09f8bff96b20a837828911e4`; Issue #65 CLOSED / COMPLETED.
+F13 terminal truth: frozen main `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`; terminal gate `34537474356` PASS; artifact `10176084983`; digest `sha256:f7af1a069ed839cdec7da9bfa6b2f2ee0b8d95c8609811e24903aa2c9d01397b`; Issue #68 CLOSED / COMPLETED.
 
 ## Status meanings
 
@@ -33,8 +33,9 @@ F12 terminal truth: frozen main `a058de708c755d98e7180ffee616b50cbdd8598c`; term
 | `/dashboard/profile` | `FINAL_PRIVATE` | F09 terminally frozen; Issue #56 completed. |
 | `/dashboard/notifications` | `FINAL_PRIVATE` | F10 terminally frozen; Issue #59 completed. Runtime notification APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/dashboard/settings` | `FINAL_PRIVATE` | F11 terminally frozen; Issue #62 completed. Runtime settings APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 terminally frozen; frozen main `a058de708c755d98e7180ffee616b50cbdd8598c`; terminal gate `34520157521` PASS; artifact `10169424034`; Issue #65 completed. Runtime Rivalries API remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/achievements` | `FINAL_PRIVATE` | F13 implementation accepted/merged. START `a058de708c755d98e7180ffee616b50cbdd8598c`; final reviewed head `f3806f5403157a4d0ca97d51bf69ded2e9dcff53`; exact-head gate `34523505639` PASS; PR #69 gate `34535849148` PASS; implementation merge `638d3de4006372e8ec2604152a7523a10f39ea63`; post-main gate `34536367379` PASS; artifact `10175682558`; digest `sha256:263e59b171afa14882c7b0e454dff927647128a33be0909147ebfd1ff25f9254`. Runtime Achievements API remains `FRONTEND MOCK / BACKEND PENDING`. F13 terminal closeout remains Issue #68. |
+| `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 terminally frozen; Issue #65 completed. Runtime Rivalries API remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/achievements` | `FINAL_PRIVATE` | F13 terminally frozen; frozen main `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`; terminal gate `34537474356` PASS; artifact `10176084983`; Issue #68 completed. Runtime Achievements API remains `FRONTEND MOCK / BACKEND PENDING`. |
+| `/dashboard/teams` | `FINAL_PRIVATE` | F14 implementation accepted/merged. START `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`; final reviewed head `2b66225dea1d30bb15a5dd7429fccab768440100`; exact-head gate `34539835524` PASS; PR #72 gate `34540376537` PASS; implementation merge `7ac7028d99d7088d0d3e079602a8ea3820ddb599`; post-main gate `34568920416` PASS; artifact `10187123251`; digest `sha256:8596f2fcbc58a7e290ce5d82cb43bae62a35e0defcd59887ed9bb411c6c1b2ac`. Runtime Teams API remains `FRONTEND MOCK / BACKEND PENDING`. F14 terminal closeout remains Issue #71. |
 | `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen; Issue #44 completed. Runtime result APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen; Issue #47 completed. Runtime dispute APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/login` | `FINAL_PRIVATE` | F07 terminally frozen; Phone OTP, Django Session + CSRF, no password/local bearer auth. |
@@ -66,9 +67,8 @@ No currently accepted auth/account route remains in `REBUILD`.
 | Route | Status | Planned product workstream |
 |---|---|---|
 | `/dashboard/challenges` | `PLACEHOLDER` | Challenge Hub. Lovable planning/output does not become accepted implementation until its own controlled evidence chain lands. |
-| `/dashboard/teams` | `PLACEHOLDER` | Team / Clan operations. |
 
-`/dashboard/rivalries` and `/dashboard/achievements` are no longer placeholders; they are listed in section A as `FINAL_PRIVATE`.
+`/dashboard/rivalries`, `/dashboard/achievements`, and `/dashboard/teams` are no longer placeholders; they are listed in section A as `FINAL_PRIVATE`.
 
 ## E. Private dashboard routes requiring recertification
 
@@ -124,6 +124,9 @@ All above remain `LEGACY_REVIEW`.
 ### `/dashboard/achievements` — F13
 `private dashboard access policy → validated status/category/sort/page search → loader → typed PlayerAchievementsRepository → runtime-validated achievement projection → Achievements UI`
 
+### `/dashboard/teams` — F14
+`private dashboard access policy → validated team/page search → loader → typed PlayerTeamsRepository → runtime-validated current-player team membership/roster projection → Teams UI`
+
 Shared permanent invariants:
 - Django Session authority;
 - P01 CSRF bootstrap + `credentials: include` + `X-CSRFToken` on unsafe calls;
@@ -132,13 +135,13 @@ Shared permanent invariants:
 - final Persian copy/accessibility/responsive states;
 - QA fixture is test-only and shares the permanent production contract.
 
-F13-specific truth:
-- achievement definitions/IDs/codes/categories/status/progress/unlock time/summary/filter/sort/pagination are backend/repository-owned;
-- frontend never derives or awards an achievement from raw competitive history or infers status from progress;
-- status is `locked | in-progress | unlocked` and progress is server-projected when present;
-- no XP/coin/financial reward/trophy rarity/social comparison/claim mutation/Achievement Detail behavior is introduced;
+F14-specific truth:
+- membership, stable team identity/name, role, member count, selected-team resolution, roster membership/roles, summary and roster pagination are backend/repository-owned;
+- frontend never reconstructs current team membership/role from tournament history;
+- unauthorized/unknown requested team IDs use non-enumerating `selectionState=unavailable`;
+- no team mutation, capacity, public/private visibility, rating/ranking, tournament/challenge eligibility or Team Detail behavior is introduced;
 - `/dashboard/challenges` remains isolated;
-- backend docs alignment is terminally accepted, but runtime Achievements domain/endpoint is not implemented yet.
+- backend docs alignment is terminally accepted, but runtime Teams domain/endpoint is not implemented yet.
 
 ## H. Competitive truth retained
 
@@ -149,11 +152,11 @@ F13-specific truth:
 
 ## I. Compliance priorities
 
-F13 documentation-only closeout is the immediate governance task until Issue #68 is completed.
+F14 documentation-only closeout is the immediate governance task until Issue #71 is completed.
 
 Challenge Hub remains isolated under its own Lovable + acceptance chain and must not be modified by unrelated workstreams.
 
-After F13 terminal freeze, `/dashboard/teams` is the next independent dashboard placeholder unless product priority explicitly selects another controlled workstream. Public competitive routes still require current-law recertification and `LEGACY_REVIEW` routes require explicit keep/remove/repurpose decisions before production delivery.
+After F14 terminal freeze, no independent dashboard placeholder remains except that deliberately isolated Challenge Hub. The next non-Challenge page workstream must be selected from current-law public recertification or an explicitly approved legacy/product decision.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
