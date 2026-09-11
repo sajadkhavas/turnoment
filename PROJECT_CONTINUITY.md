@@ -24,150 +24,158 @@ Every chat/agent MUST:
 
 Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `READY TO MERGE`, `MERGED / CLOSEOUT IN PROGRESS`, `DONE / MERGED / FROZEN`.
 
-## 2. Current accepted frontend main
+## 2. Current frontend repository truth
 
 Repository: `sajadkhavas/turnoment`
 
-Current accepted/frozen `main` before F18:
+Current accepted implementation main before F18 closeout:
 
-`73955783add94c562f4eea0bb55300aab077c342`
+`112c3bbd2df7ca3988c81efa4dfb6ad569f621c2`
 
-This is the terminal F17 closeout merge/frozen-main SHA.
+That SHA is the merged F18 `/games` implementation and has passed the required post-main implementation gates.
 
-F17 `/tournaments` terminal truth:
-- status `DONE / MERGED / FROZEN — FINAL_CURRENT`;
-- Issue `#84` — CLOSED / COMPLETED;
-- implementation PR `#87` — MERGED;
-- implementation merge `22e4c67425f2bf0cefe9079b2e014c2395f6448a`;
-- closeout PR `#88` — MERGED;
-- frozen main `73955783add94c562f4eea0bb55300aab077c342`;
-- terminal Frontend Quality Gate `34618556371` — PASS, artifact `10271498535`, digest `sha256:100caa7b4d63f2135008cb0295e5ffdeac55b0b944863731acb34f90f9a0891c`;
-- terminal F17 focused gate `34618556522` — PASS, artifact `10271735232`, digest `sha256:a6b549f6bbbd84f0ad46601a6a6fe0077109fd6ef73baf18c633a4a229920aa8`;
-- F16 regression gate `34618556647` — PASS, artifact `10271990013`, digest `sha256:63e654bcd5a11972b770a746eccba9b08cc243800df78e25ee9a97ef7215c30e`.
-
-Terminal F17 evidence is recorded non-recursively in Issue #84. Do not rebuild F17 from memory.
-
-## 3. Active frontend workstream — F18
-
-Workstream:
+Active governance workstream:
 
 `F18 — Public Game Catalog`
 
-Route:
+Route: `/games`
 
-`/games`
+Tracking Issue: `#89` — MUST remain open until terminal frozen-main evidence exists.
 
-Tracking Issue:
+Implementation branch: `phase/f18-public-game-catalog`
 
-`#89` — OPEN
+Closeout branch: `closeout/f18-public-game-catalog`
 
-START_SHA:
-
-`73955783add94c562f4eea0bb55300aab077c342`
-
-Implementation branch:
-
-`phase/f18-public-game-catalog`
-
-Current workstream status:
-
-`IN PROGRESS — IMPLEMENTATION QA`
-
-Target:
+Route acceptance is promoted non-recursively to:
 
 `FINAL_CURRENT`
 
-Workstream record:
+because implementation is merged and required post-main implementation QA is green. The F18 workstream itself is still:
 
-`docs/workstreams/F18_PUBLIC_GAME_CATALOG.md`
+`MERGED / CLOSEOUT IN PROGRESS`
 
-Frozen dependency:
+until closeout merge, terminal frozen-main QA/artifacts/digests, exact live-main verification and Issue #89 closure are complete.
 
-`/games/$slug` = F02 `FINAL_CURRENT`; F18 must not mutate F02 source/contract/workflow/docs unless a separately authorized regression fix is required.
+Runtime truth remains:
 
-## 4. F18 baseline problem and permanent boundary
+`FRONTEND MOCK / BACKEND PENDING`
 
-START_SHA `/games` problems:
-- direct `popularGames` / `allTournaments` fixture imports;
-- frontend-derived tournament counts;
-- no route loader/repository/runtime-validation contract;
-- no production HTTP adapter/fail-closed behavior;
-- no final loading/error/empty states;
-- legacy `ایران مهر افزار` metadata;
-- no current SEO/final-copy evidence chain.
+until backend P02 implements and permission-tests `GET /api/v1/games/`.
 
-Permanent F18 boundary:
+## 3. F18 permanent architecture truth
+
+Permanent boundary:
 
 `/games → SSR loader → typed GameCatalogRepository → runtime-validated catalog projection → Game Catalog UI`
 
 Repository/backend owns:
-- published catalog membership and ordering;
+- published catalog membership and order;
 - stable game ID and canonical slug;
 - authoritative game name/short name/platform labels;
 - game-entity catalog summary/image;
-- optional tournament-count projection when authoritative.
+- optional authoritative tournament-count projection.
 
 Frontend owns:
-- final page-level Persian copy and information hierarchy;
+- final Persian page copy and information hierarchy;
 - presentation/accessibility/responsive behavior;
 - canonical/robots metadata;
-- crawlable links to canonical game-detail and tournament-discovery routes;
+- crawlable links to `/games/$slug` and `/tournaments?game=<stable-game-id>`;
 - deterministic fixture repository for dev/test/visual QA only.
 
 Frontend MUST NOT derive production catalog membership, canonical identity or tournament counts from local tournament arrays.
 
-## 5. F18 runtime / API truth
-
-Planned production endpoint:
+Production HTTP adapter targets:
 
 `GET /api/v1/games/`
 
-Current integration truth:
+and requires `VITE_API_BASE_URL`, runtime-validates the payload and fails closed without fixture fallback.
 
-`FRONTEND MOCK / BACKEND PENDING`
+Frozen F02 `/games/$slug` remains `FINAL_CURRENT` and was kept outside the F18 implementation diff.
 
-Production behavior:
-- uses the Django HTTP repository;
-- requires `VITE_API_BASE_URL`;
-- runtime-validates JSON with strict Zod contract;
-- fails closed on missing base URL, HTTP failure or invalid payload;
-- MUST NOT silently fall back to fixture games.
+## 4. F18 implementation evidence
 
-The list identity is required to stay compatible with frozen F02 planned detail endpoint:
+Frontend START_SHA:
 
-`GET /api/v1/games/{slug}/`
+`73955783add94c562f4eea0bb55300aab077c342`
 
-## 6. F18 implementation checkpoint
+Final reviewed implementation head:
 
-Initial implementation commit:
+`e44a3ba812a937aa41d5dbeb17c21b8ed641510d`
 
-`3675581bda3f97ca8d3cb49921c66e1e14240c5e`
+Implementation compare from START:
+- ahead `6`;
+- behind `0`;
+- `12` changed files;
+- `bun.lock` unchanged;
+- no dependency/version mutation;
+- `package.json` final delta only appends the F18 contract spec to the existing full test command;
+- frozen F02 source/contract/workflow/docs absent from the diff.
 
-Package test-suite wiring:
-- `f04ed182edb934a02f27a1ccf81059192aef9363` appended F18 contract testing but accidentally changed one existing devDependency version;
-- `0b625d6554b0f5e5f638e449b18c3154d8e6ecf5` immediately restored the exact baseline dependency while retaining the F18 test addition;
-- cumulative compare from START through `0b625d...` confirms `package.json` has only the intended global-test command replacement and no dependency/version/lockfile delta.
+Implementation PR:
 
-Workstream documentation commit:
+`#90` — MERGED with expected-head lock.
 
-`2233901ac54cc81d64a5cac6041a91ced43b81f5`
+Implementation merge / accepted main:
 
-Implementation includes:
-- strict `GameCatalogPageData` / game-item Zod contract;
-- `GameCatalogRepository`;
-- deterministic mock repository;
-- fail-closed Django HTTP repository;
-- SSR loader;
-- final pending/error/empty states;
-- final Turnoment H1/title/meta/canonical/robots copy;
-- links to frozen `/games/$slug` canonical slugs;
-- stable-game-ID links into `/tournaments`;
-- focused F18 contract/build/typecheck/SSR/SEO/navigation/six-width QA workflow;
-- F18 contract added to normal repository test suite.
+`112c3bbd2df7ca3988c81efa4dfb6ad569f621c2`
 
-No F02 `/games/$slug` file is authorized in the F18 implementation diff.
+Pre-merge acceptance:
+- mergeable `true`;
+- unresolved review threads `0`;
+- exact pre-merge frontend `main` remained START_SHA.
 
-## 7. F18 SEO / final-copy truth
+## 5. F18 exact-head QA
+
+Exact-head normal Frontend Quality Gate:
+- run `34630735395` — PASS;
+- artifact `10275729589`;
+- digest `sha256:4d48a7a492e93bafabbf372896b388e65763a80c6db50e29c048d211e158cfc3`.
+
+Exact-head focused F18 Public Game Catalog Quality Gate:
+- run `34630735403` — PASS;
+- artifact `10276037245`;
+- digest `sha256:1b242047c53480f87693585b1601114f15a17330bfd7979dd1317752d6c6cefe`;
+- six-width evidence `375 / 390 / 430 / 768 / 1024 / 1440` manually inspected with no observed horizontal overflow, clipping or overlap.
+
+## 6. F18 PR-context QA
+
+Frontend Quality Gate:
+- run `34631270914` — PASS;
+- artifact `10276073860`;
+- digest `sha256:b57c0ad5573a277bf31c731424c97c598351d40f86bd6ac8e66220c96727092e`.
+
+Focused F18 gate:
+- run `34631270926` — PASS;
+- artifact `10276765029`;
+- digest `sha256:b3d4b1d07070856b46d0899167990efffa0ea306277d5f105f45fd6a5686a0f6`.
+
+Frozen-route regression gates:
+- F17 run `34631270916` — PASS, artifact `10275933560`, digest `sha256:7159752464872a2ba7c810a84b4e77e1c468590ac9e28056a1e1aee60fb20301`;
+- F16 run `34631270958` — PASS, artifact `10276532628`, digest `sha256:701be29cb8bc17bee86d516de7018b4faa8d605674ce05c9061854d9e1771131`.
+
+## 7. F18 post-main implementation QA
+
+Accepted implementation main:
+
+`112c3bbd2df7ca3988c81efa4dfb6ad569f621c2`
+
+Normal Frontend Quality Gate:
+- run `34631796666` — PASS;
+- artifact `10277080726`;
+- digest `sha256:989c777a8aec106a33c9afbf2f2c351b12fdd517c63122c95f55bab7cb440a88`.
+
+Focused F18 gate:
+- run `34631796765` — PASS;
+- artifact `10276318688`;
+- digest `sha256:1e4fffe26726997203b39e5696f12c231b234dcd04b945a30fcd4e9bc5c3814e`.
+
+Frozen-route regressions:
+- F17 run `34631796657` — PASS, artifact `10276089125`, digest `sha256:ecda07d7aebe16381fa7005de4233186c08fe2443cb1191678c0b574e94d3a2c`;
+- F16 run `34631796757` — PASS, artifact `10276458697`, digest `sha256:ae422beabde3f9c10b7e16ea6471a455219730121076b4f443da8b6cf3b27862`.
+
+Live frontend `main` was reverified exact `112c3bbd2df7ca3988c81efa4dfb6ad569f621c2` before closeout branch creation.
+
+## 8. F18 SEO / final-copy truth
 
 Final H1:
 
@@ -180,10 +188,10 @@ Final title:
 Indexing:
 - canonical `/games`;
 - robots `index,follow`;
-- primary catalog content SSR-rendered;
-- no unsupported route-specific rich-result schema on this multi-entity catalog.
+- primary catalog SSR-rendered;
+- no unsupported route-specific rich-result schema.
 
-Search-intent boundary:
+Intent boundary:
 - `/games` = public game catalog;
 - `/games/$slug` = one game's competitive hub;
 - `/tournaments` = tournament inventory/filtering;
@@ -192,55 +200,59 @@ Search-intent boundary:
 
 No invented popularity/search-volume/ranking/prize/viewership/superlative claim is authorized.
 
-## 8. Backend alignment truth
+## 9. Backend alignment truth
 
 Backend repository:
 
 `sajadkhavas/turnoment-backend`
 
-Backend main locked at F18 start:
-
-`a5644ae4b4e64908088f389e43155c268fe6e29d`
+F18 documentation-only backend alignment is terminal:
+- Backend START `a5644ae4b4e64908088f389e43155c268fe6e29d`;
+- Issue `#33` — CLOSED / COMPLETED;
+- docs head `c3bc950c69881b812a35e5fb39cda37d1c2c3da7`;
+- PR `#34` — MERGED;
+- PR-context Backend Quality Gate `34631004853` — PASS on Python 3.12 / 3.14;
+- backend merge/main `b0fc9ed73dc57aed6a28453745386489aaef0ceb`;
+- post-main Backend Quality Gate `34631189236` — PASS on Python 3.12 / 3.14;
+- no runtime Python/model/migration/serializer/view/URL/dependency/phase-registry implementation was added.
 
 Backend NEXT remains exactly:
 
 `P02 — Games / Catalog Foundation`
 
-F18 frontend work does not itself make `GET /api/v1/games/` live and MUST NOT reorder backend phases. Any backend contract alignment is documentation-only until P02 implements/permission-tests the owning games/catalog runtime.
-
-## 9. Previous accepted frontend truth
+## 10. Previous accepted frontend truth
 
 F01–F17 remain accepted according to their route/workstream records. In particular:
 - F16 `/` = `DONE / MERGED / FROZEN — FINAL_CURRENT`;
-- F17 `/tournaments` = `DONE / MERGED / FROZEN — FINAL_CURRENT`;
+- F17 `/tournaments` = `DONE / MERGED / FROZEN — FINAL_CURRENT`, frozen main `73955783add94c562f4eea0bb55300aab077c342`;
 - F02 `/games/$slug` = `FINAL_CURRENT` and frozen;
 - private account/dashboard/match workstreams retain their recorded `FINAL_PRIVATE` truth;
 - `/tournaments/$id` remains `FINAL_PRE_SEO` pending a later limited current-law recertification.
 
 Do not reopen frozen routes from chat memory.
 
-## 10. Exact F18 acceptance chain
+## 11. F18 closeout law
 
-F18 is not `DONE` merely because code exists.
+Closeout is documentation-only and restricted to exactly four Markdown files:
+1. `PROJECT_CONTINUITY.md`;
+2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
+3. `docs/workstreams/F18_PUBLIC_GAME_CATALOG.md`;
+4. `docs/workstreams/F18_CLOSEOUT.md`.
 
-Required chain:
-1. settle the exact implementation head;
-2. exact-head normal Frontend Quality Gate + focused F18 gate PASS;
-3. retain exact artifact IDs/digests and manually inspect focused six-width visual evidence;
-4. verify final compare and frozen-route protection;
-5. open implementation PR without auto-closing Issue #89;
-6. require PR-context normal + focused F18 gates PASS;
-7. require mergeable=true, unresolved review threads=0 and exact pre-merge `main` lock;
-8. expected-head implementation merge;
-9. require post-main normal + focused F18 QA PASS;
-10. create documentation-only closeout under the non-recursive rule;
-11. merge closeout only after its PR-context gates are green;
-12. require terminal frozen-main normal + focused F18 QA/artifacts/digests;
-13. reverify exact live `main`;
-14. record terminal SHA/CI/artifact evidence in Issue #89 and close it `completed`;
-15. only then report `DONE / MERGED / FROZEN — FINAL_CURRENT`.
+No source, package, lockfile, workflow, runtime configuration or dependency mutation is authorized.
 
-## 11. Public-route NEXT after F18
+This closeout is non-recursive: its future merge SHA and terminal frozen-main CI/artifact/digest belong in Issue #89 after they exist, not in another documentation PR.
+
+F18 is not terminal `DONE` until:
+1. closeout compare is ahead 1 / behind 0 / exactly one commit / exactly four Markdown files;
+2. closeout PR-context normal + focused F18 gates and triggered regressions pass;
+3. mergeable=true, unresolved review threads=0 and exact live-main lock are verified;
+4. closeout merges with expected-head lock;
+5. terminal frozen-main normal + focused F18 QA/artifacts/digests pass;
+6. exact live frontend main is reverified;
+7. terminal evidence is recorded in Issue #89 and Issue #89 is closed `completed`.
+
+## 12. Public-route NEXT after F18
 
 After F18 terminal freeze, current-law order remains:
 
