@@ -65,6 +65,7 @@ jobs:
           RIVALRIES_URL="http://127.0.0.1:4173/dashboard/rivalries"
           ACHIEVEMENTS_URL="http://127.0.0.1:4173/dashboard/achievements"
           TEAMS_URL="http://127.0.0.1:4173/dashboard/teams"
+          CHALLENGES_URL="http://127.0.0.1:4173/dashboard/challenges"
 
           READY=0
           for _ in $(seq 1 30); do
@@ -93,6 +94,7 @@ jobs:
           curl -fsS "$RIVALRIES_URL" > /tmp/f12-player-rivalries.html
           curl -fsS "$ACHIEVEMENTS_URL" > /tmp/f13-player-achievements.html
           curl -fsS "$TEAMS_URL" > /tmp/f14-player-teams.html
+          curl -fsS "$CHALLENGES_URL" > /tmp/f15-player-challenges.html
 
           grep -a -q "جام قهرمانان کرج" /tmp/f01-detail.html
           grep -a -q "ثبت‌نام مسابقه" /tmp/f01-register.html
@@ -130,6 +132,11 @@ jobs:
           grep -a -q "فهرست اعضای تیم" /tmp/f14-player-teams.html
           grep -a -q "کاپیتان" /tmp/f14-player-teams.html
           grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f14-player-teams.html
+          grep -a -q "چالش‌های من" /tmp/f15-player-challenges.html
+          grep -a -q "ایجاد چالش جدید" /tmp/f15-player-challenges.html
+          grep -a -q "بخش چالش فعال است" /tmp/f15-player-challenges.html
+          grep -a -q "پذیرفتن چالش" /tmp/f15-player-challenges.html
+          grep -a -q 'name="robots" content="noindex,nofollow"' /tmp/f15-player-challenges.html
 
           if grep -a -q 'type="password"' /tmp/f07-login.html || grep -a -q "فراموشی رمز\|مرا به خاطر بسپار" /tmp/f07-login.html; then
             echo "Legacy password affordances must not exist on F07 Login."
@@ -163,6 +170,10 @@ jobs:
             echo "Implementation-stage engineering copy must not exist on F14 Player Teams."
             exit 1
           fi
+          if grep -a -q "فرآیند ایجاد چالش در همین صفحه آغاز نشده\|به‌زودی فعال می‌شود\|پس از اتصال سرویس\|بک‌اند\|API\|mock\|placeholder" /tmp/f15-player-challenges.html; then
+            echo "Implementation-stage or dead-action copy must not exist on F15 Player Challenge Hub."
+            exit 1
+          fi
 
           DETAIL_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-detail.html | wc -l | tr -d ' ')"
           REGISTER_MAIN_COUNT="$(grep -a -o '<main' /tmp/f01-register.html | wc -l | tr -d ' ')"
@@ -179,6 +190,7 @@ jobs:
           RIVALRIES_MAIN_COUNT="$(grep -a -o '<main' /tmp/f12-player-rivalries.html | wc -l | tr -d ' ')"
           ACHIEVEMENTS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f13-player-achievements.html | wc -l | tr -d ' ')"
           TEAMS_MAIN_COUNT="$(grep -a -o '<main' /tmp/f14-player-teams.html | wc -l | tr -d ' ')"
+          CHALLENGES_MAIN_COUNT="$(grep -a -o '<main' /tmp/f15-player-challenges.html | wc -l | tr -d ' ')"
           test "$DETAIL_MAIN_COUNT" -eq 1
           test "$REGISTER_MAIN_COUNT" -eq 1
           test "$GAME_MAIN_COUNT" -eq 1
@@ -194,6 +206,7 @@ jobs:
           test "$RIVALRIES_MAIN_COUNT" -eq 1
           test "$ACHIEVEMENTS_MAIN_COUNT" -eq 1
           test "$TEAMS_MAIN_COUNT" -eq 1
+          test "$CHALLENGES_MAIN_COUNT" -eq 1
 
           for WIDTH in 375 390 430 768 1024 1440; do
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/detail-${WIDTH}.png" "$DETAIL_URL" >/dev/null 2>&1
@@ -211,9 +224,10 @@ jobs:
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-rivalries-${WIDTH}.png" "$RIVALRIES_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-achievements-${WIDTH}.png" "$ACHIEVEMENTS_URL" >/dev/null 2>&1
             "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-teams-${WIDTH}.png" "$TEAMS_URL" >/dev/null 2>&1
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-challenges-${WIDTH}.png" "$CHALLENGES_URL" >/dev/null 2>&1
           done
 
-          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 90
+          test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 96
       - name: Upload browser QA evidence
         if: always()
         uses: actions/upload-artifact@v4

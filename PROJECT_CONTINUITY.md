@@ -13,7 +13,7 @@ Every chat/agent MUST:
 2. read `FRONTEND_PAGE_DELIVERY_PROTOCOL.md` for frontend page work;
 3. read `SEO_FINAL_COPY_PROTOCOL.md` for public/indexable pages or material public-copy changes;
 4. read `docs/ROUTE_COMPLIANCE_REGISTRY.md` before modifying/accepting an existing route;
-5. verify exact live `main` SHA of every repository it will change;
+5. verify current `main` SHA of every repository it will change;
 6. read relevant Issue/PR/workstream evidence before repeating work;
 7. use a dedicated branch;
 8. never claim `DONE / MERGED / FROZEN` from chat memory alone;
@@ -26,225 +26,207 @@ Allowed statuses: `PLANNED`, `IN PROGRESS`, `PARTIAL / SAFE CHECKPOINT`, `READY 
 
 Repository: `sajadkhavas/turnoment`
 
-F14 START_SHA / previous frozen main:
+Current frozen main / F15 START_SHA:
 
-`80d367fbf9da858a2c1cfb64df4714f136ff2c4c`
+`398e963f1ecdbe86013ce3b0052c4e1891f48854`
 
-Accepted F14 implementation merge:
+That SHA is terminal F14 frozen main.
 
-`7ac7028d99d7088d0d3e079602a8ea3820ddb599`
-
-Current healthy frontend `main` / F14 closeout base after integrity reconciliation:
-
-`ad9fb57a2cf9d7d0e3bf927c90a3141880accd49`
+F14 terminal evidence:
+- route `/dashboard/teams` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`;
+- Issue `#71` — CLOSED / COMPLETED;
+- closeout PR `#76` — MERGED;
+- frozen main `398e963f1ecdbe86013ce3b0052c4e1891f48854`;
+- terminal Frontend Quality Gate `34574038117` — PASS;
+- terminal artifact `10189030449`;
+- digest `sha256:e4f1a951192fc1d6a5a6d7d17b0b8c634ecbd2a3921eb3abef63d1bb6987bf2c`.
 
 Active frontend workstream:
 
-`F14 — Player Teams Hub`
+`F15 — Player Challenge Hub`
 
 Status:
 
-`MERGED / CLOSEOUT IN PROGRESS`
+`IN PROGRESS — LOVABLE PRODUCTIONIZATION`
 
-Route: `/dashboard/teams`
+Route: `/dashboard/challenges`
 
-Tracking Issue: `#71`
+Tracking Issue: `#77`
 
-Implementation branch: `phase/f14-player-teams`
-
-Current closeout branch: `closeout/f14-player-teams-v2`
+Implementation branch: `phase/f15-player-challenge-hub`
 
 Target route status: `FINAL_PRIVATE`
 
 Runtime truth: `FRONTEND MOCK / BACKEND PENDING`
 
-## 3. F14 accepted implementation evidence
+## 3. F15 preflight truth
 
-- START_SHA: `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`;
-- final reviewed implementation head: `2b66225dea1d30bb15a5dd7429fccab768440100`;
-- compare from START: ahead 1 / behind 0 / exactly one implementation commit;
-- exactly 11 F14-owned files;
-- no dependency/version drift; `package.json` only appended `player-teams-contract.spec.ts` to the test chain;
-- exact-head Frontend Quality Gate `34539835524` — PASS;
-- exact-head artifact `10176949167`;
-- exact-head digest `sha256:c139d6bdc7a170966b2cc1bd1800cb43d45b065fc5ddcfaffe5c6d2ee89a41d1`;
-- manual visual QA at `375 / 390 / 430 / 768 / 1024 / 1440` — PASS;
-- browser regression expanded to 90 screenshots;
-- implementation PR `#72`;
-- PR-context Frontend Quality Gate `34540376537` — PASS;
-- PR-context artifact `10177139859`;
-- PR-context digest `sha256:fc8651125bf59c1311baa63d49dc6f9285a7172e194f97bd6800b694f329f4a1`;
-- implementation PR mergeable before merge: `true`;
-- unresolved implementation PR review threads: `0`;
-- expected-head implementation merge used;
-- implementation merge `7ac7028d99d7088d0d3e079602a8ea3820ddb599`;
-- post-implementation main Frontend Quality Gate `34568920416` — PASS;
-- post-main artifact `10187123251`;
-- post-main digest `sha256:8596f2fcbc58a7e290ce5d82cb43bae62a35e0defcd59887ed9bb411c6c1b2ac`.
+The preserved Lovable Challenge Hub source was intentionally retained during integrity reconciliation but was never certified/frozen.
 
-The implementation/route architecture is accepted. F14 is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout is merged, terminal frozen-main QA/artifact/digest belongs to that exact closeout merge SHA, live `main` is reverified and Issue #71 closes `completed`.
+Source audit at F15 START proved:
+- private route/search/loader/read scaffold exists;
+- visual list/filter/access cards exist;
+- create button was dead and only displayed implementation-stage placeholder copy;
+- accept/decline/cancel only set local pending text and did not call a repository command;
+- `view` was a no-op;
+- existing repository contract was read-only;
+- browser regression did not include `/dashboard/challenges`.
 
-## 4. Integrity reconciliation before closeout
+F15 therefore productionizes the existing design rather than rebuilding it blindly.
 
-While the first F14 closeout was being prepared, Lovable advanced `main` to:
-
-`27cd5966cb46261b5b13c68572fc8bd78efe1906`
-
-That merge contained desired Challenge Hub work but also removed/downgraded previously accepted F07–F14 runtime/contracts/docs and reduced the Frontend Quality Gate/test chain. The stale-base closeout PR #73 was therefore closed unmerged.
-
-Dedicated reconciliation truth:
-- Issue `#74` — CLOSED / COMPLETED;
-- branch `phase/reconcile-lovable-main-drift-f07-f14`;
-- reconciliation head `5234c95ec886a745da9e5e5692a9f50fd8a17ee8`;
-- PR `#75` — MERGED;
-- Challenge Hub was preserved byte-for-byte for its owned implementation files and was **not** certified/frozen by the reconciliation;
-- accepted F07–F14 runtime/contracts/tests/docs and full Frontend Quality Gate were restored;
-- exact-head gate `34569833815` — PASS; artifact `10187454962`; digest `sha256:972b7fdd4d8fb213136674e5172a286f8ac7d89c392563c8f83874d0d0858446`;
-- PR-context gate `34570279191` — PASS; artifact `10187585168`; digest `sha256:37519e695e8a4da546d225b40decfa84015d0dd9bbeafd22e50c1084d4d0042c`;
-- expected-head reconciliation merge used;
-- reconciliation merge / current healthy main `ad9fb57a2cf9d7d0e3bf927c90a3141880accd49`;
-- post-main gate `34570626754` — PASS;
-- post-main artifact `10187726327`;
-- post-main digest `sha256:31ff3b68eac75198489fc1115f25496e9141fdf87d8e77c41dd47f99d44ed33a`;
-- exact live frontend `main` reverified at `ad9fb57a2cf9d7d0e3bf927c90a3141880accd49` before this closeout branch was created.
-
-Reconciliation changed no backend state and did not make Challenge Hub final.
-
-## 5. F14 permanent product / architecture truth
-
-F14 is a private, read-only Player Teams Hub.
+## 4. F15 permanent architecture truth
 
 Permanent boundary:
 
-`private dashboard access policy → validated team/page search → loader → typed PlayerTeamsRepository → runtime-validated current-player team membership/roster projection → UI`
+`private dashboard access policy → validated status/page search → loader → typed ChallengeHubRepository → runtime-validated Challenge projection/commands → authoritative reload → UI`
 
 Backend/repository owns:
-- current team membership list;
-- stable team identity/name;
-- current-player role per membership (`captain | member`);
-- member counts;
-- explicit/default selected-team resolution;
-- roster membership and stable player identity;
-- roster roles;
-- summary and roster pagination.
+- Challenge unlock/access and `canCreate`;
+- Challenge Rating;
+- current-player Challenge list/scope;
+- stable Challenge identity and opaque revision;
+- direction/lifecycle/status/action-required truth;
+- allowed commands;
+- creation games/formats/policy;
+- opponent-search eligibility and stable player identity;
+- Match/result/rating projection;
+- typed navigation target;
+- summary/pagination;
+- create/respond/cancel authorization, stale state and command outcomes.
 
-Frontend owns only:
+Frontend owns:
 - validated URL navigation;
 - final Persian presentation;
-- membership switcher interaction;
-- roster/role hierarchy;
-- responsive/accessibility behavior;
-- deterministic QA fixture behind the same permanent interface.
+- creation form state and server-projected option selection;
+- confirmation UX;
+- mutation pending/feedback presentation;
+- deterministic QA adapter behind the same permanent contract;
+- route invalidation after mutations so authoritative truth reloads.
 
-Frontend MUST NOT reconstruct current membership or role from tournament history.
+Frontend MUST NOT optimistically own Challenge lifecycle/result/rating/eligibility.
 
-Unknown/unauthorized requested team IDs collapse to `selectionState=unavailable`; the UI shows only memberships already authorized in the current-player projection and does not reveal whether an external team exists.
+## 5. Permanent competitive/security truth
 
-F14 explicitly introduces no create/rename/delete team, invite/request/accept/decline membership, kick/remove/leave/captain-transfer/promotion/demotion, roster-capacity rule, public/private visibility policy, team rating/ranking, tournament/challenge eligibility inference, friend/social graph, Team Detail route or Challenge Hub mutation.
+- Tournament Rating and Challenge Rating are separate.
+- Challenge unlock = exactly `30` finalized valid Matches under current product law, not wins.
+- no wager/betting/stake mechanics.
+- opponent relationship uses stable `playerId` returned by authoritative opponent search; display text is not the relationship key.
+- create uses server-approved stable `gameId` and `formatId`.
+- respond/cancel use opaque Challenge revision.
+- create/respond/cancel use one idempotency key per logical attempt.
+- unsafe requests use accepted P01 Django Session + CSRF bootstrap + `X-CSRFToken` + `credentials: include`.
+- no localStorage/sessionStorage bearer contract.
+- no Challenge Detail route is invented in F15.
+- Hub navigation is limited to typed targets for already accepted Match routes.
 
-Validated URL state:
-- `team=<stable-team-id>`; absence lets repository/server choose authoritative default membership when one exists;
-- `page=<positive integer>`; absence = 1.
+## 6. Official documentation audit
 
-Private metadata remains `noindex,nofollow`. Django web authentication truth remains Session; read requests use `credentials: include`; no localStorage/sessionStorage bearer contract exists.
+Current official references reviewed:
+- TanStack Router Data Mutations: `https://tanstack.com/router/latest/docs/guide/data-mutations`;
+- TanStack Router Data Loading/search dependency guidance: `https://tanstack.com/router/latest/docs/guide/data-loading`;
+- Django CSRF: `https://docs.djangoproject.com/en/6.0/ref/csrf/`;
+- Django AJAX CSRF: `https://docs.djangoproject.com/en/dev/howto/csrf/`;
+- DRF SessionAuthentication: `https://www.django-rest-framework.org/api-guide/authentication/`;
+- W3C WAI-ARIA Modal Dialog Pattern: `https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/`;
+- W3C Alert Dialog Pattern: `https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/`.
 
-## 6. Official documentation / design audit retained
+Applied implications:
+- loader-consumed `status/page` remain the only loader dependencies;
+- accepted/stale/unavailable mutations reload route truth via router invalidation; no optimistic lifecycle authority;
+- unsafe SessionAuthentication commands require CSRF;
+- create and destructive confirmations use modal/alert-dialog focus semantics;
+- final controls remain keyboard reachable and visibly focusable.
 
-Official references used by F14:
-- TanStack Router Data Loading: `https://tanstack.com/router/latest/docs/guide/data-loading`;
-- TanStack Start Selective SSR: `https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr`;
-- TanStack Start Environment Variables: `https://tanstack.com/start/latest/docs/framework/react/guide/environment-variables`;
-- W3C WCAG 2.2: `https://www.w3.org/TR/WCAG22/`;
-- GitHub organization People/role-list reference: `https://docs.github.com/en/account-and-profile/how-tos/organization-membership/viewing-peoples-roles-in-an-organization`.
+Public SEO research is not applicable because F15 is private; explicit `noindex,nofollow` is required.
 
-Applied implications remain:
-- only loader-consumed search state enters `loaderDeps`;
-- SSR remains enabled/default and no browser-only dependency enters loader/repository selection;
-- no client secret/bearer environment behavior is added;
-- controls expose visible focus, touch-safe targets, semantic headings/status text and textual role labels;
-- external member-list patterns informed information hierarchy only, not Turnoment permissions/actions.
+## 7. Backend F15 cross-repo alignment
 
-Public SEO research is not applicable because F14 is private.
+Backend repo: `sajadkhavas/turnoment-backend`.
 
-## 7. Backend F14 cross-repo alignment — terminal documentation truth
+Backend START_SHA at F15 alignment start:
 
-Repository: `sajadkhavas/turnoment-backend`
+`1977db3c9995336166907b9fd85ac26093e6c254`
 
-Backend START_SHA: `ddfdceaa9746cc6a60ad2b5e18e630c53904f00c`
+Backend tracking Issue: `#27`.
 
-Terminal evidence:
-- Issue `#25` — CLOSED / COMPLETED;
-- docs branch `docs/f14-player-teams-contract`;
-- accepted docs head `26a2182f6d67a63a4a1dc9eef3daf7a030c85b50`;
-- compare: ahead 1 / behind 0 / exactly one commit / exactly two Markdown files;
-- PR `#26` — MERGED;
-- PR Backend Quality Gate `34539140468` — PASS on Python 3.12 and 3.14;
-- accepted backend main `1977db3c9995336166907b9fd85ac26093e6c254`;
-- post-main Backend Quality Gate `34539329509` — PASS on Python 3.12 and 3.14;
-- live backend main reverified exact accepted SHA.
+Docs branch: `docs/f15-player-challenge-hub-contract`.
 
-Planned future endpoint: `GET /api/v1/me/teams/`.
+Dedicated contract: `docs/F15_PLAYER_CHALLENGE_HUB_CONTRACT.md`.
 
-No Teams Python/model/migration/serializer/view/URL/dependency/phase-registry implementation was added. Runtime remains `FRONTEND MOCK / BACKEND PENDING`.
+Planned API family:
+- `GET /api/v1/me/challenges/`;
+- `GET /api/v1/me/challenges/opponents/`;
+- `POST /api/v1/me/challenges/`;
+- `POST /api/v1/me/challenges/{challengeId}/response/`;
+- `POST /api/v1/me/challenges/{challengeId}/cancel/`.
 
-Backend NEXT remains exactly `P02 — Games / Catalog Foundation`.
+Alignment is documentation-only; no Challenge runtime Python implementation is authorized here. Backend NEXT remains exactly `P02 — Games / Catalog Foundation`.
 
-## 8. Previously frozen frontend truth
+## 8. F15 owned implementation scope
 
-- F13 `/dashboard/achievements` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; frozen main `80d367fbf9da858a2c1cfb64df4714f136ff2c4c`; Issue #68 completed.
-- F12 `/dashboard/rivalries` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #65 completed.
-- F11 `/dashboard/settings` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #62 completed.
-- F10 `/dashboard/notifications` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #59 completed.
-- F09 `/dashboard/profile` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #56 completed.
-- F08 `/register` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #53 completed.
-- F07 `/login` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #50 completed.
-- F06 `/matches/$id/dispute` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #47 completed.
-- F05 `/matches/$id/result` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #44 completed.
-- F04 `/dashboard/matches` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #41 completed.
-- F03 `/dashboard/tournaments` → `DONE / MERGED / FROZEN — FINAL_PRIVATE`; Issue #38 completed.
-- F02 `/games/$slug` → `DONE / MERGED / FROZEN — FINAL_CURRENT`; Issue #29 contains terminal truth.
-- F01 `/tournaments/$id` → `FINAL_PRE_SEO`; `/tournaments/$id/register` → `FINAL_PRIVATE`.
+Owned implementation/governance files:
+- `.github/workflows/frontend-quality.yml` — add F15 SSR/final-copy/six-width evidence and expand regression 90 → 96 PNGs;
+- `PROJECT_CONTINUITY.md`;
+- `docs/workstreams/F15_PLAYER_CHALLENGE_HUB.md`;
+- `src/components/dashboard/challenge-hub-page.tsx`;
+- `src/components/dashboard/challenge-hub-card.tsx`;
+- `src/components/dashboard/challenge-hub-create-dialog.tsx`;
+- `src/lib/challenge-hub-contract.ts`;
+- `src/lib/challenge-hub-contract.spec.ts`;
+- `src/lib/challenge-hub-data.ts`;
+- `src/lib/challenge-hub-http-repository.ts`;
+- `src/lib/challenge-hub-repository.ts`;
+- `src/routes/dashboard.challenges.tsx`.
 
-## 9. Remaining known work
+No dependency/version/lockfile change is required. Existing `package.json` already runs `challenge-hub-contract.spec.ts` in the accepted test chain.
 
-- `/dashboard/challenges` remains isolated under its own Challenge Hub/Lovable acceptance chain. Its preserved source is not an accepted/frozen route until its own controlled evidence chain lands.
-- `/dashboard/teams` is implementation-accepted and may be promoted non-recursively to `FINAL_PRIVATE` in this closeout governance, but F14 remains non-terminal until Issue #71 closes after frozen-main evidence.
-- public `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` require current-law recertification.
-- inherited ecommerce/service/general routes remain `LEGACY_REVIEW` until explicit keep/remove/repurpose decisions.
+## 9. Required F15 states
 
-## 10. Competitive truth retained
+- pending skeleton;
+- load error/retry through router invalidation;
+- unauthenticated/session-expired redirect;
+- locked access;
+- create-enabled/create-disabled access;
+- populated list;
+- filtered empty / account empty;
+- pagination;
+- create dialog;
+- opponent search pending/empty/error/results;
+- local create validation;
+- backend validation/conflict/unavailable feedback;
+- accept pending/success/error;
+- decline confirmation/pending/success/error;
+- cancel confirmation/pending/success/error;
+- stale state authoritative reload;
+- typed navigation to accepted Match routes;
+- completed result/rating presentation.
 
-- Tournament Rating and Challenge Rating are separate;
-- Challenge unlock = 30 finalized valid matches, not wins;
-- no wager/betting/stake mechanics;
-- frontend never determines finalized result/rating/dispute/challenge truth;
-- F14 introduces no new Challenge or eligibility rule.
+No dead button or implementation-stage engineering copy may remain.
 
-## 11. F14 non-recursive closeout law
+## 10. Previously frozen frontend truth
 
-This committed closeout governance intentionally does **not** self-record its own future closeout merge SHA or terminal frozen-main run/artifact/digest. Those facts only exist after merge and belong in tracking Issue #71.
+F01–F14 accepted/frozen truth remains unchanged. In particular:
+- F13 `/dashboard/achievements` → `FINAL_PRIVATE` terminal;
+- F14 `/dashboard/teams` → `FINAL_PRIVATE` terminal;
+- `/dashboard/challenges` alone is the active controlled dashboard workstream.
 
-The closeout diff is restricted to exactly four Markdown files:
-1. `PROJECT_CONTINUITY.md`
-2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`
-3. `docs/workstreams/F14_PLAYER_TEAMS.md`
-4. `docs/workstreams/F14_CLOSEOUT.md`
+Public `/`, `/tournaments`, `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, `/rules` still require current-law recertification. Legacy commerce/service/general routes remain `LEGACY_REVIEW` until an explicit product decision.
 
-No runtime/workflow/package/lockfile/contract/repository/adapter/fixture/test/Challenge/backend mutation is allowed in closeout.
+## 11. Exact F15 NEXT
 
-## 12. Exact NEXT
-
-F14 closeout:
-1. closeout base is exact healthy main `ad9fb57a2cf9d7d0e3bf927c90a3141880accd49`;
-2. compare must prove one commit ahead / zero behind and exactly four Markdown files;
-3. full closeout PR Frontend Quality Gate must pass;
-4. require mergeable=true, unresolved review threads=0 and exact pre-merge `main` still `ad9fb57a2cf9d7d0e3bf927c90a3141880accd49`;
-5. merge closeout with expected-head lock;
-6. require terminal frozen-main Frontend Quality Gate plus artifact/digest belonging to the exact closeout merge SHA;
-7. reverify live frontend `main` exact frozen SHA;
-8. record terminal evidence in Issue #71 and close `completed`;
-9. only then report `F14 — DONE / MERGED / FROZEN — FINAL_PRIVATE`.
-
-After F14 terminal freeze, no independent dashboard placeholder remains except the deliberately isolated Challenge Hub. The next non-Challenge workstream must be selected from current-law public recertification or an explicitly approved legacy/product decision.
+1. complete backend docs alignment Issue #27 terminally without phase reordering;
+2. build one clean frontend implementation commit from exact START_SHA containing only F15-owned files;
+3. compare must prove no dependency drift and no unrelated frozen-route mutation;
+4. exact-head Frontend Quality Gate must PASS with 96-image regression;
+5. manually inspect F15 screenshots at `375 / 390 / 430 / 768 / 1024 / 1440`;
+6. open implementation PR without auto-closing Issue #77;
+7. require PR CI green, mergeable=true, review threads=0 and exact pre-merge `main` lock;
+8. expected-head implementation merge;
+9. require post-main gate/artifact/digest;
+10. create documentation-only closeout;
+11. require closeout PR CI + expected-head merge + terminal frozen-main gate/artifact/digest;
+12. reverify live frontend `main` exact frozen SHA;
+13. record terminal evidence in Issue #77 and close completed;
+14. only then report `F15 — DONE / MERGED / FROZEN — FINAL_PRIVATE`.
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
