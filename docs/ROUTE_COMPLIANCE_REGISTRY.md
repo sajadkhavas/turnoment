@@ -6,11 +6,11 @@
 
 Last audit: `2026-09-11`
 
-Audit baseline: `5db25c291a250a94676e143ba11642c86b2f8152` — F15 implementation merge; post-implementation main Frontend Quality Gate `34585660833` PASS; artifact `10193629332`; digest `sha256:e29f1e77ee9347fc917df4ee4d594f5d9f9896438183ee44edf5391b51da8821`.
+Current audit baseline: `2b66c5140511febaa98e96d93351cfdb62773bbf` — F16 implementation merge; post-main Frontend Quality Gate `34598728780` PASS, artifact `10263148439`, digest `sha256:6522b08fc635fbcef7844257d37083681a4407b3de4afa14eebc51034b003fda`; focused F16 gate `34598728817` PASS, artifact `10263087863`, digest `sha256:6337d86bbaa94e83ced301825445483c5b59c91a93426480a1d4ff810c18dd3d`.
 
-F15 `/dashboard/challenges` is promoted non-recursively to `FINAL_PRIVATE` because its implementation is merged and required post-implementation main QA is green. The F15 workstream itself is not terminally `DONE / MERGED / FROZEN` until documentation-only closeout merge plus terminal frozen-main CI/artifact/digest are recorded in Issue #77.
+F16 `/` is promoted non-recursively to `FINAL_CURRENT` because its current-law implementation is merged and required post-implementation main QA is green. The F16 workstream itself remains `MERGED / CLOSEOUT IN PROGRESS` until documentation-only closeout merge plus terminal frozen-main CI/artifact/digest are recorded in Issue #81.
 
-F14 terminal truth: frozen main `398e963f1ecdbe86013ce3b0052c4e1891f48854`; terminal gate `34574038117` PASS; artifact `10189030449`; digest `sha256:e4f1a951192fc1d6a5a6d7d17b0b8c634ecbd2a3921eb3abef63d1bb6987bf2c`; Issue #71 CLOSED / COMPLETED.
+F15 terminal truth: frozen main `008f4fbd959138e3abe6bf85078f6cf700319bd2`; terminal Frontend Quality Gate `34589429398` PASS; artifact `10195137753`; digest `sha256:61e8e493f8be1ea5c0262afa4cddecba8dc126a7c5bba0ba4b6e916499ecbbd0`; Issue #77 CLOSED / COMPLETED.
 
 ## Status meanings
 
@@ -27,6 +27,7 @@ F14 terminal truth: frozen main `398e963f1ecdbe86013ce3b0052c4e1891f48854`; term
 
 | Route | Status | Evidence / exact truth |
 |---|---|---|
+| `/` | `FINAL_CURRENT` | F16 implementation accepted under current public-page + SEO law. START `008f4fbd959138e3abe6bf85078f6cf700319bd2`; implementation head `41aeba987fa4435832361db95d2e232817c668b3`; PR #82 MERGED; implementation merge `2b66c5140511febaa98e96d93351cfdb62773bbf`; post-main full gate `34598728780` PASS; focused F16 gate `34598728817` PASS. Permanent boundary: SSR loader → typed `PublicHomeRepository` → runtime-validated projection → UI. Runtime endpoint remains `FRONTEND MOCK / BACKEND PENDING`; F16 terminal closeout remains Issue #81. |
 | `/dashboard` | `FINAL_PRIVATE` | Player Dashboard productionization + closeout accepted; private session/repository/runtime contract. |
 | `/dashboard/tournaments` | `FINAL_PRIVATE` | F03 terminally frozen; Issue #38 completed. |
 | `/dashboard/matches` | `FINAL_PRIVATE` | F04 terminally frozen; Issue #41 completed. |
@@ -36,21 +37,20 @@ F14 terminal truth: frozen main `398e963f1ecdbe86013ce3b0052c4e1891f48854`; term
 | `/dashboard/rivalries` | `FINAL_PRIVATE` | F12 terminally frozen; Issue #65 completed. Runtime Rivalries API remains `FRONTEND MOCK / BACKEND PENDING`. |
 | `/dashboard/achievements` | `FINAL_PRIVATE` | F13 terminally frozen; Issue #68 completed. Runtime Achievements API remains `FRONTEND MOCK / BACKEND PENDING`. |
 | `/dashboard/teams` | `FINAL_PRIVATE` | F14 terminally frozen; Issue #71 completed; frozen main `398e963f1ecdbe86013ce3b0052c4e1891f48854`; terminal gate `34574038117` PASS. Runtime Teams API remains `FRONTEND MOCK / BACKEND PENDING`. |
-| `/dashboard/challenges` | `FINAL_PRIVATE` | F15 implementation accepted/merged. START `398e963f1ecdbe86013ce3b0052c4e1891f48854`; final reviewed head `e9110fc6e01220e17e728dc0e491fff1a0b979c0`; exact-head gate `34584422266` PASS; PR #79 gate `34585124291` PASS; implementation merge `5db25c291a250a94676e143ba11642c86b2f8152`; post-main gate `34585660833` PASS; artifact `10193629332`; digest `sha256:e29f1e77ee9347fc917df4ee4d594f5d9f9896438183ee44edf5391b51da8821`. Runtime Challenge APIs remain `FRONTEND MOCK / BACKEND PENDING`. F15 terminal closeout remains Issue #77. |
+| `/dashboard/challenges` | `FINAL_PRIVATE` | F15 terminally frozen; Issue #77 completed; implementation merge `5db25c291a250a94676e143ba11642c86b2f8152`; frozen main `008f4fbd959138e3abe6bf85078f6cf700319bd2`; terminal gate `34589429398` PASS. Runtime Challenge APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/matches/$id/result` | `FINAL_PRIVATE` | F05 terminally frozen; Issue #44 completed. Runtime result APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/matches/$id/dispute` | `FINAL_PRIVATE` | F06 terminally frozen; Issue #47 completed. Runtime dispute APIs remain `FRONTEND MOCK / BACKEND PENDING`. |
 | `/login` | `FINAL_PRIVATE` | F07 terminally frozen; Phone OTP, Django Session + CSRF, no password/local bearer auth. |
 | `/register` | `FINAL_PRIVATE` | F08 terminally frozen; Issue #53 completed. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 terminally accepted before current strict SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final tournament-registration action route; private noindex and Session/CSRF boundary accepted. |
-| `/games/$slug` | `FINAL_CURRENT` | F02 technical + SEO/final-copy acceptance terminally recorded in Issue #29. |
+| `/games/$slug` | `FINAL_CURRENT` | F02 technical + SEO/final-copy acceptance terminally recorded in its tracking evidence. |
 
 ## B. Public competitive routes requiring current-law recertification
 
 | Route | Status | Why it is not current-law final |
 |---|---|---|
-| `/` | `NEEDS_RECERTIFICATION` | No complete current official-doc + design + SEO + production-contract + evidence chain. |
-| `/tournaments` | `NEEDS_RECERTIFICATION` | Discovery route predates the full final-page/SEO evidence system. |
+| `/tournaments` | `NEEDS_RECERTIFICATION` | Discovery route predates the full final-page/SEO evidence system and still relies on legacy local discovery data. |
 | `/games` | `NEEDS_RECERTIFICATION` | Local direct data usage; no current-law listing contract/SEO workstream. |
 | `/centers` | `NEEDS_RECERTIFICATION` | Local direct data; no final repository/runtime contract/current SEO evidence. |
 | `/centers/$id` | `NEEDS_RECERTIFICATION` | Local lookups; lacks current final contract/SEO evidence and stable public identifier decision. |
@@ -65,7 +65,7 @@ No currently accepted auth/account route remains in `REBUILD`.
 
 ## D. Player dashboard placeholders
 
-No currently identified player-dashboard route remains `PLACEHOLDER` after F15 implementation acceptance.
+No currently identified player-dashboard route remains `PLACEHOLDER` after F15 terminal acceptance.
 
 Any newly discovered or newly requested dashboard route must receive its own product decision, source audit and controlled workstream; do not invent additional dashboard scope from this registry.
 
@@ -100,7 +100,50 @@ General content requiring explicit product decision:
 
 All above remain `LEGACY_REVIEW`.
 
-## G. Accepted private account / player truth
+## G. Accepted public Home truth — F16
+
+Permanent route architecture:
+
+`public / route → SSR loader → typed PublicHomeRepository → runtime-validated public-home projection → Home UI`
+
+Backend/repository owns dynamic discovery truth:
+- aggregate stats when authoritative;
+- game identity/slug and active-tournament counts;
+- finder option identity;
+- tournament lifecycle/registration/capacity/fee/prize;
+- center verification/location/reviews/equipment/upcoming counts;
+- ranking/rating/result-derived projection;
+- optional showdown projection;
+- stable IDs/slugs for relations/navigation.
+
+Frontend owns static final copy, temporary finder form state, semantic navigation and presentation only.
+
+F16 product/SEO truth:
+- H1 `مسابقات گیمینگ حضوری نزدیکت را پیدا کن`;
+- title `مسابقات گیمینگ حضوری و تورنمنت‌های گیم‌نت | Turnoment`;
+- canonical `/`;
+- robots `index,follow`;
+- public content is SSR-rendered;
+- Home is the broad discovery gateway; `/tournaments` owns full inventory/filter intent;
+- no unsupported popularity/search-volume/superlative claims;
+- no Organization JSON-LD until stable absolute production identity exists;
+- legacy `ایران مهر افزار` shell branding and fabricated contact/social facts were removed from the active tournament shell.
+
+Production adapter invariant:
+- explicit mock is dev/test/visual QA only;
+- production defaults to Django/HTTP;
+- production never silently falls back to fabricated Home records.
+
+Backend alignment:
+- planned `GET /api/v1/discovery/home/`;
+- backend Issue #29 completed as docs alignment only;
+- backend PR #30 merged;
+- accepted backend main `335211d711c197a440e086bc570b86f2c5cd65f8`;
+- post-main backend gate `34591528685` PASS;
+- Backend NEXT remains `P02 — Games / Catalog Foundation`;
+- runtime remains `FRONTEND MOCK / BACKEND PENDING` until authorized backend implementation lands.
+
+## H. Accepted private account / player truth
 
 ### `/login` — F07
 `validated optional redirect → SSR loader → typed LoginAuthRepository → runtime-validated adapter → OTP Login UI`
@@ -145,28 +188,28 @@ F15-specific truth:
 - frontend invalidates/reloads authoritative truth after mutations rather than optimistically owning lifecycle;
 - no wager/betting/stake mechanics;
 - no Challenge Detail route is introduced;
-- navigation from Hub is only through typed targets for already accepted Match routes;
-- backend documentation alignment is terminally accepted, but runtime Challenge APIs are not implemented yet.
+- navigation from Hub is only through typed targets for already accepted Match routes.
 
-## H. Competitive truth retained
+## I. Competitive truth retained
 
 - Tournament Rating and Challenge Rating are separate;
 - Challenge unlock = 30 finalized valid matches, not wins;
 - no wager/betting/stake mechanics;
 - frontend never determines finalized result/rating/dispute/challenge truth.
 
-## I. Compliance priorities
+## J. Compliance priorities
 
-F15 documentation-only closeout is the immediate governance task until Issue #77 is completed.
+F16 documentation-only closeout is the immediate governance task until Issue #81 is completed.
 
-After F15 terminal freeze, no independent player-dashboard placeholder remains. The next non-F15 frontend workstream must be selected from current-law public recertification or an explicitly approved legacy/product decision.
+After F16 terminal freeze, the next current-law public recertification target is `/tournaments`, followed by `/games`, `/centers`, `/centers/$id`, `/ranking`, `/players/$username`, `/host`, and `/rules` unless an explicit product decision changes order.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
-## J. Registry maintenance law
+## K. Registry maintenance law
 
 - A route cannot be promoted from chat memory.
 - A merged implementation with required green post-implementation main gate may be promoted non-recursively in closeout governance.
 - Terminal workstream `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal main CI recorded in its tracking Issue.
 - New/placeholder/legacy routes remain visible until accepted or intentionally removed.
 - If implementation truth and this registry conflict, treat the route as not final until reconciled.
+- Do not create recursive documentation-only commits merely to record the SHA of the commit containing that same record; terminal closeout SHA/CI belongs in the tracking Issue after merge.
