@@ -1,0 +1,148 @@
+name: F21 Public Player Ranking Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f21-public-player-ranking
+    paths:
+      - "src/routes/ranking.tsx"
+      - "src/components/ranking/player-ranking-page.tsx"
+      - "src/lib/player-ranking-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F21_*"
+      - ".github/workflows/f21-public-player-ranking-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/ranking.tsx"
+      - "src/components/ranking/player-ranking-page.tsx"
+      - "src/lib/player-ranking-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F21_*"
+      - ".github/workflows/f21-public-player-ranking-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  player-ranking-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Player ranking contract checks
+        run: bun run src/lib/player-ranking-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, search-state and responsive evidence
+        shell: bash
+        env:
+          VITE_DATA_ADAPTER: mock
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F21 visual QA."
+            exit 1
+          fi
+
+          mkdir -p artifacts/f21-player-ranking-qa
+          bun run dev -- --host 127.0.0.1 --port 4179 > /tmp/turnoment-f21.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          BASE_URL="http://127.0.0.1:4179/ranking"
+          FILTERED_URL="http://127.0.0.1:4179/ranking?game=tekken-8&type=challenge&region=tehran"
+
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$BASE_URL" > artifacts/f21-player-ranking-qa/base.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f21.log || true
+            exit 1
+          fi
+
+          curl -fsS "$FILTERED_URL" > artifacts/f21-player-ranking-qa/filtered.html
+
+          BASE_HTML="artifacts/f21-player-ranking-qa/base.html"
+          FILTERED_HTML="artifacts/f21-player-ranking-qa/filtered.html"
+
+          grep -a -q "رتبه‌بندی بازیکنان مسابقات Turnoment" "$BASE_HTML"
+          grep -a -q "رتبه‌بندی بازیکنان مسابقات | Turnoment" "$BASE_HTML"
+          grep -a -q 'name="robots" content="index,follow"' "$BASE_HTML"
+          grep -a -q 'rel="canonical" href="/ranking"' "$BASE_HTML"
+          grep -a -q "SajjadX" "$BASE_HTML"
+          grep -a -q '/players/sajjadx' "$BASE_HTML"
+          grep -a -q "امتیاز مسابقات" "$BASE_HTML"
+
+          grep -a -q "Tekken 8" "$FILTERED_HTML"
+          grep -a -q "KazuyaIR" "$FILTERED_HTML"
+          grep -a -q "امتیاز چالش" "$FILTERED_HTML"
+          grep -a -q 'name="robots" content="noindex,follow"' "$FILTERED_HTML"
+          grep -a -q 'rel="canonical" href="/ranking"' "$FILTERED_HTML"
+
+          for HTML in "$BASE_HTML" "$FILTERED_HTML"; do
+            if grep -a -q "ایران مهر افزار\|iranmehrafzar\.ir\|بک‌اند\|mock\|placeholder" "$HTML"; then
+              echo "Legacy brand or implementation-stage language must not exist in F21 SSR."
+              exit 1
+            fi
+            MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+            test "$MAIN_COUNT" -eq 1
+          done
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},2200" \
+              --screenshot="artifacts/f21-player-ranking-qa/base-${WIDTH}.png" \
+              "$BASE_URL" >/dev/null 2>&1
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},2200" \
+              --screenshot="artifacts/f21-player-ranking-qa/filtered-${WIDTH}.png" \
+              "$FILTERED_URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f21-player-ranking-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 12
+
+      - name: Upload F21 player ranking QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f21-player-ranking-qa-${{ github.sha }}
+          path: artifacts/f21-player-ranking-qa
+          if-no-files-found: error
+          retention-days: 14
