@@ -1,0 +1,154 @@
+name: F24 Rules Recertification Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f24-rules-recertification
+    paths:
+      - "src/routes/rules.tsx"
+      - "src/components/rules/**"
+      - "src/lib/rules-page-*.ts"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F24_*"
+      - ".github/workflows/f24-rules-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/rules.tsx"
+      - "src/components/rules/**"
+      - "src/lib/rules-page-*.ts"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F24_*"
+      - ".github/workflows/f24-rules-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rules-recertification-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        run: bun run lint
+
+      - name: F24 rules contract checks
+        run: bun run src/lib/rules-page-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, copy and responsive evidence
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F24 visual QA."
+            exit 1
+          fi
+
+          PUBLIC_SOURCES=(
+            src/routes/rules.tsx
+            src/components/rules/rules-page.tsx
+            src/lib/rules-page-content.ts
+          )
+
+          if grep -E -n -q 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|۳۰ دقیقه|۱۵ دقیقه|کارت شناسایی|کسر امتیاز|۲۴ ساعت|بازگشت کامل|\bbackend\b|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}"; then
+            echo "Legacy brand, unsupported policy or engineering-stage language entered F24 public source."
+            grep -E -n 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|۳۰ دقیقه|۱۵ دقیقه|کارت شناسایی|کسر امتیاز|۲۴ ساعت|بازگشت کامل|\bbackend\b|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}" || true
+            exit 1
+          fi
+
+          mkdir -p artifacts/f24-rules-qa
+          bun run dev -- --host 127.0.0.1 --port 4181 > /tmp/turnoment-f24.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() { kill "$SERVER_PID" 2>/dev/null || true; }
+          trap cleanup EXIT
+
+          URL="http://127.0.0.1:4181/rules"
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$URL" > artifacts/f24-rules-qa/rules.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f24.log || true
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          qa = Path("artifacts/f24-rules-qa")
+          html = (qa / "rules.html").read_text(encoding="utf-8")
+          match = re.search(r"<head\b[^>]*>(.*?)</head>", html, re.IGNORECASE | re.DOTALL)
+          if not match:
+              raise SystemExit("Effective head was not found for /rules")
+          (qa / "rules.head.html").write_text(match.group(1), encoding="utf-8")
+          PY
+
+          HTML="artifacts/f24-rules-qa/rules.html"
+          HEAD="artifacts/f24-rules-qa/rules.head.html"
+
+          grep -a -q "قوانین شرکت در تورنمنت‌های Turnoment" "$HTML"
+          grep -a -q "قبل از ثبت‌نام چه چیزهایی را بررسی کنید؟" "$HTML"
+          grep -a -q "قوانین عمومی Turnoment" "$HTML"
+          grep -a -q "قوانین اختصاصی هر تورنمنت" "$HTML"
+          grep -a -q "قواعد عمومی و قوانین اختصاصی چه نسبتی دارند؟" "$HTML"
+          grep -a -q "مشاهده تورنمنت‌ها" "$HTML"
+          grep -a -q 'href="/tournaments"' "$HTML"
+
+          grep -a -q "قوانین و شرایط شرکت در تورنمنت‌ها | Turnoment" "$HEAD"
+          grep -a -q 'name="robots" content="index,follow"' "$HEAD"
+          grep -a -q 'rel="canonical" href="/rules"' "$HEAD"
+          grep -a -q 'property="og:site_name" content="Turnoment"' "$HEAD"
+
+          MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+          test "$MAIN_COUNT" -eq 1
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            if [[ "$WIDTH" -le 430 ]]; then HEIGHT=6500
+            elif [[ "$WIDTH" -le 768 ]]; then HEIGHT=5200
+            else HEIGHT=4200
+            fi
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},${HEIGHT}" \
+              --screenshot="artifacts/f24-rules-qa/rules-${WIDTH}.png" \
+              "$URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f24-rules-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 6
+
+      - name: Upload F24 rules QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f24-rules-qa-${{ github.sha }}
+          path: artifacts/f24-rules-qa
+          if-no-files-found: error
+          retention-days: 14
