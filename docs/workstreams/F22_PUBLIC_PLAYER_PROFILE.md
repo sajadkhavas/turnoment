@@ -1,8 +1,8 @@
 # F22 — Public Player Profile
 
-Status at governance checkpoint:
+Status at closeout creation:
 
-`IMPLEMENTATION ACTIVE / EXACT REVIEWED-HEAD QA PENDING`
+`IMPLEMENTATION MERGED / POST-MAIN ACCEPTED / CLOSEOUT IN PROGRESS`
 
 Route: `/players/$username`
 
@@ -16,17 +16,33 @@ Implementation branch:
 
 `phase/f22-public-player-profile`
 
-Source implementation head before governance checkpoint:
+Source implementation head:
 
 `d8e2cb8448837b3d63cb9727ae44b1a892ab7d64`
 
-This is a non-recursive workstream snapshot. The governance commit SHA, future PR merge SHA, closeout merge SHA and terminal frozen-main CI/artifact evidence must be recorded only after they exist, primarily in Issue #101 and later closeout documentation where permitted.
+Final reviewed implementation head:
+
+`1e234e1c9877cb2c62f1b8e677d64356c5725a58`
+
+Implementation PR:
+
+`#102` — MERGED with expected-head lock.
+
+Implementation merge / accepted main:
+
+`d1b1ff3bd24318e9714a6af7585c5b7299479db5`
+
+Closeout branch:
+
+`closeout/f22-public-player-profile`
+
+This is a non-recursive workstream snapshot. Future closeout head/merge/frozen-main SHA and terminal post-closeout CI/artifact evidence are intentionally not self-recorded here; those facts belong in Issue #101 after they exist.
 
 ## 1. Why F22 existed
 
-The START `/players/$username` route did not satisfy current Turnoment public-page law. It read local ranking fixtures directly, derived win rate in the browser, treated ranking/profile/rating truth as local data, lacked a typed repository/runtime boundary, had no deliberate public publication/privacy contract, lacked final canonical/robots behavior, and inherited legacy metadata.
+The START `/players/$username` route did not satisfy current Turnoment public-page law. It read local ranking fixtures directly, derived win rate in the browser, treated profile/ranking/rating truth as local data, lacked a typed repository/runtime boundary, had no deliberate public publication/privacy contract, lacked final canonical/robots behavior, and inherited legacy metadata.
 
-F22 rebuilds the route as a public entity/profile surface with explicit authority and privacy boundaries rather than a larger ranking-card view.
+F22 rebuilt the route as a public entity/profile surface with explicit authority and privacy boundaries rather than a larger ranking-card view.
 
 ## 2. Permanent architecture
 
@@ -36,7 +52,7 @@ Repository contract:
 
 `getByUsername(username): Promise<PublicPlayerProfileLoadResult>`
 
-Load result is intentionally narrow:
+Load result:
 - `{ state: "published", profile }`;
 - `{ state: "not_found" }`.
 
@@ -44,15 +60,15 @@ Adapters:
 - deterministic fixture repository for dev/test/visual QA;
 - Django HTTP repository for production.
 
-Production selector:
+Selector behavior:
 - explicit `VITE_DATA_ADAPTER=mock` → mock;
 - explicit `django` → Django;
 - otherwise development → mock;
 - otherwise production → Django.
 
-Production never silently falls back to fixtures.
+Production never silently falls back to fixture data.
 
-## 3. Target production API
+## 3. Target production API / runtime truth
 
 Frontend-reserved target endpoint:
 
@@ -61,35 +77,29 @@ Frontend-reserved target endpoint:
 Production adapter:
 - requires `VITE_API_BASE_URL`;
 - validates requested username before request;
-- uses GET, `credentials: include`, `Accept: application/json`;
-- 404 → public not-found;
+- GET + `credentials: include` + `Accept: application/json`;
+- 404 → one public not-found state;
 - other non-2xx → fail closed;
-- strictly parses the response;
-- rejects returned username identity drift.
+- strict response parse;
+- returned username must equal requested public username.
 
-Runtime remains:
+Runtime remains exactly:
 
 `FRONTEND MOCK / BACKEND PENDING`
 
 ## 4. Identity law
 
-F22 target meanings:
 - `playerId` = stable backend relation identity;
 - `username` = stable public profile-navigation identity;
 - `gamerTag` = display text only and never a relation key.
 
-Frontend route param uses the stable public username identity. Gamer tag may be displayed but must not become the relation key merely because the current P01 backend historically looks players up by gamer tag.
+The route param is the stable public username identity. Gamer tag may be displayed but must not become the relation key merely because the current P01 backend historically looks players up by gamer tag.
 
 ## 5. Publication / privacy law
 
 Only explicitly published public profiles can return a successful projection.
 
-To avoid existence leakage, the public route intentionally cannot distinguish:
-- nonexistent player;
-- private/unpublished player;
-- account/profile ineligible for public projection.
-
-Those states collapse to the same public not-found surface.
+To avoid existence leakage, the public route intentionally does not distinguish nonexistent, private/unpublished, or otherwise non-public identities. Those states collapse to the same public not-found surface.
 
 Public DTO excludes:
 - phone/email;
@@ -101,70 +111,35 @@ Public DTO excludes:
 - payment/refund/settlement data;
 - secrets/configuration/private account fields.
 
-## 6. Strict v1 profile projection
+## 6. Competitive authority / strict v1 projection
 
-Profile:
-- `schemaVersion=1`;
-- `publicationState=published`;
-- `searchVisibility=indexable|noindex`;
-- `playerId`;
-- `username`;
-- `gamerTag`;
-- nullable public `avatarUrl`;
-- nullable stable city `{cityId, slug, name}`;
-- nullable `publicBio`;
-- bounded `competitiveSnapshots[]`;
-- bounded `recentResults[]`.
+Successful profile projection includes `schemaVersion=1`, `publicationState=published`, `searchVisibility=indexable|noindex`, stable player/public identity, optional public avatar/city/bio, bounded `competitiveSnapshots[]`, and bounded `recentResults[]`.
 
-Competitive snapshot:
-- `snapshotId`;
-- stable game and season identities;
-- `ratingType=tournament|challenge`;
-- authoritative rating;
-- nullable positive rank;
-- played/wins/losses/draws;
-- nullable rank movement.
+Competitive snapshots carry stable game/season identity, `ratingType=tournament|challenge`, authoritative rating, nullable positive rank, played/wins/losses/draws, and nullable rank movement.
 
-Recent result:
-- `resultId`;
-- stable tournament identity;
-- stable game identity;
-- outcome win/loss/draw;
-- nullable opponent gamer tag;
-- offset-aware `completedAt`.
+Recent results carry stable result/tournament/game identity, outcome, optional opponent gamer tag and offset-aware completion time.
 
-## 7. Integrity rules
+Backend/repository eventually owns publication/search visibility, rank, rating, record, movement and finalized public-result membership/order. Frontend does not calculate authoritative win rate, rating, rank, movement, result validity or challenge eligibility.
 
-Strict runtime validation rejects:
-- unknown profile/projection fields;
-- duplicate snapshot IDs;
-- duplicate `(gameId, seasonId, ratingType)` scopes;
-- duplicate recent result IDs;
-- record arithmetic where wins + losses + draws != played;
-- flat movement with nonzero positions;
-- up/down movement with zero positions;
-- malformed stable keys/slugs/usernames/public asset URLs/datetimes.
+Strict validation rejects unknown fields, duplicate snapshot/result identity, duplicate competitive scope, inconsistent match arithmetic, invalid movement semantics, malformed keys/slugs/usernames/public URLs and invalid datetimes.
 
-Frontend does not calculate authoritative win rate, rank, rating, movement, result validity or eligibility.
-
-## 8. UI acceptance surface
+## 7. UI / accessibility acceptance
 
 F22 provides:
 - identity-first hero with gamer tag / username / optional city/avatar/bio;
-- public indexing-visibility-safe profile rendering;
-- competitive snapshot section with game/season/rating-type identity;
+- competitive snapshot section;
 - authoritative rank/rating/record/movement presentation;
 - recent public results;
-- links back to `/ranking`, relevant `/games/$slug`, and `/tournaments` discovery;
-- neutral empty states when optional public data or recent results are absent;
+- links to ranking, games and tournaments discovery;
+- neutral optional-data and recent-results empty states;
 - pending skeleton;
 - retryable error state;
 - final public not-found state;
 - exactly one page `<main>`.
 
-Movement/status communication is not color-only. Interactive controls preserve visible focus and touch-safe sizing.
+Movement/status is not represented by color alone. Interactive controls preserve visible focus and touch-safe sizing.
 
-## 9. SEO / indexing acceptance
+## 8. SEO / final-copy lock
 
 Found profile title pattern:
 
@@ -175,123 +150,144 @@ Canonical:
 `/players/{username}`
 
 Robots:
-- backend projection `indexable` → `index,follow`;
-- backend projection `noindex` → `noindex,follow`;
+- `indexable` → `index,follow`;
+- `noindex` → `noindex,follow`;
 - public not-found → `noindex,nofollow`.
 
-F22 effective route head overrides legacy shared root metadata for the player profile route without mutating the shared `__root.tsx` frozen surface.
+The route owns its effective head without mutating shared frozen `src/routes/__root.tsx`.
 
-No ProfilePage JSON-LD is emitted merely for schema coverage. The accepted page is a competitive/statistical profile and no current requirement justified a creator/person structured-data claim.
+No ProfilePage JSON-LD is emitted merely for schema coverage. No unsupported “best player”, national/official authority, popularity, inferred ranking prestige or achievement claim is authorized.
 
-No unsupported “best player”, national/official authority, popularity, inferred ranking prestige or achievement claims are authorized.
-
-## 10. Search-intent boundary
-
-- `/players/$username` = one public player entity/profile and its authoritative competitive projection;
+Intent boundary:
+- `/players/$username` = one public player entity/profile;
 - `/ranking` = multi-player leaderboard/discovery;
 - `/games` / `/games/$slug` = game discovery/detail;
 - `/tournaments` = tournament discovery;
-- dashboard profile/rating surfaces = private player-owned account state.
+- dashboard profile/rating surfaces = private player-owned state.
 
-F22 does not duplicate leaderboard discovery or private profile editing.
+## 9. Official/current documentation applied
 
-## 11. Official/current documentation applied
-
-Reviewed before and during F22 implementation:
-- TanStack Router data loading / SSR for route-param loader ownership;
-- TanStack Router document-head management for title/meta/canonical/robots;
-- Google Search guidance around people-first content, indexing metadata and applicability limits of ProfilePage structured data;
+Reviewed/applied during F22:
+- TanStack Router data loading / SSR loader behavior;
+- TanStack Router document-head management;
+- Google Search people-first/indexing/metadata and ProfilePage applicability boundaries;
 - WCAG 2.2 focus visibility / target-size expectations;
-- current Django REST framework Permissions, Generic Views, Serializers, Validators and Exceptions guidance during backend contract alignment.
+- Django REST framework Permissions, Generic Views, Serializers, Validators and Exceptions during backend alignment.
 
-Applied decisions:
-- primary public profile data loads through SSR/repository boundary;
-- production fails closed;
-- public publication/privacy is backend-owned;
-- `AllowAny` is explicit on the future public backend endpoint;
-- stable username and display gamer tag remain different concepts;
-- not-found/publication behavior is deliberately non-enumerating;
-- no structured-data type is added solely to make the page appear more “SEO complete.”
+Key decisions: SSR owns primary public profile data, production fails closed, publication/privacy is backend-owned, future anonymous public API explicitly uses `AllowAny`, stable username and display gamer tag remain distinct, and no schema type is added solely for SEO coverage.
 
-## 12. Source implementation diff
+## 10. Implementation diff evidence
 
-Source head:
+Source implementation commit:
 
 `d8e2cb8448837b3d63cb9727ae44b1a892ab7d64`
 
-START → source head:
-- ahead `1` / behind `0`;
-- exactly one source commit;
-- exactly `9` changed files;
+Final reviewed implementation head after governance checkpoint:
+
+`1e234e1c9877cb2c62f1b8e677d64356c5725a58`
+
+START → reviewed head:
+- ahead `2` / behind `0`;
+- `2` commits;
+- `12` changed files;
 - no `bun.lock` mutation;
 - no dependency/version drift;
-- package change only appends F22 contract testing;
-- frozen F16/F17/F18/F19/F20/F21/F02 route source is untouched.
+- package delta only adds F22 contract testing;
+- frozen F16/F17/F18/F19/F20/F21/F02 route source untouched.
 
-Changed implementation surface:
-- `.github/workflows/f22-public-player-profile-quality.yml`;
-- `package.json` test wiring;
-- `src/components/players/public-player-profile-page.tsx`;
-- `src/lib/public-player-profile-contract.spec.ts`;
-- `src/lib/public-player-profile-contract.ts`;
-- `src/lib/public-player-profile-fixture.ts`;
-- `src/lib/public-player-profile-http-repository.ts`;
-- `src/lib/public-player-profile-repository.ts`;
-- `src/routes/players.$username.tsx`.
+Source implementation surface remained the 9-file F22 source package; the second commit added only governance Markdown.
 
-## 13. Exact-source QA
+## 11. Exact QA before implementation PR
 
-On `d8e2cb8448837b3d63cb9727ae44b1a892ab7d64`:
-- Full Frontend Quality Gate `34688426255` — PASS — artifact `10296039809` — digest `sha256:157f687c8063ebf2726296e6aeb0885e3f6ec131a1ce7a6771ddc603439029f3`;
-- F22 Public Player Profile `34688426242` — PASS — artifact `10296158247` — digest `sha256:c435b839332d124788a404f0bf71273f6fdff7f61ee69581df9011d4b6af2be5`.
+Exact source `d8e2...`:
+- Full `34688426255` PASS — artifact `10296039809` — digest `sha256:157f687c8063ebf2726296e6aeb0885e3f6ec131a1ce7a6771ddc603439029f3`;
+- F22 `34688426242` PASS — artifact `10296158247` — digest `sha256:c435b839332d124788a404f0bf71273f6fdff7f61ee69581df9011d4b6af2be5`.
 
-Manual responsive inspection covered indexable and noindex profile states at 375/390/430/768/1024/1440; no observed horizontal overflow, clipping or overlap.
+Final reviewed head `1e234e1...`:
+- Full `34689322978` PASS — artifact `10297071463` — digest `sha256:105d1dabb65b9ebf73b1efd03a573bfbd17e31959a00b2c03a88be59b01b831b`;
+- F22 `34689323008` PASS — artifact `10296652097` — digest `sha256:f4dad751ad6f231d0307b34ee065ccb303a806c4af429122a47d42e6190e1d46`.
 
-## 14. QA false-positive investigation record
+Manual responsive inspection covered indexable/noindex profile states at 375/390/430/768/1024/1440 without observed horizontal overflow, clipping or overlap.
 
-Before the final source head, focused QA correctly exposed an important shared legacy condition: `src/routes/__root.tsx` still contains old fallback metadata. F22 did not mutate that shared/frozen surface.
+## 12. Implementation PR #102 acceptance
 
-The final F22 route instead owns its effective head completely. QA distinguishes:
-- F22 source-boundary guards for forbidden private field names;
-- effective route `<head>` checks for legacy-brand leakage;
-- literal private-value leakage checks in rendered output.
+Before merge:
+- `mergeable=true`;
+- unresolved review threads `0`;
+- exact live `main` remained START_SHA;
+- expected head `1e234e1c9877cb2c62f1b8e677d64356c5725a58` used.
 
-This preserves a strong privacy/SEO gate without treating framework dev serialization from unrelated routes as F22-owned user-visible copy.
+PR-context gates — all PASS:
+- Full `34689564225` — artifact `10296866945` — digest `sha256:b68d26de41197e7532ea2d1a59be3743797e0887888d93c7c22b43e1b7e18b5f`;
+- F22 `34689564335` — artifact `10297046557` — digest `sha256:1d3bb290a5fc798905a2f42f34aebf4e37782d93fc1c18d356709ae5eb75ec7e`;
+- F21 `34689564304` — artifact `10297266039` — digest `sha256:cd5eeb5b6a08bc32011a68a1b2b9e66e9ebe1f8814ed97f97f648f624f12d6f6`;
+- F20 `34689564262` — artifact `10296257681` — digest `sha256:686ac9397ecf0d2c802ceec530ec9d3d83139e1db96aff18fe5362ebe7632661`;
+- F19 `34689564295` — artifact `10296807097` — digest `sha256:d9373e5a0cd79ec232d4273d514482fd1880f34f92e86a15b2d786c298a3578e`;
+- F18 `34689564267` — artifact `10296452384` — digest `sha256:f63dd625784117e5d98eaaf124c4074f17563e040230ff4c9cbdb0c4d94b6a7e`;
+- F17 `34689564297` — artifact `10296646522` — digest `sha256:5edccb80166527973db55c079260c6025f33f04ae3da284404b750b574313371`;
+- F16 `34689564243` — artifact `10296966747` — digest `sha256:9f85ae977cd0571e3f29207b92bee861a7e4f3eab2b01f2949aa16bdac3c2589`.
 
-## 15. Backend documentation alignment
+Implementation PR #102 merged to:
 
-Backend alignment is terminal documentation-only work:
+`d1b1ff3bd24318e9714a6af7585c5b7299479db5`
+
+## 13. Post-main implementation QA
+
+On exact implementation main `d1b1ff3bd24318e9714a6af7585c5b7299479db5`:
+- Full `34696582708` PASS — artifact `10298279733` — digest `sha256:6f20fcbc83b3a55b4420e4a86b6e5539be645df57ec767f679ec53af9aa0b475`;
+- F22 `34696582677` PASS — artifact `10299246223` — digest `sha256:c4628d6350affda50284c07a5a02ed66b9033a7b62a39ffebb2cccf908777320`;
+- F21 `34696582664` PASS — artifact `10299570131` — digest `sha256:1193aba9e605029f7d296bd9819192b96144117a829296d5acf4272ef4e7581a`;
+- F20 `34696582676` PASS — artifact `10298309370` — digest `sha256:b3cb6ae34c1a01f5697a1e1f1fc157cb7c7584f756449f1ee57ad543bd5d0541`;
+- F19 `34696582758` PASS — artifact `10298812119` — digest `sha256:1b1fbd512ae7dce313ced3cabd81c69a95cdaf7859d190540775608358899677`;
+- F18 `34696582743` PASS — artifact `10298324552` — digest `sha256:8fa737d685aadedd33e77041e6aa0373a7497be95642235cdf8a603dfb23d67c`;
+- F17 `34696582642` PASS — artifact `10298099830` — digest `sha256:f18d15feb42d150000882f8a5ea6498846e21b14ba954d2e631b2c41c18dca24`;
+- F16 `34696582648` PASS — artifact `10299291014` — digest `sha256:181a47040bc99cdcb4bb1bb29d15978dcc234ed2ce477b560400ff16c8191340`.
+
+Exact live main was reverified at the implementation merge after this QA. Issue #101 comment `5646216302` records the implementation checkpoint.
+
+## 14. Backend documentation alignment
+
+Backend F22 alignment is terminal documentation-only work:
 - Backend START `44f18e462f63c625bc02e07ef93c15f1c385dcd0`;
 - Issue #41 CLOSED / COMPLETED;
 - docs head `be805235925af8b70a6e8d183e5f8f363dd7c9cb`;
 - PR #42 MERGED;
-- exact-head gate `34688994229` PASS Python 3.12 / 3.14;
-- PR-context gate `34689064802` PASS Python 3.12 / 3.14;
+- exact-head `34688994229`, PR-context `34689064802`, post-main `34689119713` PASS on Python 3.12 / 3.14;
 - backend merge/main `215fae68d8003b8df6c034b228d1121d96b0be18`;
-- post-main gate `34689119713` PASS Python 3.12 / 3.14.
+- no F22 backend runtime phase implementation/reorder occurred.
 
-Current P01 runtime remains:
+Existing P01 runtime remains `GET /api/v1/players/<gamer_tag>/`. The F22 target username endpoint remains planned pending stable username/compatibility and competitive-domain runtime work.
 
-`GET /api/v1/players/<gamer_tag>/`
+Backend NEXT remains `P02 — Games / Catalog Foundation`.
 
-It is an existing gamer-tag-based identity/profile endpoint, not the F22 target competitive public-profile contract. No runtime file was changed. Future owning runtime work must add stable username semantics and explicit compatibility/migration behavior before F22 production integration.
+## 15. Route-level acceptance
 
-Backend NEXT remains exactly `P02 — Games / Catalog Foundation`.
+Because implementation is merged and every required post-main implementation gate is green, `/players/$username` is promoted non-recursively to:
 
-## 16. Remaining implementation chain
+`FINAL_CURRENT`
 
-1. commit this governance checkpoint without source/runtime mutation;
-2. verify START→reviewed head remains clean and only adds the governance Markdown surface;
-3. run Full + F22 exact-head QA on the reviewed head;
-4. reverify exact live frontend main still equals F22 START;
-5. open implementation PR without auto-closing Issue #101;
-6. require all triggered Full/F22/frozen-regression PR-context gates PASS with artifacts/digests;
-7. require mergeable=true and unresolved review threads=0;
-8. expected-head implementation merge;
-9. require exact post-main Full/F22/triggered frozen regressions PASS and reverify main;
-10. record implementation evidence in Issue #101;
-11. perform the separate documentation-only closeout under the four-Markdown/one-commit rule;
-12. only after terminal frozen-main evidence may F22 become `DONE / MERGED / FROZEN — FINAL_CURRENT`.
+This does not mean F22 is terminally frozen. Terminal status still requires closeout merge and terminal frozen-main evidence in Issue #101.
+
+## 16. Closeout scope / remaining terminal chain
+
+F22 closeout is exactly one commit changing exactly four Markdown files:
+1. `PROJECT_CONTINUITY.md`;
+2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
+3. `docs/workstreams/F22_PUBLIC_PLAYER_PROFILE.md`;
+4. `docs/workstreams/F22_CLOSEOUT.md`.
+
+No source/package/lockfile/workflow/dependency/runtime mutation is authorized.
+
+Remaining terminal gates:
+1. closeout compare = ahead 1 / behind 0 / one commit / exactly four Markdown files;
+2. closeout PR without auto-closing Issue #101;
+3. PR-context Full + F22 + F21/F20/F19/F18/F17/F16 PASS;
+4. mergeable=true, review threads=0 and exact implementation-main lock;
+5. expected-head closeout merge;
+6. terminal frozen-main Full + F22 + regressions PASS with artifacts/digests;
+7. exact live-main verification;
+8. terminal evidence in Issue #101 and close `completed`;
+9. only then report `DONE / MERGED / FROZEN — FINAL_CURRENT`.
 
 ## 17. Protected NEXT
 
