@@ -1,0 +1,165 @@
+name: F23 Host Acquisition Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f23-host-acquisition
+    paths:
+      - "src/routes/host.tsx"
+      - "src/components/host/host-acquisition-page.tsx"
+      - "src/lib/host-application-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F23_*"
+      - ".github/workflows/f23-host-acquisition-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/host.tsx"
+      - "src/components/host/host-acquisition-page.tsx"
+      - "src/lib/host-application-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F23_*"
+      - ".github/workflows/f23-host-acquisition-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  host-acquisition-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Host application contract checks
+        run: bun run src/lib/host-application-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, form boundary and responsive evidence
+        shell: bash
+        env:
+          VITE_DATA_ADAPTER: mock
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F23 visual QA."
+            exit 1
+          fi
+
+          PUBLIC_SOURCES=(
+            src/routes/host.tsx
+            src/components/host/host-acquisition-page.tsx
+          )
+
+          if grep -E -n -q 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|بک.?اند|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}"; then
+            echo "Legacy brand or engineering-stage language must not enter rendered F23 route source."
+            grep -E -n 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|بک.?اند|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}" || true
+            exit 1
+          fi
+
+          mkdir -p artifacts/f23-host-acquisition-qa
+          bun run dev -- --host 127.0.0.1 --port 4180 > /tmp/turnoment-f23.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          URL="http://127.0.0.1:4180/host"
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$URL" > artifacts/f23-host-acquisition-qa/host.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f23.log || true
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          qa = Path("artifacts/f23-host-acquisition-qa")
+          html = (qa / "host.html").read_text(encoding="utf-8")
+          match = re.search(r"<head\b[^>]*>(.*?)</head>", html, re.IGNORECASE | re.DOTALL)
+          if not match:
+              raise SystemExit("Effective head was not found for /host")
+          (qa / "host.head.html").write_text(match.group(1), encoding="utf-8")
+          PY
+
+          HTML="artifacts/f23-host-acquisition-qa/host.html"
+          HEAD="artifacts/f23-host-acquisition-qa/host.head.html"
+
+          grep -a -q "گیم‌نتت را به میزبان" "$HTML"
+          grep -a -q "Turnoment چه چیزی به میزبان می‌دهد؟" "$HTML"
+          grep -a -q "از درخواست تا اولین مسابقه" "$HTML"
+          grep -a -q "چه مرکزی برای میزبانی مناسب است؟" "$HTML"
+          grep -a -q "درخواست میزبانی" "$HTML"
+          grep -a -q "پرسش‌های متداول" "$HTML"
+          grep -a -q 'name="venueName"' "$HTML"
+          grep -a -q 'name="phone"' "$HTML"
+          grep -a -q 'name="stationCount"' "$HTML"
+          grep -a -q '/tournaments' "$HTML"
+
+          grep -a -q "میزبانی مسابقات گیمینگ برای گیم‌نت | Turnoment" "$HEAD"
+          grep -a -q 'name="robots" content="index,follow"' "$HEAD"
+          grep -a -q 'rel="canonical" href="/host"' "$HEAD"
+          grep -a -q 'property="og:site_name" content="Turnoment"' "$HEAD"
+
+          if grep -a -E -q 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir' "$HEAD"; then
+            echo "Legacy brand must not exist in the effective F23 document head."
+            exit 1
+          fi
+
+          MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+          test "$MAIN_COUNT" -eq 1
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            if [[ "$WIDTH" -le 430 ]]; then HEIGHT=14000
+            elif [[ "$WIDTH" -le 768 ]]; then HEIGHT=10000
+            elif [[ "$WIDTH" -le 1024 ]]; then HEIGHT=8500
+            else HEIGHT=7500
+            fi
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},${HEIGHT}" \
+              --screenshot="artifacts/f23-host-acquisition-qa/host-${WIDTH}.png" \
+              "$URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f23-host-acquisition-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 6
+
+      - name: Upload F23 host acquisition QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f23-host-acquisition-qa-${{ github.sha }}
+          path: artifacts/f23-host-acquisition-qa
+          if-no-files-found: error
+          retention-days: 14
