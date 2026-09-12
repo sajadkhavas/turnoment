@@ -4,17 +4,13 @@
 
 Last audit: `2026-09-12`
 
-Accepted F21 implementation `main` at closeout creation:
+Current terminal frozen frontend baseline / F22 START:
 
-`7868d191f07f038ba757e3a2593ffc400bb0c883`
+`36e8685192fede45da8c4e82c32bdc41a2db1be2`
 
-Last terminal frozen baseline before F21:
+Active workstream:
 
-`b585e1e421c2e0febedf53e43349a23666004338` — F20 terminal frozen main.
-
-Active closeout workstream:
-
-`F21 — Public Player Ranking` — Issue #98 OPEN — implementation PR #99 MERGED — closeout branch `closeout/f21-public-player-ranking`.
+`F22 — Public Player Profile` — Issue #101 OPEN — branch `phase/f22-public-player-profile`.
 
 ## Status meanings
 
@@ -35,8 +31,9 @@ Route-level `FINAL_CURRENT` is distinct from terminal workstream `DONE / MERGED 
 | `/tournaments` | `FINAL_CURRENT` | F17 terminally frozen; Issue #84 completed. |
 | `/games` | `FINAL_CURRENT` | F18 terminally frozen; Issue #89 completed. |
 | `/centers` | `FINAL_CURRENT` | F19 terminally frozen; Issue #92 completed. |
-| `/centers/$id` | `FINAL_CURRENT` | F20 terminally frozen; Issue #95 completed; frozen main `b585e1e421c2e0febedf53e43349a23666004338`. |
-| `/ranking` | `FINAL_CURRENT` | F21 implementation accepted under current law. START `b585e1e421c2e0febedf53e43349a23666004338`; reviewed head `b8aaad067ce64a376e8758daa2eda43e374fee65`; PR #99 MERGED; implementation main `7868d191f07f038ba757e3a2593ffc400bb0c883`; post-main Full/F21/F20/F19/F18/F17/F16 all PASS. Workstream remains closeout-in-progress until terminal freeze evidence exists in Issue #98. |
+| `/centers/$id` | `FINAL_CURRENT` | F20 terminally frozen; Issue #95 completed. |
+| `/ranking` | `FINAL_CURRENT` | F21 terminally frozen; Issue #98 completed; closeout PR #100 merged; frozen main `36e8685192fede45da8c4e82c32bdc41a2db1be2`; terminal Full `34686940459` and F21 `34686940446` PASS with required frozen regressions. |
+| `/players/$username` | `IN_PROGRESS` | F22 active. START `36e8685192fede45da8c4e82c32bdc41a2db1be2`; exact source head `d8e2cb8448837b3d63cb9727ae44b1a892ab7d64`; exact-source Full `34688426255` + F22 `34688426242` PASS; Backend F22 docs alignment Issue #41 / PR #42 terminal. Implementation PR/post-main/closeout still pending. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical + current SEO/final-copy acceptance terminally recorded; frozen/protected. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 accepted before strict current SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final private registration route. |
@@ -59,85 +56,100 @@ Route-level `FINAL_CURRENT` is distinct from terminal workstream `DONE / MERGED 
 
 | Route | Status | Why |
 |---|---|---|
-| `/players/$username` | `NEEDS_RECERTIFICATION` | Must reconcile authoritative public player/rating/privacy truth; next public workstream after terminal F21. |
-| `/host` | `NEEDS_RECERTIFICATION` | Public acquisition route has not passed current page + SEO gates. |
+| `/host` | `NEEDS_RECERTIFICATION` | Public acquisition route has not passed current page + SEO gates; protected NEXT after terminal F22. |
 | `/rules` | `NEEDS_RECERTIFICATION` | Must reconcile authoritative ruleset/product copy and current evidence law. |
 
-## C. Accepted F21 Public Player Ranking truth
+## C. Accepted F22 Public Player Profile architecture under review
 
 Permanent architecture:
 
-`validated ranking search → loaderDeps → SSR loader → typed PlayerRankingRepository → strict runtime-validated ranking projection → Ranking UI`
+`validated username param → SSR loader → typed PublicPlayerProfileRepository → strict runtime-validated public profile projection → Public Player Profile UI`
 
-Validated URL state: game, season, region, ranking type `tournament|challenge`, page.
+Target production endpoint:
 
-Planned production endpoint:
-
-`GET /api/v1/rankings/`
+`GET /api/v1/players/{username}/public-profile/`
 
 Production invariants:
 - production defaults to Django adapter and requires `VITE_API_BASE_URL`;
-- non-2xx failures fail closed;
-- response is strictly runtime validated;
-- no production fixture fallback;
-- frontend never calculates official rank, rating, movement or challenge eligibility.
+- 404 maps to one public not-found state; other non-2xx fails closed;
+- strict runtime response validation;
+- requested/returned public username identity must match;
+- no production fixture fallback.
 
-Authority / identity:
-- backend owns leaderboard membership/order/rank, stable `playerId`, public `username`, game/city identity, rating projection, record, movement, facets/filtering/pagination;
-- `playerId` is relation identity;
-- `username` is public profile-navigation identity;
-- gamer tag is display only;
-- frontend owns navigation state, presentation, SEO, accessibility and deterministic QA fixtures only.
+Identity / authority:
+- `playerId` = stable relation identity;
+- `username` = stable public profile-navigation identity;
+- `gamerTag` = display text only;
+- backend eventually owns publication, search visibility, rank/rating/record/movement and result truth;
+- frontend owns presentation, SEO, accessibility/responsive behavior and deterministic QA fixtures only;
+- frontend does not calculate authoritative win-rate/rating/rank/movement/result validity/eligibility.
 
-Tournament Rating and Challenge Rating remain distinct. F21 v1 returns one authoritative `rating` paired with the active `ratingType`; challenge eligibility remains outside this listing and is not browser-derived.
+Privacy:
+- private/unpublished/nonexistent profile lookup collapses to the same public not-found surface;
+- phone/email/private real identity/`interview_opt_in`/auth/moderation/verification/payment/secrets are excluded from the public contract.
 
-SEO:
-- H1 `رتبه‌بندی بازیکنان مسابقات Turnoment`;
-- title `رتبه‌بندی بازیکنان مسابقات | Turnoment`;
-- base `/ranking` canonical/indexable;
-- game/season/region/type/page variants `noindex,follow` + canonical `/ranking`;
-- no unsupported official/national/best-player claims or ranking structured-data markup.
+Indexing:
+- backend-projected `indexable` → `index,follow`;
+- backend-projected `noindex` → `noindex,follow`;
+- not-found → `noindex,nofollow`;
+- canonical found profile is `/players/{username}`.
 
-Runtime remains:
+No ProfilePage structured data is emitted solely for schema coverage.
+
+Current runtime remains:
 
 `FRONTEND MOCK / BACKEND PENDING`
 
-Implementation evidence:
-- reviewed head `b8aaad067ce64a376e8758daa2eda43e374fee65`;
-- START→head ahead 2 / behind 0 / 12 files;
-- no lockfile/dependency drift or frozen-route source mutation;
-- exact-head Full `34658428081` and F21 `34658428161` PASS;
-- PR #99 mergeable=true, review threads=0, exact START main lock, expected-head merge;
-- PR-context Full `34685943363`, F21 `34685943377`, F20 `34685943390`, F19 `34685943358`, F18 `34685943344`, F17 `34685943345`, F16 `34685943368` — all PASS;
-- implementation merge/main `7868d191f07f038ba757e3a2593ffc400bb0c883`;
-- post-main Full `34686214152`, F21 `34686214160`, F20 `34686214190`, F19 `34686214168`, F18 `34686214210`, F17 `34686214170`, F16 `34686214212` — all PASS.
+## D. F22 exact-source evidence
 
-Because implementation merge + required post-main gates are accepted, `/ranking` is promoted non-recursively to `FINAL_CURRENT`. Terminal F21 freeze still requires closeout merge and terminal evidence in Issue #98.
+Source head:
 
-## D. Backend F21 alignment
+`d8e2cb8448837b3d63cb9727ae44b1a892ab7d64`
 
-Backend F21 documentation alignment is terminal: Issue #39 CLOSED / COMPLETED, PR #40 MERGED, backend main `44f18e462f63c625bc02e07ef93c15f1c385dcd0`; PR-context gate `34658090539` and post-main gate `34658179049` PASS on Python 3.12/3.14. No runtime ranking implementation or phase reordering was added.
+START→source:
+- ahead 1 / behind 0 / exactly one commit;
+- exactly 9 files;
+- no lockfile/dependency drift;
+- package delta is test wiring only;
+- frozen public route source is untouched.
+
+QA:
+- Full `34688426255` PASS — artifact `10296039809` — digest `sha256:157f687c8063ebf2726296e6aeb0885e3f6ec131a1ce7a6771ddc603439029f3`;
+- F22 `34688426242` PASS — artifact `10296158247` — digest `sha256:c435b839332d124788a404f0bf71273f6fdff7f61ee69581df9011d4b6af2be5`;
+- indexable/noindex states manually reviewed at 375/390/430/768/1024/1440 with no observed horizontal overflow, clipping or overlap.
+
+## E. Backend F22 alignment
+
+Backend F22 documentation alignment is terminal:
+- backend Issue #41 CLOSED / COMPLETED;
+- PR #42 MERGED;
+- docs head `be805235925af8b70a6e8d183e5f8f363dd7c9cb`;
+- backend merge/main `215fae68d8003b8df6c034b228d1121d96b0be18`;
+- exact-head `34688994229`, PR-context `34689064802` and post-main `34689119713` all PASS on Python 3.12/3.14;
+- no backend runtime implementation/phase reorder was added.
+
+The existing P01 `GET /api/v1/players/<gamer_tag>/` remains current runtime truth. It is not silently reinterpreted as stable username. The F22 target endpoint remains planned pending stable username + compatibility + competitive-domain runtime work.
 
 Backend NEXT remains `P02 — Games / Catalog Foundation`.
 
-## E. Frozen-route protection
+## F. Frozen-route protection
 
-F16 `/`, F17 `/tournaments`, F18 `/games`, F19 `/centers`, F20 `/centers/$id`, F21 `/ranking` at accepted implementation state, and F02 `/games/$slug` are protected. `/players/$username` is also outside F21 scope and remains untouched for its own future recertification.
+F16 `/`, F17 `/tournaments`, F18 `/games`, F19 `/centers`, F20 `/centers/$id`, F21 `/ranking`, and F02 `/games/$slug` are frozen/protected. F22 may not mutate those route sources as part of player-profile recertification.
 
-## F. Legacy / non-competitive surfaces
+## G. Legacy / non-competitive surfaces
 
 Existing ecommerce/service/general-content legacy routes remain `LEGACY_REVIEW` until explicitly accepted or removed. Do not use them as competitive architecture references.
 
-## G. NEXT
+## H. NEXT
 
-Immediate task: complete F21 documentation-only closeout and terminal frozen-main evidence without source/runtime mutation.
+Immediate task: complete F22 governance exact-head QA → implementation PR/merge/post-main → documentation-only closeout → terminal frozen-main evidence.
 
-After terminal F21 freeze:
+After terminal F22:
 
-`/players/$username` → `/host` → `/rules`.
+`/host` → `/rules`.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
-## H. Registry maintenance law
+## I. Registry maintenance law
 
-A route cannot be promoted from chat memory. `/ranking` is `FINAL_CURRENT` only because implementation merge + required post-main QA now exist. Terminal workstream `DONE / MERGED / FROZEN` still requires closeout merge + terminal frozen-main evidence in Issue #98. Future closeout SHA/terminal CI facts must not be self-recorded recursively in this closeout commit.
+A route cannot be promoted from chat memory. `/players/$username` remains `IN_PROGRESS` until implementation merge + required post-main QA exist. Terminal `DONE / MERGED / FROZEN` additionally requires documentation-only closeout merge and terminal frozen-main evidence in Issue #101.
