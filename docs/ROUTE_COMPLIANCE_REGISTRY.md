@@ -4,13 +4,13 @@
 
 Last audit: `2026-09-12`
 
-Exact live frontend `main` / F23 START at this governance checkpoint:
+Exact accepted implementation `main` / F23 closeout base:
 
-`e1aa1667f3c70a9e00d9664b1e20d3019587cab0`
+`78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93`
 
 Active workstream:
 
-`F23 — Host Acquisition` — Issue #104 OPEN — branch `phase/f23-host-acquisition` — source head `e70de8ee4acc20014da6a0d10a4343ea26f3e1de` — governance checkpoint in progress.
+`F23 — Host Acquisition` — Issue #104 OPEN — closeout branch `closeout/f23-host-acquisition` — implementation PR #105 merged — implementation/main `78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93` — post-main acceptance complete — closeout in progress.
 
 ## Status meanings
 
@@ -34,7 +34,7 @@ Route-level `FINAL_CURRENT` is distinct from terminal workstream `DONE / MERGED 
 | `/centers/$id` | `FINAL_CURRENT` | F20 terminally frozen; Issue #95 completed. |
 | `/ranking` | `FINAL_CURRENT` | F21 terminally frozen; Issue #98 completed. |
 | `/players/$username` | `FINAL_CURRENT` | F22 terminally frozen; Issue #101 CLOSED / COMPLETED; implementation + closeout + terminal frozen-main evidence accepted. |
-| `/host` | `IN_PROGRESS` | F23 source head `e70de8ee4acc20014da6a0d10a4343ea26f3e1de`; exact-source focused `34702167115` PASS and Full `34702167120` PASS; backend docs alignment terminal at backend main `46b3f47b38068675ed8a0941a871438e51abd6a2`; implementation PR/post-main/closeout still required. |
+| `/host` | `FINAL_CURRENT` | F23 implementation PR #105 merged; accepted implementation main `78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93`; required post-main Full/F23/F22/F21/F20/F19/F18/F17/F16 gates all PASS; route-level current-law acceptance is satisfied. F23 workstream terminal freeze still requires closeout merge + frozen-main evidence in Issue #104. |
 | `/games/$slug` | `FINAL_CURRENT` | F02 technical + current SEO/final-copy acceptance terminally recorded; frozen/protected. |
 | `/tournaments/$id` | `FINAL_PRE_SEO` | F01 accepted before strict current SEO final-copy protocol. |
 | `/tournaments/$id/register` | `FINAL_PRIVATE` | F01 final private registration route. |
@@ -59,7 +59,7 @@ Route-level `FINAL_CURRENT` is distinct from terminal workstream `DONE / MERGED 
 |---|---|---|
 | `/rules` | `NEEDS_RECERTIFICATION` | Protected NEXT after terminal F23; must reconcile authoritative rules/product copy and current evidence law. |
 
-## C. Accepted F23 architecture checkpoint
+## C. Accepted F23 architecture
 
 Permanent frontend architecture:
 
@@ -98,7 +98,7 @@ Accepted receipt:
 
 Runtime remains `FRONTEND MOCK / BACKEND PENDING` until the owning backend runtime phase ships the endpoint.
 
-## D. F23 SEO / final-copy checkpoint
+## D. F23 SEO / final-copy acceptance
 
 Purpose: qualified gaming-center host acquisition with transparent review/requirements rather than automatic-acceptance claims.
 
@@ -112,16 +112,20 @@ Final title:
 
 `میزبانی مسابقات گیمینگ برای گیم‌نت | Turnoment`
 
+Final description:
+
+`برای میزبانی مسابقات حضوری گیمینگ در گیم‌نت خود در Turnoment درخواست بدهید؛ شرایط میزبانی، روند بررسی و مسیر ثبت‌نام بازیکنان را ببینید.`
+
 Canonical: `/host`.
 
 Robots: `index,follow`.
 
-Page hierarchy accepted at source checkpoint:
+Accepted page hierarchy:
 `Hero → benefits → process → requirements → experience preview → application form → FAQ → final CTA`.
 
 The copy is people-first, avoids engineering-stage language, does not guarantee approval and does not invent official/best/largest claims.
 
-## E. F23 exact-source evidence
+## E. F23 implementation evidence
 
 F23 START:
 
@@ -131,18 +135,36 @@ Source head:
 
 `e70de8ee4acc20014da6a0d10a4343ea26f3e1de`
 
-START → source head:
-- ahead `1` / behind `0` / one commit;
-- `9` changed files;
-- no `bun.lock` mutation;
-- no dependency/version drift;
-- frozen F16/F17/F18/F19/F20/F21/F22/F02 route source untouched.
+Final reviewed implementation head:
 
-Exact-source QA:
-- F23 `34702167115` PASS — artifact `10300084668` — digest `sha256:d1de24c54a127f66cc097d05e0ef17e9cc631ec61aa3e687421bc782bb8c87d3`;
-- Full `34702167120` PASS — browser artifact `10300094875` — digest `sha256:363f125ae1c2e476383ad660ab7fca3ef3094f23a0a6916c55e1837eed02c649`.
+`3a464f69578102aa8c2e79c0725a4361e46c663f`
 
-The F23 focused gate renders evidence at 375/390/430/768/1024/1440. Manual full-page source evidence review at 375/768/1440 found no observed horizontal overflow, clipping or overlap.
+Implementation PR:
+
+`#105` — MERGED.
+
+Accepted implementation main / closeout base:
+
+`78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93`
+
+Reviewed-head QA:
+- F23 `34702956137` PASS — artifact `10301600267` — digest `sha256:57c572d6246e2988909ece2effb643ced9af92786562b46cc646c39b785ec6b8`;
+- Full `34702956119` PASS — artifact `10301031536` — digest `sha256:622b57ecc7af264f422dc37d994d07e6e48f87be160ff84aa9397633d5173953`.
+
+Implementation PR-context Full/F23/F22/F21/F20/F19/F18/F17/F16 gates all passed with mergeable=true, zero unresolved review threads and exact pre-merge main lock.
+
+Post-main implementation acceptance — all PASS on exact merge SHA:
+- Full `34703531366` — artifact `10301511456` — digest `sha256:bb1c4606e5976dee23d2b48a94d361825238c6c07aa02547231239933534c7a2`;
+- F23 `34703531387` — artifact `10300582171` — digest `sha256:a29b97ad3a966a15babb76b6557001f96c4499dab4f0f14e220894591ed1f566`;
+- F22 `34703531403` — artifact `10301466264` — digest `sha256:a6532b5d6311932eda655b26700c4af13b73bf0645d883a13c05a4d46827abca`;
+- F21 `34703531297` — artifact `10301491369` — digest `sha256:0373c9e2fb021fd64528a64ff6a07b2c90d5fabc50e6edcdea7b661ee7db8a2d`;
+- F20 `34703531473` — artifact `10301032161` — digest `sha256:87a0d9541c290d9f94e5a0a86468346a547168e1e6e112709978111649ea9bfb`;
+- F19 `34703531395` — artifact `10301296618` — digest `sha256:bb7fa33ebdd8394a431f88fde1ccbb8c6f45049e3710ee27c327df5eb1e6e4c8`;
+- F18 `34703531437` — artifact `10301156811` — digest `sha256:6b3cd7e5633613df0222613f77e7bc42255cd2bffe4abecd64cf62aaa092a459`;
+- F17 `34703531424` — artifact `10301311626` — digest `sha256:aefc34255d4b681d32a5e08a0c29e3fe8bd02b24eecaae2b0fd01d2172408ef0`;
+- F16 `34703531410` — artifact `10301316540` — digest `sha256:f9e40a9e3ce8ed813244cd04509631e7a09a1851f930591c35f6d2cdc2fbef6b`.
+
+Exact live frontend `main` was reverified at the implementation merge after post-main acceptance. Evidence is recorded in Issue #104.
 
 ## F. Backend F23 alignment
 
@@ -163,32 +185,34 @@ The contract explicitly freezes a future session-independent public submission p
 
 ## G. Frozen-route protection
 
-F16 `/`, F17 `/tournaments`, F18 `/games`, F19 `/centers`, F20 `/centers/$id`, F21 `/ranking`, F22 `/players/$username`, and F02 `/games/$slug` are protected. F23 implementation/governance must not mutate their accepted route source.
+F16 `/`, F17 `/tournaments`, F18 `/games`, F19 `/centers`, F20 `/centers/$id`, F21 `/ranking`, F22 `/players/$username`, F23 `/host`, and F02 `/games/$slug` are protected from unrelated source mutation. F23 closeout is documentation-only.
 
 ## H. Legacy / non-competitive surfaces
 
 Existing ecommerce/service/general-content legacy routes remain `LEGACY_REVIEW` until explicitly accepted or removed.
 
-## I. F23 remaining chain
+## I. F23 closeout chain
 
-1. governance checkpoint = one commit / exactly three Markdown files;
-2. exact reviewed-head Full + F23 PASS;
-3. exact live main remains F23 START;
-4. implementation PR without auto-closing Issue #104;
-5. PR-context Full/F23/F22/F21/F20/F19/F18/F17/F16 PASS;
-6. mergeable=true / review threads=0 / expected-head merge;
-7. post-main Full/F23/frozen regressions PASS;
-8. exact implementation-main verification and Issue #104 checkpoint;
-9. documentation-only closeout exactly four Markdown files;
-10. closeout PR-context required gates PASS + expected-head merge;
-11. terminal frozen-main Full/F23/frozen regressions PASS with artifacts/digests;
-12. exact live-main verification;
-13. terminal evidence in Issue #104 and close completed;
-14. only then promote `/host` to `FINAL_CURRENT` and report `F23 — DONE / MERGED / FROZEN — FINAL_CURRENT`.
+Closeout branch:
+
+`closeout/f23-host-acquisition`
+
+Closeout law:
+1. exactly one closeout commit;
+2. exactly four changed Markdown files: `PROJECT_CONTINUITY.md`, `docs/ROUTE_COMPLIANCE_REGISTRY.md`, `docs/workstreams/F23_HOST_ACQUISITION.md`, `docs/workstreams/F23_CLOSEOUT.md`;
+3. no source/package/lockfile/workflow/dependency/runtime mutation;
+4. exact closeout compare must show ahead 1 / behind 0 / one commit / four Markdown files;
+5. closeout PR without auto-closing Issue #104;
+6. all triggered PR-context Full/F23/F22/F21/F20/F19/F18/F17/F16 gates must PASS;
+7. require mergeable=true and unresolved review threads=0;
+8. require exact live main still equals `78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93` before expected-head closeout merge;
+9. after merge require terminal frozen-main Full/F23/frozen-route regressions PASS with artifacts/digests;
+10. reverify exact live main, record terminal evidence in Issue #104, close Issue #104 completed;
+11. only then report `F23 — DONE / MERGED / FROZEN — FINAL_CURRENT`.
 
 ## J. NEXT
 
-Immediate task: complete F23 governance exact-head QA and implementation PR chain without source drift.
+Immediate task: complete F23 documentation-only closeout without runtime drift.
 
 After terminal F23:
 
@@ -198,4 +222,4 @@ Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
 
 ## K. Registry maintenance law
 
-A route cannot be promoted from chat memory. `/host` remains `IN_PROGRESS` at this governance checkpoint even though exact-source QA and backend documentation alignment are accepted. `FINAL_CURRENT` requires implementation merge + post-main acceptance; terminal `DONE / MERGED / FROZEN` additionally requires closeout merge + terminal frozen-main evidence in Issue #104.
+A route cannot be promoted from chat memory. `/host` is `FINAL_CURRENT` here only because implementation PR #105 is merged and required post-main implementation acceptance exists on exact main `78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93`. F23 workstream terminal status still requires closeout merge + terminal frozen-main evidence in Issue #104.
