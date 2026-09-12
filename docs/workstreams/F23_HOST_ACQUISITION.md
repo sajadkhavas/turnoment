@@ -1,8 +1,8 @@
 # F23 — Host Acquisition
 
-Status at governance checkpoint:
+Status at closeout snapshot:
 
-`SOURCE IMPLEMENTED / EXACT-SOURCE QA ACCEPTED / BACKEND ALIGNMENT TERMINAL / GOVERNANCE IN PROGRESS`
+`IMPLEMENTATION MERGED / POST-MAIN ACCEPTED / CLOSEOUT IN PROGRESS`
 
 Route: `/host`
 
@@ -20,7 +20,23 @@ Source implementation head:
 
 `e70de8ee4acc20014da6a0d10a4343ea26f3e1de`
 
-This is a non-recursive workstream snapshot. Future governance head, implementation merge/main, closeout head/merge and terminal frozen-main CI/artifact facts are intentionally not self-recorded here; those facts belong in Issue #104 after they exist.
+Final reviewed implementation head:
+
+`3a464f69578102aa8c2e79c0725a4361e46c663f`
+
+Implementation PR:
+
+`#105` — MERGED with expected-head lock.
+
+Implementation merge / accepted main / closeout base:
+
+`78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93`
+
+Closeout branch:
+
+`closeout/f23-host-acquisition`
+
+This is a non-recursive workstream snapshot. Future closeout head/merge/frozen-main SHA and terminal post-closeout CI/artifact/digest facts are intentionally not self-recorded here; those facts belong in Issue #104 after they exist.
 
 ## 1. Why F23 exists
 
@@ -231,17 +247,25 @@ Source implementation files:
 - `src/lib/host-application-repository.ts`;
 - `src/routes/host.tsx`.
 
-## 10. Exact-source QA evidence
+## 10. Exact-source and reviewed-head QA evidence
 
-Focused F23:
+Source-focused F23:
 - run `34702167115` — PASS;
 - artifact `10300084668`;
 - digest `sha256:d1de24c54a127f66cc097d05e0ef17e9cc631ec61aa3e687421bc782bb8c87d3`.
 
-Full Frontend Quality Gate:
+Source Full Frontend Quality Gate:
 - run `34702167120` — PASS;
 - browser artifact `10300094875`;
 - digest `sha256:363f125ae1c2e476383ad660ab7fca3ef3094f23a0a6916c55e1837eed02c649`.
+
+Final reviewed implementation head:
+
+`3a464f69578102aa8c2e79c0725a4361e46c663f`
+
+Reviewed-head QA:
+- F23 `34702956137` — PASS — artifact `10301600267` — digest `sha256:57c572d6246e2988909ece2effb643ced9af92786562b46cc646c39b785ec6b8`;
+- Full `34702956119` — PASS — artifact `10301031536` — digest `sha256:622b57ecc7af264f422dc37d994d07e6e48f87be160ff84aa9397633d5173953`.
 
 Focused workflow assertions include:
 - contract tests;
@@ -310,51 +334,73 @@ Key decisions:
 - backend is authoritative for validation and receipt truth;
 - no schema is added merely for SEO coverage.
 
-## 14. Governance checkpoint scope
+## 14. Implementation PR acceptance
 
-The governance checkpoint is exactly one additional commit changing exactly three Markdown files:
-1. `PROJECT_CONTINUITY.md`;
-2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
-3. `docs/workstreams/F23_HOST_ACQUISITION.md`.
+Implementation PR #105 was opened without auto-closing Issue #104.
 
-It must not change source code, package data, lockfiles, workflows, dependencies or frozen-route implementation.
+Pre-merge acceptance:
+- expected reviewed head `3a464f69578102aa8c2e79c0725a4361e46c663f`;
+- `mergeable=true`;
+- unresolved review threads `0`;
+- live `main` still exact F23 START before merge;
+- PR-context Full/F23/F22/F21/F20/F19/F18/F17/F16 gates all PASS.
 
-After the governance commit, Full + focused F23 must rerun on the exact reviewed branch head before implementation PR creation.
+Implementation was merged with expected-head lock.
 
-## 15. Remaining implementation PR chain
+Accepted implementation merge/main:
 
-1. verify START → reviewed head = ahead 2 / behind 0 / exactly 2 commits and source+three governance docs only;
-2. require exact reviewed-head Full + F23 PASS with artifacts/digests;
-3. verify live `main` remains exact F23 START;
-4. open implementation PR without auto-closing Issue #104;
-5. require triggered Full/F23/F22/F21/F20/F19/F18/F17/F16 PR-context gates PASS;
-6. require `mergeable=true` and unresolved review threads=0;
-7. merge with expected reviewed-head SHA;
-8. require post-main Full/F23/frozen-route regression PASS;
-9. reverify exact live main and record implementation evidence in Issue #104;
-10. only then create closeout.
+`78c7d3b33c1d785ae444bb0f4d1e0385ca1ced93`
 
-## 16. Closeout scope after implementation acceptance
+## 15. Post-main implementation acceptance
 
-F23 closeout will be exactly one commit changing exactly four Markdown files:
+All required post-main gates passed on exact implementation merge SHA:
+- Full `34703531366` — artifact `10301511456` — digest `sha256:bb1c4606e5976dee23d2b48a94d361825238c6c07aa02547231239933534c7a2`;
+- F23 `34703531387` — artifact `10300582171` — digest `sha256:a29b97ad3a966a15babb76b6557001f96c4499dab4f0f14e220894591ed1f566`;
+- F22 `34703531403` — artifact `10301466264` — digest `sha256:a6532b5d6311932eda655b26700c4af13b73bf0645d883a13c05a4d46827abca`;
+- F21 `34703531297` — artifact `10301491369` — digest `sha256:0373c9e2fb021fd64528a64ff6a07b2c90d5fabc50e6edcdea7b661ee7db8a2d`;
+- F20 `34703531473` — artifact `10301032161` — digest `sha256:87a0d9541c290d9f94e5a0a86468346a547168e1e6e112709978111649ea9bfb`;
+- F19 `34703531395` — artifact `10301296618` — digest `sha256:bb7fa33ebdd8394a431f88fde1ccbb8c6f45049e3710ee27c327df5eb1e6e4c8`;
+- F18 `34703531437` — artifact `10301156811` — digest `sha256:6b3cd7e5633613df0222613f77e7bc42255cd2bffe4abecd64cf62aaa092a459`;
+- F17 `34703531424` — artifact `10301311626` — digest `sha256:aefc34255d4b681d32a5e08a0c29e3fe8bd02b24eecaae2b0fd01d2172408ef0`;
+- F16 `34703531410` — artifact `10301316540` — digest `sha256:f9e40a9e3ce8ed813244cd04509631e7a09a1851f930591c35f6d2cdc2fbef6b`.
+
+Exact live frontend `main` was reverified at implementation SHA after post-main QA. Implementation evidence is recorded in Issue #104 comment `5647020555`.
+
+## 16. Route registry decision
+
+Because implementation PR #105 is merged and required post-main implementation gates are green, `/host` is eligible for non-recursive promotion to `FINAL_CURRENT`.
+
+This route-level promotion does not itself mean F23 is terminally frozen. Terminal workstream status still requires closeout merge and terminal frozen-main evidence in Issue #104.
+
+## 17. Documentation-only closeout scope
+
+This closeout is restricted to exactly four Markdown files:
 1. `PROJECT_CONTINUITY.md`;
 2. `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
 3. `docs/workstreams/F23_HOST_ACQUISITION.md`;
 4. `docs/workstreams/F23_CLOSEOUT.md`.
 
-Closeout may promote route-level `/host` to `FINAL_CURRENT` only after implementation merge + post-main evidence exist.
+Exactly one closeout commit is allowed. No source code, package, lockfile, workflow, runtime configuration, dependency or backend runtime phase change is authorized.
 
-Terminal workstream `DONE / MERGED / FROZEN` still requires:
-- closeout PR-context required gates;
-- mergeable/thread/main lock;
-- expected-head closeout merge;
-- terminal frozen-main Full/F23/frozen regressions;
-- artifacts/digests;
-- exact live-main verification;
-- terminal evidence in Issue #104;
-- Issue #104 closed with state reason `completed`.
+## 18. Remaining terminal gates
 
-## 17. Protected NEXT
+After this closeout snapshot is committed, F23 still requires:
+1. exact closeout compare: ahead 1 / behind 0 / one commit / exactly four Markdown files;
+2. closeout PR to main without auto-closing Issue #104;
+3. PR-context Full + F23 + F22/F21/F20/F19/F18/F17/F16 gates PASS;
+4. mergeable=true and unresolved review threads=0;
+5. exact live-main lock at implementation merge SHA before closeout merge;
+6. expected-head closeout merge;
+7. terminal frozen-main Full + F23 + regressions PASS;
+8. terminal artifact IDs and SHA-256 digests recorded in Issue #104;
+9. exact live frontend main reverified;
+10. Issue #104 updated with terminal evidence and CLOSED / COMPLETED.
+
+Only after those future facts exist may the workstream be reported:
+
+`F23 — DONE / MERGED / FROZEN — FINAL_CURRENT`
+
+## 19. Protected NEXT
 
 After terminal F23:
 
