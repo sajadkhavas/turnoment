@@ -1,0 +1,207 @@
+name: F22 Public Player Profile Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f22-public-player-profile
+    paths:
+      - "src/routes/players.$username.tsx"
+      - "src/components/players/public-player-profile-page.tsx"
+      - "src/lib/public-player-profile-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F22_*"
+      - ".github/workflows/f22-public-player-profile-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/players.$username.tsx"
+      - "src/components/players/public-player-profile-page.tsx"
+      - "src/lib/public-player-profile-*.ts"
+      - "package.json"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F22_*"
+      - ".github/workflows/f22-public-player-profile-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  public-player-profile-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Public player profile contract checks
+        run: bun run src/lib/public-player-profile-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, privacy and responsive evidence
+        shell: bash
+        env:
+          VITE_DATA_ADAPTER: mock
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F22 visual QA."
+            exit 1
+          fi
+
+          PUBLIC_BOUNDARY_SOURCES=(
+            src/lib/public-player-profile-contract.ts
+            src/lib/public-player-profile-fixture.ts
+            src/lib/public-player-profile-http-repository.ts
+            src/lib/public-player-profile-repository.ts
+            src/components/players/public-player-profile-page.tsx
+            'src/routes/players.$username.tsx'
+          )
+
+          if grep -E -n -q 'interview_opt_in|\bphone\b|\bemail\b' "${PUBLIC_BOUNDARY_SOURCES[@]}"; then
+            echo "Private account field names must not enter the F22 public source boundary."
+            grep -E -n 'interview_opt_in|\bphone\b|\bemail\b' "${PUBLIC_BOUNDARY_SOURCES[@]}" || true
+            exit 1
+          fi
+
+          if grep -E -n -q 'ایران مهر افزار|iranmehrafzar\.ir|بک‌اند|mock|placeholder' \
+            src/components/players/public-player-profile-page.tsx 'src/routes/players.$username.tsx'; then
+            echo "Legacy brand or implementation-stage language must not enter rendered F22 route source."
+            exit 1
+          fi
+
+          mkdir -p artifacts/f22-public-player-profile-qa
+          bun run dev -- --host 127.0.0.1 --port 4180 > /tmp/turnoment-f22.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          INDEXABLE_URL="http://127.0.0.1:4180/players/sajjadx"
+          NOINDEX_URL="http://127.0.0.1:4180/players/arminfc"
+          MISSING_URL="http://127.0.0.1:4180/players/unknown-player"
+
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$INDEXABLE_URL" > artifacts/f22-public-player-profile-qa/indexable.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f22.log || true
+            exit 1
+          fi
+
+          curl -fsS "$NOINDEX_URL" > artifacts/f22-public-player-profile-qa/noindex.html
+          MISSING_STATUS="$(curl -sS -o artifacts/f22-public-player-profile-qa/not-found.html -w '%{http_code}' "$MISSING_URL")"
+          test "$MISSING_STATUS" = "404"
+
+          INDEXABLE_HTML="artifacts/f22-public-player-profile-qa/indexable.html"
+          NOINDEX_HTML="artifacts/f22-public-player-profile-qa/noindex.html"
+          NOT_FOUND_HTML="artifacts/f22-public-player-profile-qa/not-found.html"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          qa = Path("artifacts/f22-public-player-profile-qa")
+          for stem in ("indexable", "noindex", "not-found"):
+              source = qa / f"{stem}.html"
+              html = source.read_text(encoding="utf-8")
+              match = re.search(r"<head\b[^>]*>(.*?)</head>", html, re.IGNORECASE | re.DOTALL)
+              if not match:
+                  raise SystemExit(f"Effective head was not found in {source}")
+              (qa / f"{stem}.head.html").write_text(match.group(1), encoding="utf-8")
+          PY
+
+          INDEXABLE_HEAD="artifacts/f22-public-player-profile-qa/indexable.head.html"
+          NOINDEX_HEAD="artifacts/f22-public-player-profile-qa/noindex.head.html"
+          NOT_FOUND_HEAD="artifacts/f22-public-player-profile-qa/not-found.head.html"
+
+          grep -a -q "پروفایل SajjadX" "$INDEXABLE_HTML"
+          grep -a -q "SajjadX | پروفایل بازیکن Turnoment" "$INDEXABLE_HEAD"
+          grep -a -q 'name="robots" content="index,follow"' "$INDEXABLE_HEAD"
+          grep -a -q 'rel="canonical" href="/players/sajjadx"' "$INDEXABLE_HEAD"
+          grep -a -q 'property="og:site_name" content="Turnoment"' "$INDEXABLE_HEAD"
+          grep -a -q "رتبه و امتیازهای رقابتی" "$INDEXABLE_HTML"
+          grep -a -q "امتیاز مسابقات" "$INDEXABLE_HTML"
+          grep -a -q "امتیاز چالش" "$INDEXABLE_HTML"
+          grep -a -q "نتایج اخیر" "$INDEXABLE_HTML"
+          grep -a -q '/ranking' "$INDEXABLE_HTML"
+          grep -a -q '/games/ea-fc-26' "$INDEXABLE_HTML"
+          grep -a -q '/tournaments' "$INDEXABLE_HTML"
+
+          grep -a -q "پروفایل ArminFC" "$NOINDEX_HTML"
+          grep -a -q 'name="robots" content="noindex,follow"' "$NOINDEX_HEAD"
+          grep -a -q 'rel="canonical" href="/players/arminfc"' "$NOINDEX_HEAD"
+          grep -a -q 'property="og:site_name" content="Turnoment"' "$NOINDEX_HEAD"
+          grep -a -q "هنوز نتیجه عمومی تازه‌ای" "$NOINDEX_HTML"
+
+          grep -a -q "این پروفایل در دسترس نیست" "$NOT_FOUND_HTML"
+          grep -a -q 'name="robots" content="noindex,nofollow"' "$NOT_FOUND_HEAD"
+          grep -a -q 'property="og:site_name" content="Turnoment"' "$NOT_FOUND_HEAD"
+
+          for HEAD in "$INDEXABLE_HEAD" "$NOINDEX_HEAD" "$NOT_FOUND_HEAD"; do
+            if grep -a -E -q 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir' "$HEAD"; then
+              echo "Legacy brand must not exist in the effective F22 document head."
+              exit 1
+            fi
+          done
+
+          for HTML in "$INDEXABLE_HTML" "$NOINDEX_HTML" "$NOT_FOUND_HTML"; do
+            if grep -a -E -q '\+989121234567|player@example\.com' "$HTML"; then
+              echo "Literal private-account data must not exist in F22 SSR."
+              exit 1
+            fi
+            MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+            test "$MAIN_COUNT" -eq 1
+          done
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},2400" \
+              --screenshot="artifacts/f22-public-player-profile-qa/indexable-${WIDTH}.png" \
+              "$INDEXABLE_URL" >/dev/null 2>&1
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},2400" \
+              --screenshot="artifacts/f22-public-player-profile-qa/noindex-${WIDTH}.png" \
+              "$NOINDEX_URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f22-public-player-profile-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          test "$PNG_COUNT" -eq 12
+
+      - name: Upload F22 public player profile QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f22-public-player-profile-qa-${{ github.sha }}
+          path: artifacts/f22-public-player-profile-qa
+          if-no-files-found: error
+          retention-days: 14
