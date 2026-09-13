@@ -14,10 +14,32 @@ assert(parsed.seo.robots === "index,follow", "Recertified public rules must rema
 assert(parsed.policyMeta.version === null, "Unapproved public policy version must not be fabricated.");
 assert(parsed.policyMeta.effectiveDate === null, "Unapproved effective date must not be fabricated.");
 
-const publicText = JSON.stringify(RULES_PAGE_CONTENT);
-for (const forbidden of ["۳۰ دقیقه", "15 دقیقه", "۱۵ دقیقه", "کارت شناسایی", "کسر امتیاز", "۲۴ ساعت", "بازگشت کامل"]) {
-  assert(!publicText.includes(forbidden), `Unsupported legacy policy text must stay absent: ${forbidden}`);
+const allRules = parsed.sections.flatMap((section) => section.rules);
+const ruleIds = new Set(allRules.map((rule) => rule.id));
+for (const requiredRuleId of [
+  "on-time-arrival",
+  "identity-check",
+  "personal-controller-review",
+  "referee-match-settings",
+  "conduct-sanctions",
+  "cancellation-full-refund",
+]) {
+  assert(ruleIds.has(requiredRuleId), `Approved F24-R1 policy rule must be present: ${requiredRuleId}`);
 }
+
+const publicText = JSON.stringify(RULES_PAGE_CONTENT);
+for (const requiredPolicyText of [
+  "۳۰ دقیقه",
+  "۱۵ دقیقه",
+  "کارت شناسایی",
+  "دسته شخصی",
+  "کسر امتیاز رتبه‌بندی",
+  "۲۴ ساعت",
+  "به‌صورت کامل بازگردانده می‌شود",
+]) {
+  assert(publicText.includes(requiredPolicyText), `Approved F24-R1 policy text must be public: ${requiredPolicyText}`);
+}
+assert(publicText.includes("حقوق قانونی مستقلی"), "Refund copy must not imply that Turnoment policy exhausts independent legal rights.");
 
 const firstSection = RULES_PAGE_CONTENT.sections[0];
 assert(firstSection, "Rules fixture requires at least one section.");
@@ -69,4 +91,4 @@ assert(!rulesPageDocumentSchema.safeParse(invalidDateDocument).success, "Invalid
 const repositoryDocument = await rulesPageRepository.getPublishedRules();
 assert(repositoryDocument.heading === RULES_PAGE_CONTENT.heading, "Production rules repository must return the validated reviewed document.");
 
-console.log("F24 rules page contract checks passed.");
+console.log("F24-R1 rules page contract checks passed.");

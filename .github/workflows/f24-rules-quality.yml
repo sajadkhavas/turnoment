@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - phase/f24-rules-recertification
+      - phase/f24-r1-rules-policy-reconciliation
     paths:
       - "src/routes/rules.tsx"
       - "src/components/rules/**"
@@ -70,11 +71,18 @@ jobs:
             src/lib/rules-page-content.ts
           )
 
-          if grep -E -n -q 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|۳۰ دقیقه|۱۵ دقیقه|کارت شناسایی|کسر امتیاز|۲۴ ساعت|بازگشت کامل|\bbackend\b|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}"; then
-            echo "Legacy brand, unsupported policy or engineering-stage language entered F24 public source."
-            grep -E -n 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|۳۰ دقیقه|۱۵ دقیقه|کارت شناسایی|کسر امتیاز|۲۴ ساعت|بازگشت کامل|\bbackend\b|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}" || true
+          if grep -E -n -q 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|\bbackend\b|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}"; then
+            echo "Legacy brand or engineering-stage language entered F24 public source."
+            grep -E -n 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|\bbackend\b|\bAPI\b|\bmock\b' "${PUBLIC_SOURCES[@]}" || true
             exit 1
           fi
+
+          for REQUIRED in '۳۰ دقیقه' '۱۵ دقیقه' 'کارت شناسایی' 'دسته شخصی' 'کسر امتیاز رتبه‌بندی' '۲۴ ساعت' 'حقوق قانونی مستقلی'; do
+            if ! grep -F -q "$REQUIRED" src/lib/rules-page-content.ts; then
+              echo "Approved F24-R1 public policy text missing: $REQUIRED"
+              exit 1
+            fi
+          done
 
           mkdir -p artifacts/f24-rules-qa
           bun run dev -- --host 127.0.0.1 --port 4181 > /tmp/turnoment-f24.log 2>&1 &
@@ -113,9 +121,15 @@ jobs:
 
           grep -a -q "قوانین شرکت در تورنمنت‌های Turnoment" "$HTML"
           grep -a -q "قبل از ثبت‌نام چه چیزهایی را بررسی کنید؟" "$HTML"
-          grep -a -q "قوانین عمومی Turnoment" "$HTML"
+          grep -a -q "حضور و اطلاعات شرکت‌کننده" "$HTML"
+          grep -a -q "تجهیزات و تنظیمات مسابقه" "$HTML"
+          grep -a -q "رقابت منصفانه و رفتار ورزشی" "$HTML"
+          grep -a -q "لغو ثبت‌نام و بازگشت هزینه" "$HTML"
           grep -a -q "قوانین اختصاصی هر تورنمنت" "$HTML"
-          grep -a -q "قواعد عمومی و قوانین اختصاصی چه نسبتی دارند؟" "$HTML"
+          grep -a -q "۳۰ دقیقه" "$HTML"
+          grep -a -q "کارت شناسایی" "$HTML"
+          grep -a -q "کسر امتیاز رتبه‌بندی" "$HTML"
+          grep -a -q "۲۴ ساعت" "$HTML"
           grep -a -q "مشاهده تورنمنت‌ها" "$HTML"
           grep -a -q 'href="/tournaments"' "$HTML"
 
@@ -128,9 +142,9 @@ jobs:
           test "$MAIN_COUNT" -eq 1
 
           for WIDTH in 375 390 430 768 1024 1440; do
-            if [[ "$WIDTH" -le 430 ]]; then HEIGHT=6500
-            elif [[ "$WIDTH" -le 768 ]]; then HEIGHT=5200
-            else HEIGHT=4200
+            if [[ "$WIDTH" -le 430 ]]; then HEIGHT=9000
+            elif [[ "$WIDTH" -le 768 ]]; then HEIGHT=7200
+            else HEIGHT=5800
             fi
             "$CHROME" \
               --headless=new \
