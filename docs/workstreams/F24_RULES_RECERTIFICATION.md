@@ -1,211 +1,115 @@
-# F24 — Rules Page Recertification
+# F24 — Rules Page Recertification / R1 Policy Reconciliation
 
-Status: `IMPLEMENTATION MERGED / POST-MAIN ACCEPTED / CLOSEOUT IN PROGRESS`
+Status: `F24 ORIGINAL FROZEN / F24-R1 IMPLEMENTATION MERGED / POST-MAIN ACCEPTED / CLOSEOUT IN PROGRESS`
 
 Route: `/rules`
 
-START_SHA: `b3143885a4aacc4301a952eb24bdad608b594d3b`
+Original F24 tracking Issue: `#107` — CLOSED / COMPLETED
 
-Tracking Issue: `#107`
+F24-R1 tracking Issue: `#110` — OPEN
 
-Implementation branch: `phase/f24-rules-recertification`
+R1 START_SHA: `e3fc59e6509f25a7128c5c6bdfecd607963108c1`
 
-Closeout branch: `closeout/f24-rules-recertification`
+R1 implementation branch: `phase/f24-r1-rules-policy-reconciliation`
 
-Target: `FINAL_CURRENT`
+R1 closeout branch: `closeout/f24-r1-rules-policy-reconciliation`
 
-## 1. Mandatory preflight
+Target route status: `FINAL_CURRENT`
 
-Read from exact START before mutation:
-- `PROJECT_CONTINUITY.md`;
-- `FRONTEND_PAGE_DELIVERY_PROTOCOL.md`;
-- `SEO_FINAL_COPY_PROTOCOL.md`;
-- `docs/ROUTE_COMPLIANCE_REGISTRY.md`;
-- legacy `src/routes/rules.tsx`.
+## 1. Historical lock
 
-F23 Issue #104 was confirmed CLOSED / COMPLETED before F24 began. `/rules` was the protected NEXT frontend route.
+Original F24 recertified `/rules` under current page/SEO law and was terminally frozen at `e3fc59e6509f25a7128c5c6bdfecd607963108c1`, with terminal evidence recorded in Issue #107.
 
-## 2. Supplied specialist input synthesis
+F24-R1 exists because the product owner later explicitly approved inherited operational rules that original F24 had intentionally rejected as unsupported. R1 does not rewrite the original freeze; it records a later product-policy decision as a bounded revision.
 
-F24 reviewed three user-supplied specialist outputs rather than copying any one output directly:
+## 2. Permanent architecture
 
-1. TypeScript/TanStack proposal — accepted typed document contract, runtime validation, repository boundary, SSR and test ideas. Rejected as-is: invented `VITE_RULES_PUBLIC_ENDPOINT`, non-null synthetic policy dates/version, and incorrect `TournamentLayout` import path.
-2. UI/UX proposal — accepted reading-first policy surface, compact hero, grouped semantic sections, mobile horizontal quick navigation, desktop sticky rail, narrow Persian reading column, plain fragment anchors, visible focus, no accordion/animation dependency.
-3. SEO/policy research — accepted informational/pre-participation intent, separation of platform-wide policy from tournament-specific operations, final H1/title/description direction, no unsupported inherited policy claims, and no page-specific rich-result schema by default.
-
-## 3. Official/current source audit
-
-Reviewed current official guidance before implementation:
-- TanStack Start / Router SSR, loader and document-head behavior;
-- Google Search people-first content, title/snippet, canonical, crawlable-link and structured-data guidance;
-- WCAG 2.2 focus visibility, semantics and practical target behavior.
-
-Applied consequences:
-- `ssr: true` is explicit;
-- primary content comes through the route loader and is present in SSR HTML;
-- route `head` owns title/description/robots/Open Graph/canonical;
-- no browser-only primary-content fetch;
-- no unsupported FAQ/Article/Event schema on `/rules`;
-- interactive anchors/CTA retain visible keyboard focus.
-
-## 4. Accepted design direction
-
-F24 uses existing Turnoment public design tokens and masters rather than a new visual brand:
-- `bg-background`, `bg-card`, `border-border`, `text-muted-foreground`, `text-primary`;
-- premium dark RTL visual system;
-- bounded prose width;
-- grouped cards instead of a giant numbered wall;
-- mobile horizontal quick navigation and desktop sticky rail;
-- no new dependency, animation library, or frozen shared-component refactor.
-
-Manual and automated responsive evidence covered `375`, `390`, `430`, `768`, `1024`, and `1440` widths with no accepted horizontal overflow, clipping or sidebar collision.
-
-## 5. Search intent / final-copy lock
-
-Purpose: answer which rules apply generally to Turnoment tournament participation and which details must be checked on the individual tournament.
-
-Primary audience: players considering registration, preparing to register, or already registered and checking expectations.
-
-Primary intent: informational / pre-participation.
-
-Primary topic cluster: `قوانین و شرایط شرکت در تورنمنت‌های گیمینگ`.
-
-Cannibalization boundary:
-- `/tournaments` owns discovery/listing;
-- `/games` and `/games/$slug` own game discovery/game competition context;
-- `/centers` and `/centers/$id` own venue discovery/details;
-- `/ranking` owns ranking mechanics;
-- `/host` owns organizer acquisition;
-- tournament detail owns timing, venue, eligibility, format, check-in, equipment and event-specific operating rules.
-
-Final H1:
-
-`قوانین شرکت در تورنمنت‌های Turnoment`
-
-Final title:
-
-`قوانین و شرایط شرکت در تورنمنت‌ها | Turnoment`
-
-Final description:
-
-`قوانین عمومی شرکت در تورنمنت‌های Turnoment را بخوانید و ببینید کدام شرایط در همه رقابت‌ها مشترک است و کدام جزئیات در صفحه هر تورنمنت اعلام می‌شود.`
-
-Canonical: `/rules`.
-
-Robots: `index,follow`.
-
-Structured data: none page-specific. `BreadcrumbList` remains unnecessary because the accepted F24 UI has no visible breadcrumb.
-
-Primary internal CTA: `مشاهده تورنمنت‌ها` → `/tournaments`.
-
-Inbound crawlability already exists through the shared tournament footer; frozen shared footer source remains untouched.
-
-## 6. Product-policy truth lock
-
-Product owner explicitly approved these narrow platform-wide principles on 2026-09-12:
-- participant-provided registration/coordination information must be accurate and current;
-- cheating, collusion and deliberate result manipulation are prohibited;
-- respectful conduct is required in interactions with players, hosts, organizers and event staff;
-- event-specific published rules must be reviewed and followed for that event.
-
-Precedence/ownership boundary:
-- platform-wide baseline principles remain common;
-- event-specific rules supplement operational details such as timing, format, equipment, venue and participation conditions;
-- the event page is the operational source for those event-specific details.
-
-F24 explicitly rejects these inherited statements as global product truth:
-- no universal 30-minute early-arrival requirement;
-- no universal 15-minute technical-loss rule;
-- no universal ID-card requirement;
-- no universal referee approval rule for personal controllers;
-- no elimination/ranking-deduction sanction claim;
-- no 24-hour full-refund promise.
-
-No sanction, refund, withdrawal, identity-verification, age, dispute deadline, payment or legal promise is inferred from the approved baseline.
-
-## 7. Permanent frontend boundary
-
-F24 uses:
+Architecture remains unchanged:
 
 `Route → loader → RulesPageRepository → strict RulesPageDocument validation → RulesPage UI`
 
-The current production repository is reviewed version-controlled public policy content. No backend rules endpoint is accepted as existing and Backend NEXT remains `P02 — Games / Catalog Foundation`.
+R1 adds no new API/backend/dependency/UI architecture and does not claim a production rules endpoint.
 
-A later HTTP/admin-backed repository can implement the same `RulesPageRepository` interface without reconstructing the page component tree.
+## 3. R1 product-policy decision
 
-There is no production fixture fallback and no invented API URL.
+On 2026-09-13 the product owner explicitly approved the following as current Turnoment platform policy:
+1. players should be present 30 minutes before tournament start; delay beyond 15 minutes is a technical loss;
+2. a valid identity document must be presented at entry to match registration information;
+3. personal controllers are allowed but require referee inspection/approval before play;
+4. match settings are announced by the referee before each stage;
+5. insult, cheating or deliberate abandonment can result in tournament elimination and ranking-point deduction;
+6. cancellation up to 24 hours before tournament start qualifies for a full Turnoment registration-fee refund.
 
-## 8. Policy metadata decision
+The refund statement is deliberately framed as Turnoment product policy. It is not represented as a complete statement of Iranian law and does not claim to remove independent legal rights.
 
-Public `version`, `effectiveDate`, and `lastSubstantiveRevisionDate` are nullable in v1.
+The previously accepted baseline principles continue to apply: accurate/current registration information, prohibition of cheating/collusion/result manipulation, respectful conduct, and compliance with published event-specific rules.
 
-F24 does not fabricate a public version/date merely to appear current. Future approved policy versioning can enter through the same validated contract and UI.
+## 4. SEO and UX scope
 
-## 9. Exact implementation ownership / compare
+R1 preserves the accepted route purpose, H1/title/canonical/robots, semantic grouped UI, SSR loader authority, one-main structure, accessible anchors and responsive behavior. No page-specific structured data is added merely for coverage.
 
-Implementation head:
+The product-policy change is content/governance only; the accepted visual/technical architecture remains intact.
 
-`b11101bfd6261360a31e66e10e2bd5b08c260e63`
+## 5. Exact implementation ownership
 
-START → implementation head:
+R1 implementation head:
+
+`01c2a9ef1a410ab5a4f4e01e7f7f9beccdfed813`
+
+R1 START → implementation head:
 - ahead `1` / behind `0`;
 - exactly `1` commit;
-- exactly `8` changed files;
-- no package/lock/dependency mutation;
-- frozen public route source untouched.
+- exactly `4` changed files;
+- no backend/dependency/UI architecture mutation.
 
-Owned implementation files:
-- `src/routes/rules.tsx`;
-- `src/components/rules/rules-page.tsx`;
-- `src/lib/rules-page-contract.ts`;
-- `src/lib/rules-page-content.ts`;
-- `src/lib/rules-page-repository.ts`;
-- `src/lib/rules-page-contract.spec.ts`;
-- `.github/workflows/f24-rules-quality.yml`;
-- `docs/workstreams/F24_RULES_RECERTIFICATION.md`.
+Implementation changed only the bounded policy content/test/governance surface required to publish the newly approved rules.
 
-## 10. Exact-head QA
+## 6. Pre-PR exact-head QA
 
-On exact implementation head `b11101bfd6261360a31e66e10e2bd5b08c260e63`:
-- F24 `34707551043` — PASS — artifact `10302685750` — digest `sha256:8504a47e1e80f283e460572e6d69812b5f899bd60b88a02fe4d8b9b54c8d705a`;
-- Full `34707550985` — PASS — artifact `10301957784` — digest `sha256:1074ab071c9c78416e810435b1656f238de3dc11cf227d215c97b9c0fca86b47`.
+On exact implementation head `01c2a9ef1a410ab5a4f4e01e7f7f9beccdfed813`:
+- F24 `34749455409` — PASS — artifact `10315237606` — digest `sha256:ff90a88cee3516c5c08abaa3f70b8824eae4b181ca80d60abbcad4a26a74f5bf`;
+- Full `34749455355` — PASS — artifact `10314778970` — digest `sha256:8143713e5ffbb96ac5b507f6ad6f6ac249c076ba6f1bed21126604971f47cced`.
 
-Focused evidence proves lint, contract tests, production build, typecheck, SSR final copy/head/canonical/robots, rejection of old brand/unsupported legacy rules, one-main semantics and responsive screenshots at all six target widths.
+Focused evidence covers lint, F24 contract checks, production build, typecheck, SSR/SEO/copy and responsive evidence. Full evidence covers repository-wide frontend quality and browser smoke/responsive screenshots.
 
-## 11. Implementation PR-context acceptance
+## 7. PR #111 acceptance
 
-PR #108:
-- head `b11101bfd6261360a31e66e10e2bd5b08c260e63`;
+PR #111:
+- base exact original F24 terminal main `e3fc59e6509f25a7128c5c6bdfecd607963108c1`;
+- head `01c2a9ef1a410ab5a4f4e01e7f7f9beccdfed813`;
+- exactly one implementation commit and four changed files;
 - mergeable `true`;
 - unresolved review threads `0`;
-- exact live `main` remained F24 START before merge;
+- live `main` remained exact R1 START before merge;
 - expected-head merge lock used.
 
 PR-context gates:
-- F24 `34710086614` — PASS — artifact `10303535413` — digest `sha256:1f6c8b8c2d9efe5cc82088774f042b96f60af02894c92d09b3232e3a4a8c978b`;
-- Full `34710086598` — PASS — artifact `10302723472` — digest `sha256:8330d3959aaba5c7ccfec82214669a622e53d2a5b63d3c2c8b869924d31b56d6`.
+- F24 `34749648384` — PASS — artifact `10314963775` — digest `sha256:6bc0285ddc28c85142137a7b6b112bfbf6191cdb3626a38a2ff9bff07c977f88`;
+- Full `34749648343` — PASS — artifact `10315650310` — digest `sha256:3371925a3e3e1153d29f42d7d33e94c10f18c8eebcd2bb36bf54150172bb55cf`.
 
-Implementation PR #108 merged successfully.
+Expected-head merge succeeded.
 
 Implementation merge/main:
 
-`3e1f4747997afda1c4c275db93f2905379d36a37`
+`3511af765e445146d35e28056645a9cc83f6f104`
 
-## 12. Post-main implementation acceptance
+## 8. Exact-main implementation acceptance
 
-On exact merge/main `3e1f4747997afda1c4c275db93f2905379d36a37`:
-- F24 `34710368111` — PASS — artifact `10302858188` — digest `sha256:0d1099a0fe6858595adc6437ed9ff35ee67a846a47e21d9bb215343d107e9d60`;
-- Full `34710368093` — PASS — artifact `10303176790` — digest `sha256:7c83f34d566af8797e34f9a05911fe62c74ca1bc30e8c6ccaee2b1a7e2672dcb`.
+GitHub connector merge did not dispatch the expected main push workflows, so no PASS was assumed. The already-merged implementation branch ref was safely replayed to the exact merge SHA without changing `main` or repository content, allowing the required workflows to execute on the same commit tree now on `main`.
 
-Exact live frontend `main` was reverified at the implementation merge after post-main QA. Evidence is recorded in Issue #107.
+On exact implementation merge SHA `3511af765e445146d35e28056645a9cc83f6f104`:
+- F24 `34749976321` — PASS — artifact `10314954327` — digest `sha256:28d55d5a2b8bfb7880376257bf0eb0aa984c5a27fb68fa898f2ab1f7690f04fc`;
+- Full `34749976313` — PASS — artifact `10315622107` — digest `sha256:473e0b15821c93b77df4af43fd1c173f4a082a10c138889ab0086e94d39e9bb3`.
 
-Therefore route-level `/rules` satisfies current-law acceptance and may be recorded as `FINAL_CURRENT` in closeout governance.
+Exact live frontend `main` was reverified at `3511af765e445146d35e28056645a9cc83f6f104` after both exact-main gates were green.
 
-## 13. Documentation-only closeout law
+Therefore `/rules` remains `FINAL_CURRENT` under the revised current product-policy truth.
 
-Closeout branch:
+## 9. Documentation-only closeout law
 
-`closeout/f24-rules-recertification`
+R1 closeout branch:
+
+`closeout/f24-r1-rules-policy-reconciliation`
 
 Closeout is exactly one commit changing exactly four Markdown files:
 1. `PROJECT_CONTINUITY.md`;
@@ -213,32 +117,28 @@ Closeout is exactly one commit changing exactly four Markdown files:
 3. `docs/workstreams/F24_RULES_RECERTIFICATION.md`;
 4. `docs/workstreams/F24_CLOSEOUT.md`.
 
-No source/package/lockfile/workflow/dependency/runtime mutation is authorized in closeout.
+No source/package/lockfile/workflow/dependency/runtime/backend mutation is authorized in closeout.
 
-Terminal closeout SHA/merge/frozen-main QA facts must be recorded in Issue #107 after they exist, not recursively self-recorded in this commit.
+Terminal closeout SHA/merge/frozen-main QA facts must be recorded in Issue #110 after they exist, not recursively self-recorded in this commit.
 
-## 14. Remaining terminal chain
+## 10. Remaining terminal chain
 
-F24 still requires:
+F24-R1 still requires:
 1. exact closeout compare = ahead 1 / behind 0 / one commit / exactly four Markdown files;
-2. closeout PR without auto-closing Issue #107;
+2. closeout PR without auto-closing Issue #110;
 3. every actually-triggered PR-context Full/F24/frozen-route regression gate PASS;
 4. mergeable=true and unresolved review threads=0;
-5. exact live-main lock at implementation merge `3e1f4747997afda1c4c275db93f2905379d36a37` before closeout merge;
+5. exact live-main lock at `3511af765e445146d35e28056645a9cc83f6f104` before closeout merge;
 6. expected-head closeout merge;
 7. terminal frozen-main Full/F24/frozen-route regressions PASS;
-8. terminal artifacts/digests recorded in Issue #107;
+8. terminal artifacts/digests recorded in Issue #110;
 9. exact live `main` reverified;
-10. Issue #107 CLOSED / COMPLETED.
+10. Issue #110 CLOSED / COMPLETED.
 
-Only after those future facts exist may F24 be reported:
+Only after those future facts exist may F24-R1 be reported terminally frozen.
 
-`F24 — DONE / MERGED / FROZEN — FINAL_CURRENT`
+## 11. NEXT after terminal F24-R1
 
-## 15. NEXT after terminal F24
-
-Next public competitive recertification candidate:
-
-`/tournaments/$id` — currently `FINAL_PRE_SEO`.
+Next public competitive recertification candidate: `/tournaments/$id` — currently `FINAL_PRE_SEO`.
 
 Backend NEXT independently remains `P02 — Games / Catalog Foundation`.
