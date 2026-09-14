@@ -25,15 +25,16 @@ export const Route = createFileRoute("/tournaments/$id")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "مسابقه پیدا نشد | ایران مهر افزار" },
+          { title: "مسابقه پیدا نشد | Turnoment" },
           { name: "robots", content: "noindex,nofollow" },
         ],
       };
     }
 
     const { tournament } = loaderData;
-    const title = `${tournament.title} | مسابقات ایران مهر افزار`;
-    const description = `${tournament.description} ${tournament.schedule.displayDate} ساعت ${tournament.schedule.displayTime}.`;
+    const title = `${tournament.title} | تورنمنت ${tournament.game.name} | Turnoment`;
+    const description = `جزئیات ${tournament.title}؛ تورنمنت ${tournament.game.name} در ${tournament.venue.name}، ${tournament.venue.city}. زمان برگزاری ${tournament.schedule.displayDate} ساعت ${tournament.schedule.displayTime}. قوانین، ظرفیت، شرکت‌کنندگان و وضعیت ثبت‌نام را ببینید.`;
+    const canonical = `/tournaments/${tournament.slug}`;
 
     return {
       meta: [
@@ -43,10 +44,16 @@ export const Route = createFileRoute("/tournaments/$id")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: `/tournaments/${tournament.slug}` },
-        { name: "twitter:card", content: "summary_large_image" },
+        { property: "og:site_name", content: "Turnoment" },
+        { property: "og:url", content: canonical },
+        ...(tournament.heroImage
+          ? [{ property: "og:image", content: tournament.heroImage }]
+          : []),
+        { name: "twitter:card", content: tournament.heroImage ? "summary_large_image" : "summary" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
       ],
-      links: [{ rel: "canonical", href: `/tournaments/${tournament.slug}` }],
+      links: [{ rel: "canonical", href: canonical }],
     };
   },
   pendingComponent: TournamentDetailPending,

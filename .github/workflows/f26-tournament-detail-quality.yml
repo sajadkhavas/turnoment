@@ -1,0 +1,192 @@
+name: F26 Tournament Detail Recertification Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+      - phase/f26-tournament-detail-recertification
+    paths:
+      - "src/routes/tournaments.$id.tsx"
+      - "src/components/tournaments/tournament-detail-page.tsx"
+      - "src/lib/tournament-detail-*.ts"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F26_*"
+      - ".github/workflows/f26-tournament-detail-quality.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/routes/tournaments.$id.tsx"
+      - "src/components/tournaments/tournament-detail-page.tsx"
+      - "src/lib/tournament-detail-*.ts"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/F26_*"
+      - ".github/workflows/f26-tournament-detail-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  tournament-detail-recertification-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Tournament detail contract checks
+        run: bun run src/lib/tournament-detail-contract.spec.ts
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: SSR, SEO, copy, links and responsive evidence
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$CHROME" ]]; then
+            echo "A Chromium-compatible browser is required for F26 visual QA."
+            exit 1
+          fi
+
+          PUBLIC_SOURCES=(
+            'src/routes/tournaments.$id.tsx'
+            src/components/tournaments/tournament-detail-page.tsx
+          )
+
+          if grep -E -n -q 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|\bbackend\b|\bAPI\b|\bmock\b|\bRuleset\b|\bRoster\b|\bSeed\b' "${PUBLIC_SOURCES[@]}"; then
+            echo "Legacy brand, engineering-stage language, or rejected page-owned copy entered F26 public source."
+            grep -E -n 'ایران مهر افزار|Iran Mehr Afzar|iranmehrafzar\.ir|\bbackend\b|\bAPI\b|\bmock\b|\bRuleset\b|\bRoster\b|\bSeed\b' "${PUBLIC_SOURCES[@]}" || true
+            exit 1
+          fi
+
+          grep -F -q 'ssr: true' 'src/routes/tournaments.$id.tsx'
+          grep -F -q 'index,follow' 'src/routes/tournaments.$id.tsx'
+          grep -F -q 'og:site_name' 'src/routes/tournaments.$id.tsx'
+          grep -F -q 'Turnoment' 'src/routes/tournaments.$id.tsx'
+          grep -F -q 'to="/rules"' src/components/tournaments/tournament-detail-page.tsx
+          grep -F -q 'to="/centers/$id"' src/components/tournaments/tournament-detail-page.tsx
+          grep -F -q 'to="/players/$username"' src/components/tournaments/tournament-detail-page.tsx
+          grep -F -q 'to="/tournaments/$id/register"' src/components/tournaments/tournament-detail-page.tsx
+
+          mkdir -p artifacts/f26-tournament-detail-qa
+          bun run dev -- --host 127.0.0.1 --port 4182 > /tmp/turnoment-f26.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() { kill "$SERVER_PID" 2>/dev/null || true; }
+          trap cleanup EXIT
+
+          SLUG="fc26-karaj-champions-cup"
+          URL="http://127.0.0.1:4182/tournaments/${SLUG}"
+          READY=0
+          for _ in $(seq 1 30); do
+            if curl -fsS "$URL" > artifacts/f26-tournament-detail-qa/detail.html; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [[ "$READY" != "1" ]]; then
+            cat /tmp/turnoment-f26.log || true
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          qa = Path("artifacts/f26-tournament-detail-qa")
+          html = (qa / "detail.html").read_text(encoding="utf-8")
+          match = re.search(r"<head\b[^>]*>(.*?)</head>", html, re.IGNORECASE | re.DOTALL)
+          if not match:
+              raise SystemExit("Effective head was not found for tournament detail")
+          (qa / "detail.head.html").write_text(match.group(1), encoding="utf-8")
+          PY
+
+          HTML="artifacts/f26-tournament-detail-qa/detail.html"
+          HEAD="artifacts/f26-tournament-detail-qa/detail.head.html"
+
+          assert_contains() {
+            local needle="$1"
+            local file="$2"
+            local label="$3"
+            if ! grep -a -F -q "$needle" "$file"; then
+              echo "F26 assertion failed: $label"
+              echo "Expected: $needle"
+              exit 1
+            fi
+          }
+
+          assert_contains "جام قهرمانان کرج" "$HTML" "authoritative tournament H1"
+          assert_contains "اطلاعات مسابقه" "$HTML" "overview section"
+          assert_contains "قوانین کلیدی" "$HTML" "rules section"
+          assert_contains "شرکت‌کنندگان" "$HTML" "participants section"
+          assert_contains "جدول مسابقات" "$HTML" "bracket section"
+          assert_contains "میزبان مسابقه" "$HTML" "venue section"
+          assert_contains "هزینه ثبت‌نام" "$HTML" "registration summary"
+          assert_contains 'href="/rules"' "$HTML" "rules internal link"
+          assert_contains 'href="/tournaments/fc26-karaj-champions-cup/register"' "$HTML" "registration link"
+
+          assert_contains "جام قهرمانان کرج | تورنمنت EA FC 26 | Turnoment" "$HEAD" "final title"
+          assert_contains 'name="robots" content="index,follow"' "$HEAD" "index/follow robots"
+          assert_contains 'rel="canonical" href="/tournaments/fc26-karaj-champions-cup"' "$HEAD" "canonical slug"
+          assert_contains 'property="og:site_name" content="Turnoment"' "$HEAD" "Open Graph site name"
+          if grep -a -q 'ایران مهر افزار' "$HEAD"; then
+            echo "Legacy brand remains in effective F26 head."
+            exit 1
+          fi
+
+          MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
+          if [[ "$MAIN_COUNT" != "1" ]]; then
+            echo "Expected exactly one <main>; got $MAIN_COUNT"
+            exit 1
+          fi
+
+          LEGACY_STATUS="$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:4182/tournaments/t1)"
+          case "$LEGACY_STATUS" in
+            301|302|303|307|308) ;;
+            *) echo "Legacy tournament identifier did not redirect canonically: HTTP $LEGACY_STATUS"; exit 1 ;;
+          esac
+
+          for WIDTH in 375 390 430 768 1024 1440; do
+            if [[ "$WIDTH" -le 430 ]]; then HEIGHT=5200
+            elif [[ "$WIDTH" -le 768 ]]; then HEIGHT=4400
+            else HEIGHT=3600
+            fi
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size="${WIDTH},${HEIGHT}" \
+              --screenshot="artifacts/f26-tournament-detail-qa/detail-${WIDTH}.png" \
+              "$URL" >/dev/null 2>&1
+          done
+
+          PNG_COUNT="$(find artifacts/f26-tournament-detail-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+          if [[ "$PNG_COUNT" != "6" ]]; then
+            echo "Expected six responsive screenshots; got $PNG_COUNT"
+            exit 1
+          fi
+
+      - name: Upload F26 tournament detail QA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: f26-tournament-detail-qa-${{ github.sha }}
+          path: artifacts/f26-tournament-detail-qa
+          if-no-files-found: error
+          retention-days: 14
