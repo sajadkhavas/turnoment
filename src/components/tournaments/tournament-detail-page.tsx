@@ -21,7 +21,7 @@ const lifecycleCopy: Record<
   filling: { label: "ظرفیت محدود", className: "border-warning/30 bg-warning/10 text-warning" },
   registration_closed: { label: "ثبت‌نام بسته", className: "border-border bg-muted text-muted-foreground" },
   upcoming: { label: "به‌زودی", className: "border-secondary/30 bg-secondary/10 text-secondary" },
-  check_in: { label: "Check-in", className: "border-warning/30 bg-warning/10 text-warning" },
+  check_in: { label: "اعلام حضور", className: "border-warning/30 bg-warning/10 text-warning" },
   in_progress: { label: "در حال برگزاری", className: "border-secondary/30 bg-secondary/10 text-secondary" },
   completed: { label: "پایان‌یافته", className: "border-border bg-muted text-muted-foreground" },
   cancelled: { label: "لغوشده", className: "border-destructive/30 bg-destructive/10 text-destructive" },
@@ -119,7 +119,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
           <a href="#overview" className="whitespace-nowrap hover:text-primary">اطلاعات</a>
           <a href="#rules" className="whitespace-nowrap hover:text-primary">قوانین</a>
           <a href="#participants" className="whitespace-nowrap hover:text-primary">شرکت‌کنندگان</a>
-          <a href="#bracket" className="whitespace-nowrap hover:text-primary">براکت</a>
+          <a href="#bracket" className="whitespace-nowrap hover:text-primary">جدول مسابقات</a>
           <a href="#venue" className="whitespace-nowrap hover:text-primary">گیم‌نت میزبان</a>
         </div>
       </nav>
@@ -136,11 +136,11 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
             </div>
             <dl className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               <Detail label="نوع رقابت" value={tournament.registrationPolicy.mode === "team" ? "تیمی" : "انفرادی"} />
-              <Detail label="ساختار براکت" value={tournament.bracketFormatLabel} />
+              <Detail label="ساختار مسابقات" value={tournament.bracketFormatLabel} />
               <Detail label="ظرفیت" value={`${formatNumber(tournament.capacity.limit)} نفر/تیم`} />
               <Detail label="ثبت‌شده" value={formatNumber(tournament.capacity.registered)} />
               <Detail label="جای خالی" value={formatNumber(tournament.capacity.remaining)} />
-              <Detail label="Ruleset" value={`نسخه ${tournament.ruleset.version}`} />
+              <Detail label="نسخه قوانین" value={`نسخه ${tournament.ruleset.version}`} />
             </dl>
           </section>
 
@@ -172,7 +172,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
           <section id="participants" aria-labelledby="participants-title" className="scroll-mt-32 rounded-2xl border border-border bg-card p-5 md:p-6">
             <div className="flex items-end justify-between gap-3">
               <div>
-                <p className="text-xs font-bold text-secondary">Roster</p>
+                <p className="text-xs font-bold text-secondary">فهرست رقابت</p>
                 <h2 id="participants-title" className="mt-1 text-xl font-black">شرکت‌کنندگان</h2>
               </div>
               <span className="font-mono-num text-sm font-bold text-muted-foreground">
@@ -194,7 +194,7 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
                     </div>
                     {participant.seed ? (
                       <span className="shrink-0 rounded-md bg-primary/10 px-2 py-1 font-mono-num text-[10px] font-bold text-primary">
-                        Seed {formatNumber(participant.seed)}
+                        جایگاه {formatNumber(participant.seed)}
                       </span>
                     ) : null}
                   </Link>
@@ -210,8 +210,8 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
           <section id="bracket" aria-labelledby="bracket-title" className="scroll-mt-32 rounded-2xl border border-border bg-card p-5 md:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="text-xs font-bold text-secondary">Bracket</p>
-                <h2 id="bracket-title" className="mt-1 text-xl font-black">نمای براکت</h2>
+                <p className="text-xs font-bold text-secondary">مسیر رقابت</p>
+                <h2 id="bracket-title" className="mt-1 text-xl font-black">جدول مسابقات</h2>
               </div>
               <span className="text-xs text-muted-foreground">{tournament.bracketPreview.formatLabel}</span>
             </div>
@@ -235,9 +235,9 @@ export function TournamentDetailPage({ tournament }: { tournament: TournamentDet
               </div>
             ) : (
               <div className="mt-5 rounded-xl border border-dashed border-border bg-background/40 p-5">
-                <h3 className="text-sm font-black">براکت هنوز منتشر نشده است</h3>
+                <h3 className="text-sm font-black">جدول مسابقات هنوز منتشر نشده است</h3>
                 <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                  براکت پس از نهایی‌شدن شرکت‌کنندگان و سیدینگ مسابقه در همین بخش نمایش داده می‌شود.
+                  جدول پس از نهایی‌شدن شرکت‌کنندگان و چیدمان اولیه رقابت در همین بخش نمایش داده می‌شود.
                 </p>
               </div>
             )}
