@@ -120,27 +120,41 @@ jobs:
           HTML="artifacts/f26-tournament-detail-qa/detail.html"
           HEAD="artifacts/f26-tournament-detail-qa/detail.head.html"
 
-          grep -a -q "FC26 Karaj Champions Cup" "$HTML"
-          grep -a -q "اطلاعات مسابقه" "$HTML"
-          grep -a -q "قوانین کلیدی" "$HTML"
-          grep -a -q "شرکت‌کنندگان" "$HTML"
-          grep -a -q "جدول مسابقات" "$HTML"
-          grep -a -q "میزبان مسابقه" "$HTML"
-          grep -a -q "هزینه ثبت‌نام" "$HTML"
-          grep -a -q 'href="/rules"' "$HTML"
-          grep -a -q 'href="/tournaments/fc26-karaj-champions-cup/register"' "$HTML"
+          assert_contains() {
+            local needle="$1"
+            local file="$2"
+            local label="$3"
+            if ! grep -a -F -q "$needle" "$file"; then
+              echo "F26 assertion failed: $label"
+              echo "Expected: $needle"
+              exit 1
+            fi
+          }
 
-          grep -a -q "FC26 Karaj Champions Cup | تورنمنت" "$HEAD"
-          grep -a -q 'name="robots" content="index,follow"' "$HEAD"
-          grep -a -q 'rel="canonical" href="/tournaments/fc26-karaj-champions-cup"' "$HEAD"
-          grep -a -q 'property="og:site_name" content="Turnoment"' "$HEAD"
+          assert_contains "جام قهرمانان کرج" "$HTML" "authoritative tournament H1"
+          assert_contains "اطلاعات مسابقه" "$HTML" "overview section"
+          assert_contains "قوانین کلیدی" "$HTML" "rules section"
+          assert_contains "شرکت‌کنندگان" "$HTML" "participants section"
+          assert_contains "جدول مسابقات" "$HTML" "bracket section"
+          assert_contains "میزبان مسابقه" "$HTML" "venue section"
+          assert_contains "هزینه ثبت‌نام" "$HTML" "registration summary"
+          assert_contains 'href="/rules"' "$HTML" "rules internal link"
+          assert_contains 'href="/tournaments/fc26-karaj-champions-cup/register"' "$HTML" "registration link"
+
+          assert_contains "جام قهرمانان کرج | تورنمنت EA FC 26 | Turnoment" "$HEAD" "final title"
+          assert_contains 'name="robots" content="index,follow"' "$HEAD" "index/follow robots"
+          assert_contains 'rel="canonical" href="/tournaments/fc26-karaj-champions-cup"' "$HEAD" "canonical slug"
+          assert_contains 'property="og:site_name" content="Turnoment"' "$HEAD" "Open Graph site name"
           if grep -a -q 'ایران مهر افزار' "$HEAD"; then
             echo "Legacy brand remains in effective F26 head."
             exit 1
           fi
 
           MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
-          test "$MAIN_COUNT" -eq 1
+          if [[ "$MAIN_COUNT" != "1" ]]; then
+            echo "Expected exactly one <main>; got $MAIN_COUNT"
+            exit 1
+          fi
 
           LEGACY_STATUS="$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:4182/tournaments/t1)"
           case "$LEGACY_STATUS" in
@@ -164,7 +178,10 @@ jobs:
           done
 
           PNG_COUNT="$(find artifacts/f26-tournament-detail-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
-          test "$PNG_COUNT" -eq 6
+          if [[ "$PNG_COUNT" != "6" ]]; then
+            echo "Expected six responsive screenshots; got $PNG_COUNT"
+            exit 1
+          fi
 
       - name: Upload F26 tournament detail QA evidence
         uses: actions/upload-artifact@v4
