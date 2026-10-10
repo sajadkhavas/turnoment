@@ -91,7 +91,7 @@ jobs:
 
           HTML="artifacts/f16-home-qa/home.html"
 
-          grep -a -q "مسابقات گیمینگ حضوری نزدیکت را پیدا کن" "$HTML"
+          bun -e 'const html = await Bun.file(process.argv[1]).text(); const text = html.replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim(); if (!text.includes("مسابقات گیمینگ حضوری نزدیکت را پیدا کن")) { console.error("F16 Home H1 copy mismatch"); process.exit(1); }' "$HTML"
           grep -a -q "مسابقات گیمینگ حضوری و تورنمنت‌های گیم‌نت" "$HTML"
           grep -a -q 'name="robots" content="index,follow"' "$HTML"
           grep -a -q 'rel="canonical" href="/"' "$HTML"
