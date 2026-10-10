@@ -14,7 +14,7 @@ export class PlayerRivalriesHttpError extends Error {
   }
 }
 
-export class DjangoPlayerRivalriesRepository implements PlayerRivalriesRepository {
+export class ApiPlayerRivalriesRepository implements PlayerRivalriesRepository {
   async getRivalries(query: PlayerRivalriesQuery) {
     const configured = import.meta.env.VITE_API_BASE_URL?.trim();
     if (!configured) {

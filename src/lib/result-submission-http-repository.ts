@@ -14,7 +14,7 @@ const csrfSchema = z.object({ csrf_token: z.string().min(1) });
 function apiBaseUrl() {
   const configured = import.meta.env.VITE_API_BASE_URL?.trim();
   if (!configured) {
-    throw new Error("VITE_API_BASE_URL is required when the Django Result Submission adapter is enabled.");
+    throw new Error("VITE_API_BASE_URL is required when the API Result Submission adapter is enabled.");
   }
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
@@ -51,7 +51,7 @@ export class ResultSubmissionHttpError extends Error {
   }
 }
 
-export class DjangoResultSubmissionRepository implements ResultSubmissionRepository {
+export class ApiResultSubmissionRepository implements ResultSubmissionRepository {
   async getResultSubmission(matchId: string): Promise<ResultSubmissionPageData | null> {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL(resultPath(matchId), baseUrl), {

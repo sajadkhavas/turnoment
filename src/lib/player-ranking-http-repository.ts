@@ -13,7 +13,7 @@ function apiBaseUrl() {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoPlayerRankingRepository implements PlayerRankingRepository {
+export class ApiPlayerRankingRepository implements PlayerRankingRepository {
   async getRanking(query: PlayerRankingQuery): Promise<PlayerRankingPageData> {
     const url = new URL("api/v1/rankings/", apiBaseUrl());
     if (query.game) url.searchParams.set("game", query.game);

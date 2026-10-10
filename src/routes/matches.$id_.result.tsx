@@ -7,7 +7,7 @@ import { resultSubmissionRepository } from "@/lib/result-submission-repository";
 
 const MATCH_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/;
 
-export const Route = createFileRoute("/matches/$id/result")({
+export const Route = createFileRoute("/matches/$id_/result")({
   ssr: true,
   beforeLoad: async ({ params }) => {
     if (!MATCH_ID_PATTERN.test(params.id)) throw notFound();

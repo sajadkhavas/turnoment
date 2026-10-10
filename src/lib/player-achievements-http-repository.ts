@@ -14,7 +14,7 @@ export class PlayerAchievementsHttpError extends Error {
   }
 }
 
-export class DjangoPlayerAchievementsRepository implements PlayerAchievementsRepository {
+export class ApiPlayerAchievementsRepository implements PlayerAchievementsRepository {
   async getAchievements(query: PlayerAchievementsQuery) {
     const configured = import.meta.env.VITE_API_BASE_URL?.trim();
     if (!configured) {

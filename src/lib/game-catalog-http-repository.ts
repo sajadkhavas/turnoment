@@ -12,7 +12,7 @@ function apiBaseUrl() {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoGameCatalogRepository implements GameCatalogRepository {
+export class ApiGameCatalogRepository implements GameCatalogRepository {
   async getCatalog(): Promise<GameCatalogPageData> {
     const url = new URL("api/v1/games/", apiBaseUrl());
     const response = await fetch(url, {

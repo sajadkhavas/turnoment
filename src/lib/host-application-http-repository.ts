@@ -6,7 +6,7 @@ function apiBaseUrl(): string {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoHostApplicationRepository implements HostApplicationRepository {
+export class ApiHostApplicationRepository implements HostApplicationRepository {
   async submit(input: HostApplicationInput): Promise<HostApplicationReceipt> {
     const payload = hostApplicationInputSchema.parse(input);
     const url = new URL("api/v1/host-applications/", apiBaseUrl());

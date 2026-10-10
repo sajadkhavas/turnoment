@@ -1,8 +1,9 @@
+import { getDataAdapterMode } from "./data-adapter";
 import type { PlayerRivalriesRepository } from "./player-rivalries-contract";
 import { MockPlayerRivalriesRepository } from "./player-rivalries-data";
-import { DjangoPlayerRivalriesRepository } from "./player-rivalries-http-repository";
+import { ApiPlayerRivalriesRepository } from "./player-rivalries-http-repository";
 
 export const playerRivalriesRepository: PlayerRivalriesRepository =
-  import.meta.env.VITE_DATA_ADAPTER === "django"
-    ? new DjangoPlayerRivalriesRepository()
+  getDataAdapterMode() === "api"
+    ? new ApiPlayerRivalriesRepository()
     : new MockPlayerRivalriesRepository();

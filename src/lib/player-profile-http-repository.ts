@@ -96,7 +96,7 @@ export class PlayerProfileHttpError extends Error {
   }
 }
 
-export class DjangoPlayerProfileRepository implements PlayerProfileRepository {
+export class ApiPlayerProfileRepository implements PlayerProfileRepository {
   async getProfile() {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL("api/v1/auth/me/", baseUrl), {

@@ -145,11 +145,11 @@ export const playerDashboardSchema = z.object({
   notifications: z.array(notificationSchema),
 });
 
-export class DjangoPlayerDashboardRepository implements PlayerDashboardRepository {
+export class ApiPlayerDashboardRepository implements PlayerDashboardRepository {
   async getDashboard(): Promise<PlayerDashboard> {
     const configured = import.meta.env.VITE_API_BASE_URL?.trim();
     if (!configured) {
-      throw new Error("VITE_API_BASE_URL is required when the Django dashboard adapter is enabled.");
+      throw new Error("VITE_API_BASE_URL is required when the API dashboard adapter is enabled.");
     }
 
     const baseUrl = configured.endsWith("/") ? configured : `${configured}/`;

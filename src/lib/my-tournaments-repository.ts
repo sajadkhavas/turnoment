@@ -1,7 +1,8 @@
+import { getDataAdapterMode } from "./data-adapter";
 import { MockMyTournamentsRepository, type MyTournamentsRepository } from "./my-tournaments-data";
-import { DjangoMyTournamentsRepository } from "./my-tournaments-http-repository";
+import { ApiMyTournamentsRepository } from "./my-tournaments-http-repository";
 
 export const myTournamentsRepository: MyTournamentsRepository =
-  import.meta.env.VITE_DATA_ADAPTER === "django"
-    ? new DjangoMyTournamentsRepository()
+  getDataAdapterMode() === "api"
+    ? new ApiMyTournamentsRepository()
     : new MockMyTournamentsRepository();

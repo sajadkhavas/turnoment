@@ -7,7 +7,7 @@ import {
 import { playerSessionRepository } from "@/lib/player-session";
 import { tournamentDetailRepository } from "@/lib/tournament-detail-data";
 
-export const Route = createFileRoute("/tournaments/$id/register")({
+export const Route = createFileRoute("/tournaments/$id_/register")({
   ssr: true,
   beforeLoad: async () => {
     const session = await playerSessionRepository.getSession();

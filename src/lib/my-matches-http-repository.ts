@@ -130,10 +130,10 @@ export class MyMatchesHttpError extends Error {
   }
 }
 
-export class DjangoMyMatchesRepository implements MyMatchesRepository {
+export class ApiMyMatchesRepository implements MyMatchesRepository {
   async getMyMatches(query: MyMatchesQuery): Promise<MyMatchesPageData> {
     const configured = import.meta.env.VITE_API_BASE_URL?.trim();
-    if (!configured) throw new Error("VITE_API_BASE_URL is required when the Django My Matches adapter is enabled.");
+    if (!configured) throw new Error("VITE_API_BASE_URL is required when the API My Matches adapter is enabled.");
 
     const baseUrl = configured.endsWith("/") ? configured : `${configured}/`;
     const url = new URL("api/v1/me/matches/", baseUrl);

@@ -14,7 +14,7 @@ function apiBaseUrl() {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoTournamentDiscoveryRepository implements TournamentDiscoveryRepository {
+export class ApiTournamentDiscoveryRepository implements TournamentDiscoveryRepository {
   async getDiscovery(query: TournamentDiscoveryQuery): Promise<TournamentDiscoveryPageData> {
     const url = new URL("api/v1/tournaments/", apiBaseUrl());
     const search = compactTournamentDiscoverySearch(query);

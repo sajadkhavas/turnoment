@@ -13,7 +13,7 @@ function apiBaseUrl() {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoPublicPlayerProfileRepository implements PublicPlayerProfileRepository {
+export class ApiPublicPlayerProfileRepository implements PublicPlayerProfileRepository {
   async getByUsername(username: string): Promise<PublicPlayerProfileLoadResult> {
     const parsedUsername = parsePublicPlayerUsername(username);
     if (!parsedUsername) return { state: "not_found" };
