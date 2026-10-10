@@ -1,0 +1,106 @@
+name: G00 Frontend Final Freeze
+
+on:
+  push:
+    branches:
+      - phase/g00-frontend-final-freeze-20261010
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".env.example"
+      - ".gitattributes"
+      - "README.md"
+      - "PROJECT_CONTINUITY.md"
+      - "docs/ROUTE_COMPLIANCE_REGISTRY.md"
+      - "docs/workstreams/G00_FRONTEND_FINAL_FREEZE.md"
+      - "package.json"
+      - "bun.lock"
+      - "src/**"
+      - "public/**"
+      - ".github/workflows/g00-frontend-final-freeze-quality.yml"
+
+jobs:
+  g00-final-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Frozen install
+        run: bun install --frozen-lockfile
+
+      - name: Adapter policy contract
+        run: bun run src/lib/data-adapter.spec.ts
+
+      - name: Framework-neutral adapter boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if grep -RInE 'Django[A-Za-z0-9_]*Repository|adapter === "django"|VITE_DATA_ADAPTER.*django' src/lib .env.example; then
+            echo "Legacy Django-specific frontend adapter reference found."
+            exit 1
+          fi
+
+          grep -q 'mock = deterministic local repositories' .env.example
+          grep -q 'api  = real HTTP API repositories' .env.example
+
+      - name: Removed-route regression gate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          removed=(
+            "about"
+            "blog"
+            "cart"
+            "category"
+            "checkout"
+            "contact"
+            "faq"
+            "payment"
+            "products"
+            "services"
+            "dashboard.addresses"
+            "dashboard.orders"
+            "dashboard.services"
+            "dashboard.wishlist"
+          )
+
+          for route in "${removed[@]}"; do
+            if find src/routes -maxdepth 2 -type f -name "${route}*" | grep -q .; then
+              echo "Removed legacy route was reintroduced: ${route}"
+              exit 1
+            fi
+          done
+
+      - name: PWA source gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f public/site.webmanifest
+          test -f public/sw.js
+          test -f public/android-chrome-192x192.png
+          test -f public/android-chrome-512x512.png
+          test -f public/apple-touch-icon.png
+          test -f src/components/pwa-install-prompt.tsx
+          grep -q 'site.webmanifest' src/routes/__root.tsx
+          grep -q 'PwaInstallPrompt' src/routes/__root.tsx
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Production build
+        run: bun run build
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Full contract suite
+        run: bun run test
