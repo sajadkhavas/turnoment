@@ -87,11 +87,11 @@ export class MyTournamentsHttpError extends Error {
   }
 }
 
-export class DjangoMyTournamentsRepository implements MyTournamentsRepository {
+export class ApiMyTournamentsRepository implements MyTournamentsRepository {
   async getMyTournaments(query: MyTournamentsQuery): Promise<MyTournamentsPageData> {
     const configured = import.meta.env.VITE_API_BASE_URL?.trim();
     if (!configured) {
-      throw new Error("VITE_API_BASE_URL is required when the Django My Tournaments adapter is enabled.");
+      throw new Error("VITE_API_BASE_URL is required when the API My Tournaments adapter is enabled.");
     }
 
     const baseUrl = configured.endsWith("/") ? configured : `${configured}/`;

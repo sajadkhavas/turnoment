@@ -1,5 +1,6 @@
+import { getDataAdapterMode } from "./data-adapter";
 import { MockMatchDisputeRepository } from "./match-dispute-data";
-import { DjangoMatchDisputeRepository } from "./match-dispute-http-repository";
+import { ApiMatchDisputeRepository } from "./match-dispute-http-repository";
 
 export const matchDisputeRepository =
-  import.meta.env.VITE_DATA_ADAPTER === "django" ? new DjangoMatchDisputeRepository() : new MockMatchDisputeRepository();
+  getDataAdapterMode() === "api" ? new ApiMatchDisputeRepository() : new MockMatchDisputeRepository();

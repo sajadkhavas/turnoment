@@ -17,7 +17,7 @@ const csrfSchema = z.object({ csrf_token: z.string().min(1) });
 function apiBaseUrl() {
   const configured = import.meta.env.VITE_API_BASE_URL?.trim();
   if (!configured) {
-    throw new Error("VITE_API_BASE_URL is required when the Django tournament adapter is enabled.");
+    throw new Error("VITE_API_BASE_URL is required when the API tournament adapter is enabled.");
   }
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
@@ -37,7 +37,7 @@ async function bootstrapCsrf(baseUrl: string) {
   return csrfSchema.parse(await response.json()).csrf_token;
 }
 
-export class DjangoTournamentDetailRepository implements TournamentDetailRepository {
+export class ApiTournamentDetailRepository implements TournamentDetailRepository {
   async getByIdentifier(identifier: string): Promise<TournamentDetail | null> {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL(tournamentPath(identifier), baseUrl), {

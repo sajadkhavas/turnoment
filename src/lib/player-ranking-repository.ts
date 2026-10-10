@@ -1,15 +1,11 @@
+import { getDataAdapterMode } from "./data-adapter";
 import type { PlayerRankingRepository } from "./player-ranking-contract";
 import { MockPlayerRankingRepository } from "./player-ranking-fixture";
-import { DjangoPlayerRankingRepository } from "./player-ranking-http-repository";
+import { ApiPlayerRankingRepository } from "./player-ranking-http-repository";
 
 export function selectPlayerRankingRepository(): PlayerRankingRepository {
-  const adapter = import.meta.env.VITE_DATA_ADAPTER?.trim().toLowerCase();
-
-  if (adapter === "mock") return new MockPlayerRankingRepository();
-  if (adapter === "django") return new DjangoPlayerRankingRepository();
-
-  return import.meta.env.PROD
-    ? new DjangoPlayerRankingRepository()
+  return getDataAdapterMode() === "api"
+    ? new ApiPlayerRankingRepository()
     : new MockPlayerRankingRepository();
 }
 

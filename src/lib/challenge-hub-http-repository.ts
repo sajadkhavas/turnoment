@@ -73,7 +73,7 @@ function mutationFallback(response: Response, payload: unknown, fallback: "confl
   throw new ChallengeHubHttpError(response.status, "ثبت تغییرات چالش انجام نشد.");
 }
 
-export class DjangoChallengeHubRepository implements ChallengeHubRepository {
+export class ApiChallengeHubRepository implements ChallengeHubRepository {
   async getChallengeHub(query: ChallengeHubQuery) {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL(`api/v1/me/challenges/${queryString(query)}`, baseUrl), {

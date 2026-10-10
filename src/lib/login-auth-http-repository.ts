@@ -84,7 +84,7 @@ export class LoginAuthHttpError extends Error {
   }
 }
 
-export class DjangoLoginAuthRepository implements LoginAuthRepository {
+export class ApiLoginAuthRepository implements LoginAuthRepository {
   async getSession() {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL("api/v1/auth/me/", baseUrl), {

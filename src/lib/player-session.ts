@@ -1,3 +1,4 @@
+import { getDataAdapterMode } from "./data-adapter";
 export type PlayerSessionState = "authenticated" | "unauthenticated" | "session-expired";
 
 export interface PlayerSession {
@@ -20,11 +21,11 @@ class MockPlayerSessionRepository implements PlayerSessionRepository {
   }
 }
 
-class DjangoPlayerSessionRepository implements PlayerSessionRepository {
+class ApiPlayerSessionRepository implements PlayerSessionRepository {
   async getSession(): Promise<PlayerSession> {
     const configured = import.meta.env.VITE_API_BASE_URL?.trim();
     if (!configured) {
-      throw new Error("VITE_API_BASE_URL is required when the Django session adapter is enabled.");
+      throw new Error("VITE_API_BASE_URL is required when the API session adapter is enabled.");
     }
 
     const baseUrl = configured.endsWith("/") ? configured : `${configured}/`;
@@ -55,6 +56,6 @@ class DjangoPlayerSessionRepository implements PlayerSessionRepository {
 }
 
 export const playerSessionRepository: PlayerSessionRepository =
-  import.meta.env.VITE_DATA_ADAPTER === "django"
-    ? new DjangoPlayerSessionRepository()
+  getDataAdapterMode() === "api"
+    ? new ApiPlayerSessionRepository()
     : new MockPlayerSessionRepository();

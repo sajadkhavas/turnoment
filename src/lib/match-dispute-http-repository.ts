@@ -16,7 +16,7 @@ const csrfSchema = z.object({ csrf_token: z.string().min(1) });
 
 function apiBaseUrl() {
   const configured = import.meta.env.VITE_API_BASE_URL?.trim();
-  if (!configured) throw new Error("VITE_API_BASE_URL is required when the Django Match Dispute adapter is enabled.");
+  if (!configured) throw new Error("VITE_API_BASE_URL is required when the API Match Dispute adapter is enabled.");
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
@@ -63,7 +63,7 @@ export class MatchDisputeHttpError extends Error {
   }
 }
 
-export class DjangoMatchDisputeRepository implements MatchDisputeRepository {
+export class ApiMatchDisputeRepository implements MatchDisputeRepository {
   async getDispute(matchId: string): Promise<MatchDisputePageData | null> {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL(disputePath(matchId), baseUrl), {

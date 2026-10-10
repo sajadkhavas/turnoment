@@ -1,8 +1,9 @@
+import { getDataAdapterMode } from "./data-adapter";
 import type { PlayerTeamsRepository } from "./player-teams-contract";
 import { MockPlayerTeamsRepository } from "./player-teams-data";
-import { DjangoPlayerTeamsRepository } from "./player-teams-http-repository";
+import { ApiPlayerTeamsRepository } from "./player-teams-http-repository";
 
 export const playerTeamsRepository: PlayerTeamsRepository =
-  import.meta.env.VITE_DATA_ADAPTER === "django"
-    ? new DjangoPlayerTeamsRepository()
+  getDataAdapterMode() === "api"
+    ? new ApiPlayerTeamsRepository()
     : new MockPlayerTeamsRepository();

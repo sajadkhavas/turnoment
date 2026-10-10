@@ -50,7 +50,7 @@ export class PlayerNotificationsHttpError extends Error {
   }
 }
 
-export class DjangoPlayerNotificationsRepository implements PlayerNotificationsRepository {
+export class ApiPlayerNotificationsRepository implements PlayerNotificationsRepository {
   async getNotifications(query: NotificationsQuery) {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL(`api/v1/me/notifications/${queryString(query)}`, baseUrl), {

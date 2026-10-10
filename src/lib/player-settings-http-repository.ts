@@ -43,7 +43,7 @@ export class PlayerSettingsHttpError extends Error {
   }
 }
 
-export class DjangoPlayerSettingsRepository implements PlayerSettingsRepository {
+export class ApiPlayerSettingsRepository implements PlayerSettingsRepository {
   async getSettings() {
     const baseUrl = apiBaseUrl();
     const response = await fetch(new URL("api/v1/me/settings/notification-preferences/", baseUrl), {

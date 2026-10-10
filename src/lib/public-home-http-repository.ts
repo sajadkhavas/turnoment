@@ -8,7 +8,7 @@ function apiBaseUrl() {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoPublicHomeRepository implements PublicHomeRepository {
+export class ApiPublicHomeRepository implements PublicHomeRepository {
   async getHome(): Promise<PublicHomePageData> {
     const response = await fetch(new URL("api/v1/discovery/home/", apiBaseUrl()), {
       method: "GET",

@@ -13,7 +13,7 @@ function apiBaseUrl() {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoGamingCenterDetailRepository implements GamingCenterDetailRepository {
+export class ApiGamingCenterDetailRepository implements GamingCenterDetailRepository {
   async getByPublicId(publicId: string): Promise<GamingCenterDetailData | null> {
     const validatedPublicId = gamingCenterPublicIdSchema.parse(publicId);
     const url = new URL(`api/v1/centers/${encodeURIComponent(validatedPublicId)}/`, apiBaseUrl());

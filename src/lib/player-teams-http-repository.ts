@@ -14,7 +14,7 @@ export class PlayerTeamsHttpError extends Error {
   }
 }
 
-export class DjangoPlayerTeamsRepository implements PlayerTeamsRepository {
+export class ApiPlayerTeamsRepository implements PlayerTeamsRepository {
   async getTeams(query: PlayerTeamsQuery) {
     const configured = import.meta.env.VITE_API_BASE_URL?.trim();
     if (!configured) throw new PlayerTeamsHttpError(0);

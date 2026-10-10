@@ -13,7 +13,7 @@ function apiBaseUrl() {
   return configured.endsWith("/") ? configured : `${configured}/`;
 }
 
-export class DjangoGamingCenterDiscoveryRepository implements GamingCenterDiscoveryRepository {
+export class ApiGamingCenterDiscoveryRepository implements GamingCenterDiscoveryRepository {
   async getDiscovery(query: GamingCenterDiscoveryQuery): Promise<GamingCenterDiscoveryPageData> {
     const url = new URL("api/v1/centers/", apiBaseUrl());
     if (query.city) url.searchParams.set("city", query.city);
