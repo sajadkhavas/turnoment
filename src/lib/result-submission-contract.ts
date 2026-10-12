@@ -76,6 +76,7 @@ export const resultSubmissionPageSchema = z
     matchId: z.string().min(1),
     revision: z.string().min(1),
     submissionState: resultSubmissionStateSchema,
+    canConfirmResult: z.boolean().optional(),
     player: participantSchema,
     opponent: opponentSchema,
     game: gameSchema,

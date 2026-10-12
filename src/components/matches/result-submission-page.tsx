@@ -250,6 +250,10 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
             description="امتیاز گزارش‌شده ثبت شده است. وضعیت نهایی Match بعد از طی‌شدن فرایند تأیید مشخص می‌شود."
           >
             <ScoreReceipt context={context} playerScore={reportedScore.playerScore} opponentScore={reportedScore.opponentScore} />
+            {context.canConfirmResult && !result ? (
+              <ConfirmReportedResult context={context} />
+            ) : null}
+
           </StateCard>
         ) : null}
 
@@ -482,6 +486,80 @@ function SummaryRow({ icon, label, value }: { icon: ReactNode; label: string; va
         <dt className="text-muted-foreground">{label}</dt>
         <dd className="mt-1 break-words font-bold text-foreground">{value}</dd>
       </div>
+    </div>
+  );
+}
+
+function ConfirmReportedResult({ context }: { context: ResultSubmissionPageData }) {
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [message, setMessage] = useState("");
+  const [done, setDone] = useState(false);
+
+  async function confirm() {
+    if (pending || done || !context.canConfirmResult || !context.reportedScore) return;
+    setPending(true);
+    setMessage("");
+    try {
+      const configured = import.meta.env.VITE_API_BASE_URL?.trim();
+      if (!configured) throw new Error("Missing API configuration");
+      const base = configured.endsWith("/") ? configured : configured + "/";
+      const csrfResponse = await fetch(new URL("api/v1/auth/csrf/", base), {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+      if (!csrfResponse.ok) throw new Error("CSRF failed");
+      const csrf = await csrfResponse.json();
+      if (typeof csrf.csrf_token !== "string" || !csrf.csrf_token) throw new Error("Invalid CSRF");
+
+      const response = await fetch(
+        new URL("api/v1/matches/" + encodeURIComponent(context.matchId) + "/result/confirm/", base),
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf.csrf_token,
+          },
+          body: JSON.stringify({
+            revision: context.revision,
+            playerScore: context.reportedScore.playerScore,
+            opponentScore: context.reportedScore.opponentScore,
+          }),
+        },
+      );
+      if (!response.ok) throw new Error("Confirmation HTTP " + response.status);
+      const action = await response.json();
+      if (action.outcome === "finalized" || action.outcome === "already_finalized") {
+        if (typeof action.eventId !== "string" || !action.eventId) throw new Error("Invalid receipt");
+        setDone(true);
+        setMessage("نتیجه با موفقیت تأیید و نهایی شد.");
+        await router.invalidate();
+      } else if (action.outcome === "stale") {
+        setMessage("وضعیت تغییر کرده است. صفحه را تازه کن و دوباره بررسی کن.");
+      } else if (action.outcome === "score_mismatch") {
+        setMessage("امتیازها مطابقت ندارند. صفحه را تازه کن.");
+      } else if (action.outcome === "unavailable") {
+        setMessage("تأیید نتیجه در وضعیت فعلی در دسترس نیست.");
+      } else {
+        throw new Error("Unexpected confirmation response");
+      }
+    } catch {
+      setMessage("وضعیت تأیید مشخص نشد. صفحه را تازه کن تا نتیجه بررسی شود.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <div className="mt-5 space-y-3">
+      <p className="text-sm leading-7">امتیازهای بالا را بررسی کن و فقط در صورت درست بودن تأیید کن.</p>
+      <Button type="button" disabled={pending || done}
+        aria-busy={pending} onClick={() => void confirm()}>
+        {pending ? "در حال تأیید..." : done ? "نتیجه تأیید شد" : "تأیید نتیجه گزارش‌شده"}
+      </Button>
+      {message ? <p role="status" className="text-sm leading-7">{message}</p> : null}
     </div>
   );
 }

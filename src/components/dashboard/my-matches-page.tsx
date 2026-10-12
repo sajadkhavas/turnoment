@@ -218,6 +218,15 @@ function MatchCard({ item, gamerTag }: { item: MyMatchItem; gamerTag: string }) 
               ثبت نتیجه Match
             </Link>
           ) : null}
+          {item.attention === "confirm-result" ? (
+            <Link
+              to="/matches/$id/result"
+              params={{ id: item.matchId }}
+              className="mt-3 inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              بررسی و تأیید نتیجه
+            </Link>
+          ) : null}
           {item.attention === "dispute" ? (
             <Link
               to="/matches/$id/dispute"
