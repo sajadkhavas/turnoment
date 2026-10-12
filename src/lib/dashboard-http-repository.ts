@@ -3,7 +3,7 @@ import type { PlayerDashboard, PlayerDashboardRepository } from "./dashboard-dat
 
 const identitySchema = z.object({
   playerId: z.string(),
-  username: z.string(),
+  username: z.string().nullable(),
   gamerTag: z.string(),
   displayName: z.string(),
   city: z.string(),
@@ -14,9 +14,9 @@ const identitySchema = z.object({
 });
 
 const snapshotSchema = z.object({
-  tournamentRating: z.number(),
-  tournamentRank: z.number().int().positive(),
-  challengeRating: z.number(),
+  tournamentRating: z.number().nullable(),
+  tournamentRank: z.number().int().positive().nullable(),
+  challengeRating: z.number().nullable(),
   finalizedMatches: z.number().int().nonnegative(),
   tournamentWins: z.number().int().nonnegative(),
   ratingHistory: z.array(z.number()),
