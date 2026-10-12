@@ -154,12 +154,12 @@ export function NextActionCard({ action }: { action: NextAction }) {
       )}
 
       {action.kind !== "none" && (
-        <Link
-          to="/tournaments"
+        <a
+          href={action.ctaHref.startsWith("/") && !action.ctaHref.startsWith("//") ? action.ctaHref : "/dashboard"}
           className="mt-4 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5"
         >
           {action.ctaLabel} <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        </a>
       )}
     </section>
   );
