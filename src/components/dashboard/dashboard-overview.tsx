@@ -32,13 +32,19 @@ export function PlayerDashboardHeader({ identity }: { identity: PlayerIdentitySu
           <div className="mt-0.5 flex items-center gap-1 text-[11px] text-success">
             <ShieldCheck className="h-3 w-3" aria-hidden="true" /> {identity.statusLabel}
           </div>
-          <Link
-            to="/players/$username"
-            params={{ username: identity.username }}
-            className="mt-1 inline-block text-[11px] font-bold text-primary hover:underline"
-          >
-            مشاهده پروفایل
-          </Link>
+          {identity.username ? (
+            <Link
+              to="/players/$username"
+              params={{ username: identity.username }}
+              className="mt-1 inline-block text-[11px] font-bold text-primary hover:underline"
+            >
+              مشاهده پروفایل
+            </Link>
+          ) : (
+            <span className="mt-1 inline-block text-[11px] text-muted-foreground">
+              پروفایل عمومی هنوز منتشر نشده
+            </span>
+          )}
         </div>
       </div>
     </header>
@@ -70,13 +76,13 @@ export function CompetitiveSnapshotCards({ snapshot }: { snapshot: CompetitiveSn
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <StatCard
         label="رتبه مسابقات (Tournament Rating)"
-        value={formatNumber(snapshot.tournamentRating)}
-        sub={`رتبه #${toPersianDigits(snapshot.tournamentRank)}`}
+        value={snapshot.tournamentRating === null ? "—" : formatNumber(snapshot.tournamentRating)}
+        sub={snapshot.tournamentRank === null ? "هنوز رتبه‌ای ثبت نشده" : `رتبه #${toPersianDigits(snapshot.tournamentRank)}`}
         accent="text-primary"
       />
       <StatCard
         label="رتبه چالش (Challenge Rating)"
-        value={formatNumber(snapshot.challengeRating)}
+        value={snapshot.challengeRating === null ? "—" : formatNumber(snapshot.challengeRating)}
         sub="سیستم امتیاز مستقل از مسابقات"
         accent="text-secondary"
       />
@@ -148,12 +154,12 @@ export function NextActionCard({ action }: { action: NextAction }) {
       )}
 
       {action.kind !== "none" && (
-        <Link
-          to="/tournaments"
+        <a
+          href={action.ctaHref.startsWith("/") && !action.ctaHref.startsWith("//") ? action.ctaHref : "/dashboard"}
           className="mt-4 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5"
         >
           {action.ctaLabel} <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        </a>
       )}
     </section>
   );
