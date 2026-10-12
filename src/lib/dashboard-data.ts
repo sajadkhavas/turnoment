@@ -17,7 +17,8 @@ export type MatchKind = "tournament" | "challenge";
 
 export interface PlayerIdentitySummary {
   playerId: string;
-  username: string;
+  /** Null until the player explicitly publishes a stable public ranking username. */
+  username: string | null;
   gamerTag: string;
   displayName: string;
   city: string;
@@ -29,10 +30,11 @@ export interface PlayerIdentitySummary {
 
 export interface CompetitiveSnapshot {
   /** Tournament rating — a separate system from challenge rating. */
-  tournamentRating: number;
-  tournamentRank: number;
+  tournamentRating: number | null;
+  /** Null when not yet ranked or when publication is disabled. */
+  tournamentRank: number | null;
   /** Challenge rating — never merged with tournament rating. */
-  challengeRating: number;
+  challengeRating: number | null;
   finalizedMatches: number;
   tournamentWins: number;
   /** Backend-provided rating history (last N finalized tournament matches). */
