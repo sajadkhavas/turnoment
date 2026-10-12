@@ -44,7 +44,7 @@ export function PlayerDashboardHeader({ identity }: { identity: PlayerIdentitySu
             <span className="mt-1 inline-block text-[11px] text-muted-foreground">
               پروفایل عمومی هنوز منتشر نشده
             </span>
-          )
+          )}
         </div>
       </div>
     </header>
