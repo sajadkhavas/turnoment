@@ -29,10 +29,12 @@ export interface PlayerIdentitySummary {
 
 export interface CompetitiveSnapshot {
   /** Tournament rating — a separate system from challenge rating. */
-  tournamentRating: number;
-  tournamentRank: number;
-  /** Challenge rating — never merged with tournament rating. */
-  challengeRating: number;
+  /** No rating is represented by null, never zero or a fictional starting score. */
+  tournamentRating: number | null;
+  /** Unranked players have no tournament rank. */
+  tournamentRank: number | null;
+  /** Challenge rating — independent, null until an authoritative B09 event. */
+  challengeRating: number | null;
   finalizedMatches: number;
   tournamentWins: number;
   /** Backend-provided rating history (last N finalized tournament matches). */

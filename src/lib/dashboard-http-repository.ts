@@ -14,9 +14,9 @@ const identitySchema = z.object({
 });
 
 const snapshotSchema = z.object({
-  tournamentRating: z.number(),
-  tournamentRank: z.number().int().positive(),
-  challengeRating: z.number(),
+  tournamentRating: z.number().int().nonnegative().nullable(),
+  tournamentRank: z.number().int().positive().nullable(),
+  challengeRating: z.number().int().nonnegative().nullable(),
   finalizedMatches: z.number().int().nonnegative(),
   tournamentWins: z.number().int().nonnegative(),
   ratingHistory: z.array(z.number()),

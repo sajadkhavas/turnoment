@@ -70,13 +70,13 @@ export function CompetitiveSnapshotCards({ snapshot }: { snapshot: CompetitiveSn
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <StatCard
         label="رتبه مسابقات (Tournament Rating)"
-        value={formatNumber(snapshot.tournamentRating)}
-        sub={`رتبه #${toPersianDigits(snapshot.tournamentRank)}`}
+        value={snapshot.tournamentRating === null ? "بدون امتیاز" : formatNumber(snapshot.tournamentRating)}
+        sub={snapshot.tournamentRank === null ? "هنوز رتبه‌ای ثبت نشده" : `رتبه #${toPersianDigits(snapshot.tournamentRank)}`}
         accent="text-primary"
       />
       <StatCard
         label="رتبه چالش (Challenge Rating)"
-        value={formatNumber(snapshot.challengeRating)}
+        value={snapshot.challengeRating === null ? "بدون امتیاز" : formatNumber(snapshot.challengeRating)}
         sub="سیستم امتیاز مستقل از مسابقات"
         accent="text-secondary"
       />
