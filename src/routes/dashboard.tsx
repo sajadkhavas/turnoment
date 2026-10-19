@@ -12,6 +12,9 @@ import { playerSessionRepository } from "@/lib/player-session";
  * VITE_DATA_ADAPTER=django activates the real P01 session lookup.
  */
 export const Route = createFileRoute("/dashboard")({
+  // Browser session cookies are not available to this server-side session adapter.
+  // Keep the UX guard client-side; Django authorizes each private API request.
+  ssr: false,
   beforeLoad: async () => {
     const session = await playerSessionRepository.getSession();
     if (session.state !== "authenticated") {
