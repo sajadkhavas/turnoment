@@ -1,3 +1,4 @@
+import { matchActionsRepository } from "@/lib/match-actions-repository";
 import { useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import type { MyMatchItem } from "@/lib/my-matches-data";
@@ -16,28 +17,9 @@ export function ChallengeLifecycleAction({ item }: { item: MyMatchItem }) {
     setPending(true);
     setMessage("");
     try {
-      const configured = import.meta.env.VITE_API_BASE_URL?.trim();
-      if (!configured) throw new Error("Missing API configuration");
-      const base = configured.endsWith("/") ? configured : configured + "/";
-      const csrfResponse = await fetch(new URL("api/v1/auth/csrf/", base), {
-        credentials: "include", headers: { Accept: "application/json" },
+      const action = await matchActionsRepository.changeLifecycle(item.matchId, {
+        command, revision: item.revision,
       });
-      if (!csrfResponse.ok) throw new Error("CSRF failed");
-      const csrf = await csrfResponse.json();
-      if (typeof csrf.csrf_token !== "string" || !csrf.csrf_token) throw new Error("Invalid CSRF");
-      const response = await fetch(
-        new URL("api/v1/matches/" + encodeURIComponent(item.matchId) + "/lifecycle/", base),
-        {
-          method: "POST", credentials: "include",
-          headers: {
-            Accept: "application/json", "Content-Type": "application/json",
-            "X-CSRFToken": csrf.csrf_token,
-          },
-          body: JSON.stringify({ command, revision: item.revision }),
-        },
-      );
-      if (!response.ok) throw new Error("Lifecycle request failed");
-      const action = await response.json();
       if (action.outcome === "accepted") {
         const expected = command === "start" ? "live" : "awaiting-result";
         if (action.matchId !== item.matchId || action.state !== expected ||

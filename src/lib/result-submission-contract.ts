@@ -77,6 +77,7 @@ export const resultSubmissionPageSchema = z
     revision: z.string().min(1),
     submissionState: resultSubmissionStateSchema,
     canConfirmResult: z.boolean().optional(),
+    canCreateDispute: z.boolean().optional(),
     player: participantSchema,
     opponent: opponentSchema,
     game: gameSchema,
@@ -90,6 +91,10 @@ export const resultSubmissionPageSchema = z
     finalResult: finalizedResultSchema.nullable(),
   })
   .superRefine((page, ctx) => {
+    if ((page.canConfirmResult || page.canCreateDispute) && page.submissionState !== "awaiting-confirmation") {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Result actions require awaiting-confirmation state.", path: ["submissionState"] });
+    }
+
     if (page.submissionState === "reportable") {
       if (page.reportedScore !== null) {
         ctx.addIssue({

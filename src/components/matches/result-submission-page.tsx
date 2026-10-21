@@ -1,3 +1,4 @@
+import { matchActionsRepository } from "@/lib/match-actions-repository";
 import { Link, useRouter } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -10,7 +11,7 @@ import {
   ShieldCheck,
   Swords,
 } from "lucide-react";
-import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -250,6 +251,12 @@ export function ResultSubmissionPage({ context }: { context: ResultSubmissionPag
             description="امتیاز گزارش‌شده ثبت شده است. وضعیت نهایی Match بعد از طی‌شدن فرایند تأیید مشخص می‌شود."
           >
             <ScoreReceipt context={context} playerScore={reportedScore.playerScore} opponentScore={reportedScore.opponentScore} />
+            {context.canCreateDispute && !result ? (
+              <Link to="/matches/$id/dispute" params={{ id: context.matchId }}
+                className="mt-4 inline-flex min-h-11 items-center rounded-xl border border-border px-4 text-sm font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                اعتراض به نتیجه
+              </Link>
+            ) : null}
             {context.canConfirmResult && !result ? (
               <ConfirmReportedResult context={context} />
             ) : null}
@@ -491,46 +498,23 @@ function SummaryRow({ icon, label, value }: { icon: ReactNode; label: string; va
 }
 
 function ConfirmReportedResult({ context }: { context: ResultSubmissionPageData }) {
+  const busy = useRef(false);
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const [done, setDone] = useState(false);
 
   async function confirm() {
-    if (pending || done || !context.canConfirmResult || !context.reportedScore) return;
+    if (busy.current || done || !context.canConfirmResult || !context.reportedScore) return;
+    busy.current = true;
     setPending(true);
     setMessage("");
     try {
-      const configured = import.meta.env.VITE_API_BASE_URL?.trim();
-      if (!configured) throw new Error("Missing API configuration");
-      const base = configured.endsWith("/") ? configured : configured + "/";
-      const csrfResponse = await fetch(new URL("api/v1/auth/csrf/", base), {
-        credentials: "include",
-        headers: { Accept: "application/json" },
+      const action = await matchActionsRepository.confirmResult(context.matchId, {
+        revision: context.revision,
+        playerScore: context.reportedScore.playerScore,
+        opponentScore: context.reportedScore.opponentScore,
       });
-      if (!csrfResponse.ok) throw new Error("CSRF failed");
-      const csrf = await csrfResponse.json();
-      if (typeof csrf.csrf_token !== "string" || !csrf.csrf_token) throw new Error("Invalid CSRF");
-
-      const response = await fetch(
-        new URL("api/v1/matches/" + encodeURIComponent(context.matchId) + "/result/confirm/", base),
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrf.csrf_token,
-          },
-          body: JSON.stringify({
-            revision: context.revision,
-            playerScore: context.reportedScore.playerScore,
-            opponentScore: context.reportedScore.opponentScore,
-          }),
-        },
-      );
-      if (!response.ok) throw new Error("Confirmation HTTP " + response.status);
-      const action = await response.json();
       if (action.outcome === "finalized" || action.outcome === "already_finalized") {
         if (typeof action.eventId !== "string" || !action.eventId) throw new Error("Invalid receipt");
         setDone(true);
@@ -548,6 +532,7 @@ function ConfirmReportedResult({ context }: { context: ResultSubmissionPageData 
     } catch {
       setMessage("وضعیت تأیید مشخص نشد. صفحه را تازه کن تا نتیجه بررسی شود.");
     } finally {
+      busy.current = false;
       setPending(false);
     }
   }
