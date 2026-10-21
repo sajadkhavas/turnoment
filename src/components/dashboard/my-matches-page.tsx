@@ -1,3 +1,4 @@
+import { ChallengeLifecycleAction } from "./challenge-lifecycle-action";
 import { Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -190,6 +191,11 @@ function MatchCard({ item, gamerTag }: { item: MyMatchItem; gamerTag: string }) 
           </div>
         </div>
       </dl>
+
+      {item.canControlLifecycle && item.revision && item.competition.kind === "challenge" &&
+        (item.lifecycleState === "ready" || item.lifecycleState === "live") ? (
+        <ChallengeLifecycleAction key={item.matchId + ":" + item.revision} item={item} />
+      ) : null}
 
       {attention ? (
         <div className="mt-4 rounded-xl border border-warning/35 bg-warning/8 p-3.5" role="status">
