@@ -1,3 +1,4 @@
+import { ChallengeLifecycleAction } from "./challenge-lifecycle-action";
 import { Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -191,6 +192,11 @@ function MatchCard({ item, gamerTag }: { item: MyMatchItem; gamerTag: string }) 
         </div>
       </dl>
 
+      {item.canControlLifecycle && item.revision && item.competition.kind === "challenge" &&
+        (item.lifecycleState === "ready" || item.lifecycleState === "live") ? (
+        <ChallengeLifecycleAction key={item.matchId + ":" + item.revision} item={item} />
+      ) : null}
+
       {attention ? (
         <div className="mt-4 rounded-xl border border-warning/35 bg-warning/8 p-3.5" role="status">
           <div className="flex items-start gap-2.5">
@@ -216,6 +222,15 @@ function MatchCard({ item, gamerTag }: { item: MyMatchItem; gamerTag: string }) 
               className="mt-3 inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               ثبت نتیجه Match
+            </Link>
+          ) : null}
+          {item.attention === "confirm-result" ? (
+            <Link
+              to="/matches/$id/result"
+              params={{ id: item.matchId }}
+              className="mt-3 inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              بررسی و تأیید نتیجه
             </Link>
           ) : null}
           {item.attention === "dispute" ? (
