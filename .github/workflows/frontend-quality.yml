@@ -213,7 +213,7 @@ jobs:
             shift
             local stderr_log="artifacts/browser-qa/${label}.stderr.log"
             echo "Capturing ${label}"
-            if timeout --signal=TERM --kill-after=5s 45s "$CHROME" "$@" >/dev/null 2>"$stderr_log"; then
+            if timeout --signal=TERM --kill-after=5s 45s "$CHROME" --disable-background-networking --disable-component-update --disable-extensions --no-first-run "$@" >/dev/null 2>"$stderr_log"; then
               if [[ ! -s "artifacts/browser-qa/${label}.png" ]]; then
                 echo "::error::Chrome exited successfully but ${label}.png is missing or empty"
                 return 1
