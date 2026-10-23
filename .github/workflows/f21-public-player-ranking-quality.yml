@@ -117,23 +117,39 @@ jobs:
             test "$MAIN_COUNT" -eq 1
           done
 
+          # Bound Chrome captures without changing SSR assertions or required image count.
+          capture_screenshot() {
+            local label="$1" width="$2" height="$3" target="$4" url="$5"
+            local profile_dir stderr_log status
+            profile_dir="$(mktemp -d)"
+            stderr_log="${target%.png}.stderr.log"
+            echo "Screenshot ${label}: isolated Chrome, 60s limit"
+            if timeout --signal=TERM --kill-after=5s 60s "$CHROME" \
+              --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --disable-background-mode --disable-background-networking \
+              --disable-component-update --disable-extensions --no-first-run \
+              --user-data-dir="$profile_dir" \
+              --window-size="${width},${height}" --screenshot="$target" \
+              "$url" >/dev/null 2>"$stderr_log"; then
+              if [[ ! -s "$target" ]]; then
+                echo "::error::Chrome exited without required screenshot ${label}"
+                tail -n 40 "$stderr_log" || true
+                rm -rf -- "$profile_dir"
+                return 1
+              fi
+            else
+              status=$?
+              echo "::error::Screenshot ${label} exited ${status} (124 = timeout)"
+              tail -n 40 "$stderr_log" || true
+              rm -rf -- "$profile_dir"
+              return "$status"
+            fi
+            rm -rf -- "$profile_dir"
+          }
+
           for WIDTH in 375 390 430 768 1024 1440; do
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --hide-scrollbars \
-              --window-size="${WIDTH},2200" \
-              --screenshot="artifacts/f21-player-ranking-qa/base-${WIDTH}.png" \
-              "$BASE_URL" >/dev/null 2>&1
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --hide-scrollbars \
-              --window-size="${WIDTH},2200" \
-              --screenshot="artifacts/f21-player-ranking-qa/filtered-${WIDTH}.png" \
-              "$FILTERED_URL" >/dev/null 2>&1
+            capture_screenshot "ranking-base-${WIDTH}" "${WIDTH}" "2200" "artifacts/f21-player-ranking-qa/base-${WIDTH}.png" "$BASE_URL"
+            capture_screenshot "ranking-filtered-${WIDTH}" "${WIDTH}" "2200" "artifacts/f21-player-ranking-qa/filtered-${WIDTH}.png" "$FILTERED_URL"
           done
 
           PNG_COUNT="$(find artifacts/f21-player-ranking-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"

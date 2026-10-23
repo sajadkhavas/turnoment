@@ -162,19 +162,42 @@ jobs:
             *) echo "Legacy tournament identifier did not redirect canonically: HTTP $LEGACY_STATUS"; exit 1 ;;
           esac
 
+          # Bound Chrome captures without changing SSR assertions or required image count.
+          capture_screenshot() {
+            local label="$1" width="$2" height="$3" target="$4" url="$5"
+            local profile_dir stderr_log status
+            profile_dir="$(mktemp -d)"
+            stderr_log="${target%.png}.stderr.log"
+            echo "Screenshot ${label}: isolated Chrome, 60s limit"
+            if timeout --signal=TERM --kill-after=5s 60s "$CHROME" \
+              --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --disable-background-mode --disable-background-networking \
+              --disable-component-update --disable-extensions --no-first-run \
+              --user-data-dir="$profile_dir" \
+              --window-size="${width},${height}" --screenshot="$target" \
+              "$url" >/dev/null 2>"$stderr_log"; then
+              if [[ ! -s "$target" ]]; then
+                echo "::error::Chrome exited without required screenshot ${label}"
+                tail -n 40 "$stderr_log" || true
+                rm -rf -- "$profile_dir"
+                return 1
+              fi
+            else
+              status=$?
+              echo "::error::Screenshot ${label} exited ${status} (124 = timeout)"
+              tail -n 40 "$stderr_log" || true
+              rm -rf -- "$profile_dir"
+              return "$status"
+            fi
+            rm -rf -- "$profile_dir"
+          }
+
           for WIDTH in 375 390 430 768 1024 1440; do
             if [[ "$WIDTH" -le 430 ]]; then HEIGHT=5200
             elif [[ "$WIDTH" -le 768 ]]; then HEIGHT=4400
             else HEIGHT=3600
             fi
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --hide-scrollbars \
-              --window-size="${WIDTH},${HEIGHT}" \
-              --screenshot="artifacts/f26-tournament-detail-qa/detail-${WIDTH}.png" \
-              "$URL" >/dev/null 2>&1
+            capture_screenshot "detail-${WIDTH}" "${WIDTH}" "$HEIGHT" "artifacts/f26-tournament-detail-qa/detail-${WIDTH}.png" "$URL"
           done
 
           PNG_COUNT="$(find artifacts/f26-tournament-detail-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
