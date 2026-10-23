@@ -208,23 +208,41 @@ jobs:
           test "$TEAMS_MAIN_COUNT" -eq 1
           test "$CHALLENGES_MAIN_COUNT" -eq 1
 
+          capture_screenshot() {
+            local label="$1"
+            shift
+            local stderr_log="artifacts/browser-qa/${label}.stderr.log"
+            echo "Capturing ${label}"
+            if timeout --signal=TERM --kill-after=5s 45s "$CHROME" "$@" >/dev/null 2>"$stderr_log"; then
+              if [[ ! -s "artifacts/browser-qa/${label}.png" ]]; then
+                echo "::error::Chrome exited successfully but ${label}.png is missing or empty"
+                return 1
+              fi
+            else
+              local status=$?
+              echo "::error::Chrome screenshot ${label} exited ${status} (124 means per-capture timeout)"
+              tail -n 60 "$stderr_log" || true
+              return "$status"
+            fi
+          }
+
           for WIDTH in 375 390 430 768 1024 1440; do
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/detail-${WIDTH}.png" "$DETAIL_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/register-${WIDTH}.png" "$REGISTER_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/game-${WIDTH}.png" "$GAME_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/my-tournaments-${WIDTH}.png" "$MY_TOURNAMENTS_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/my-matches-${WIDTH}.png" "$MY_MATCHES_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/result-submission-${WIDTH}.png" "$RESULT_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/dispute-${WIDTH}.png" "$DISPUTE_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/login-${WIDTH}.png" "$LOGIN_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1400" --screenshot="artifacts/browser-qa/account-register-${WIDTH}.png" "$ACCOUNT_REGISTER_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-profile-${WIDTH}.png" "$PROFILE_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-notifications-${WIDTH}.png" "$NOTIFICATIONS_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-settings-${WIDTH}.png" "$SETTINGS_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-rivalries-${WIDTH}.png" "$RIVALRIES_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-achievements-${WIDTH}.png" "$ACHIEVEMENTS_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-teams-${WIDTH}.png" "$TEAMS_URL" >/dev/null 2>&1
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-challenges-${WIDTH}.png" "$CHALLENGES_URL" >/dev/null 2>&1
+            capture_screenshot "detail-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/detail-${WIDTH}.png" "$DETAIL_URL"
+            capture_screenshot "register-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/register-${WIDTH}.png" "$REGISTER_URL"
+            capture_screenshot "game-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/game-${WIDTH}.png" "$GAME_URL"
+            capture_screenshot "my-tournaments-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/my-tournaments-${WIDTH}.png" "$MY_TOURNAMENTS_URL"
+            capture_screenshot "my-matches-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/my-matches-${WIDTH}.png" "$MY_MATCHES_URL"
+            capture_screenshot "result-submission-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/result-submission-${WIDTH}.png" "$RESULT_URL"
+            capture_screenshot "dispute-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/dispute-${WIDTH}.png" "$DISPUTE_URL"
+            capture_screenshot "login-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1200" --screenshot="artifacts/browser-qa/login-${WIDTH}.png" "$LOGIN_URL"
+            capture_screenshot "account-register-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1400" --screenshot="artifacts/browser-qa/account-register-${WIDTH}.png" "$ACCOUNT_REGISTER_URL"
+            capture_screenshot "player-profile-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-profile-${WIDTH}.png" "$PROFILE_URL"
+            capture_screenshot "player-notifications-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-notifications-${WIDTH}.png" "$NOTIFICATIONS_URL"
+            capture_screenshot "player-settings-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-settings-${WIDTH}.png" "$SETTINGS_URL"
+            capture_screenshot "player-rivalries-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-rivalries-${WIDTH}.png" "$RIVALRIES_URL"
+            capture_screenshot "player-achievements-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-achievements-${WIDTH}.png" "$ACHIEVEMENTS_URL"
+            capture_screenshot "player-teams-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-teams-${WIDTH}.png" "$TEAMS_URL"
+            capture_screenshot "player-challenges-${WIDTH}" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size="${WIDTH},1800" --screenshot="artifacts/browser-qa/player-challenges-${WIDTH}.png" "$CHALLENGES_URL"
           done
 
           test "$(find artifacts/browser-qa -name '*.png' | wc -l)" -eq 96
@@ -233,6 +251,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: browser-qa-${{ github.sha }}
-          path: artifacts/browser-qa/*.png
+          path: |
+            artifacts/browser-qa/*.png
+            artifacts/browser-qa/*.stderr.log
           if-no-files-found: error
           retention-days: 14
