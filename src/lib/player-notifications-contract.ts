@@ -12,6 +12,9 @@ const offsetDateTimeSchema = z.string().datetime({ offset: true });
 const notificationKindSchema = z.enum(["tournament", "match", "challenge", "account", "system"]);
 
 export const notificationTargetSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("my-challenges") }).strict(),
+  z.object({ kind: z.literal("my-teams") }).strict(),
+  z.object({ kind: z.literal("my-achievements") }).strict(),
   z.object({ kind: z.literal("my-tournaments") }).strict(),
   z.object({ kind: z.literal("my-matches") }).strict(),
   z.object({ kind: z.literal("tournament-detail"), tournamentSlug: routeIdSchema }).strict(),

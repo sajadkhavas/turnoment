@@ -39,6 +39,8 @@ const finalResultSchema = z.object({
 export const myMatchItemSchema = z
   .object({
     matchId: z.string().min(1),
+    revision: z.string().min(1).optional(),
+    canControlLifecycle: z.boolean().optional(),
     game: gameSchema,
     competition: competitionSchema,
     opponent: opponentSchema,

@@ -116,3 +116,14 @@ const existing = await repository.submitResult("m-205", {
 assert(existing.outcome === "already_submitted", "Existing report must not be submitted twice.");
 
 console.log("F05 Result Submission contract checks passed.");
+
+assertThrows(
+  () => resultSubmissionPageSchema.parse({ ...finalized, canCreateDispute: true }),
+  "A finalized match must never advertise a create-dispute action.",
+);
+assertThrows(
+  () => resultSubmissionPageSchema.parse({ ...finalized, canConfirmResult: true }),
+  "A finalized match must never advertise confirmation eligibility.",
+);
+assert(resultSubmissionPageSchema.parse({ ...awaiting, canCreateDispute: true }).canCreateDispute,
+  "Authoritative awaiting-confirmation dispute eligibility must be retained.");
