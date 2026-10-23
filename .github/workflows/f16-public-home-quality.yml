@@ -111,15 +111,41 @@ jobs:
           MAIN_COUNT="$(grep -a -o '<main' "$HTML" | wc -l | tr -d ' ')"
           test "$MAIN_COUNT" -eq 1
 
+          # Keep each visual assertion bounded and independently diagnosable.
+          # A hung Chrome must fail this gate, never silently skip a screenshot.
           for WIDTH in 375 390 430 768 1024 1440; do
-            "$CHROME" \
+            PROFILE_DIR="$(mktemp -d)"
+            STDERR_LOG="artifacts/f16-home-qa/chrome-${WIDTH}.stderr.log"
+            SCREENSHOT="artifacts/f16-home-qa/home-${WIDTH}.png"
+            echo "F16 screenshot width=${WIDTH}: isolated Chrome, 45s timeout"
+            if timeout --signal=TERM --kill-after=5s 45s "$CHROME" \
               --headless=new \
               --no-sandbox \
               --disable-gpu \
               --hide-scrollbars \
+              --disable-background-mode \
+              --disable-background-networking \
+              --disable-component-update \
+              --disable-extensions \
+              --no-first-run \
+              --user-data-dir="$PROFILE_DIR" \
               --window-size="${WIDTH},1600" \
-              --screenshot="artifacts/f16-home-qa/home-${WIDTH}.png" \
-              "$HOME_URL" >/dev/null 2>&1
+              --screenshot="$SCREENSHOT" \
+              "$HOME_URL" >/dev/null 2>"$STDERR_LOG"; then
+              if [[ ! -s "$SCREENSHOT" ]]; then
+                echo "::error::F16 Chrome exited successfully without screenshot width=${WIDTH}"
+                tail -n 40 "$STDERR_LOG" || true
+                rm -rf -- "$PROFILE_DIR"
+                exit 1
+              fi
+            else
+              STATUS=$?
+              echo "::error::F16 Chrome width=${WIDTH} exited ${STATUS} (124 = screenshot timeout)"
+              tail -n 40 "$STDERR_LOG" || true
+              rm -rf -- "$PROFILE_DIR"
+              exit "$STATUS"
+            fi
+            rm -rf -- "$PROFILE_DIR"
           done
 
           PNG_COUNT="$(find artifacts/f16-home-qa -maxdepth 1 -type f -name 'home-*.png' | wc -l | tr -d ' ')"

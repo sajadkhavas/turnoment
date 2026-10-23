@@ -73,6 +73,8 @@ export interface MyMatchFinalResult {
 }
 
 export interface MyMatchItem {
+  revision?: string;
+  canControlLifecycle?: boolean;
   matchId: string;
   game: MyMatchGame;
   competition: MyMatchCompetition;
