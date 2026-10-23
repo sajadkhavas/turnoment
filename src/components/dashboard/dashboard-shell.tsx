@@ -1,3 +1,4 @@
+import { LiveNotifications } from "./live-notifications";
 import { useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
@@ -33,6 +34,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <TournamentHeader />
+      <LiveNotifications />
 
       {/* mobile dashboard bar */}
       <div className="sticky top-16 z-40 border-b border-border/60 bg-background/90 backdrop-blur-xl lg:hidden">

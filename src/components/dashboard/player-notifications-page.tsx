@@ -1,3 +1,4 @@
+import { PushNotificationControls } from "./push-notification-controls";
 import { Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -62,6 +63,12 @@ function formatDateTime(value: string) {
 
 function targetLabel(target: NotificationTarget) {
   switch (target.kind) {
+    case "my-challenges":
+      return "چالش‌های من";
+    case "my-teams":
+      return "تیم‌های من";
+    case "my-achievements":
+      return "دستاوردها";
     case "my-tournaments":
       return "مسابقات من";
     case "my-matches":
@@ -82,6 +89,12 @@ function NotificationTargetLink({ target }: { target: NotificationTarget }) {
     "inline-flex min-h-10 items-center justify-center rounded-lg border border-border bg-elevated px-3.5 text-xs font-bold hover:border-primary/45 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
   switch (target.kind) {
+    case "my-challenges":
+      return <Link to="/dashboard/challenges" className={className}>{targetLabel(target)}</Link>;
+    case "my-teams":
+      return <Link to="/dashboard/teams" className={className}>{targetLabel(target)}</Link>;
+    case "my-achievements":
+      return <Link to="/dashboard/achievements" className={className}>{targetLabel(target)}</Link>;
     case "my-tournaments":
       return <Link to="/dashboard/tournaments" className={className}>{targetLabel(target)}</Link>;
     case "my-matches":
@@ -207,6 +220,7 @@ export function PlayerNotificationsPage({
 
   return (
     <div className="space-y-5">
+      <PushNotificationControls />
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-bold text-primary">داشبورد بازیکن</p>
