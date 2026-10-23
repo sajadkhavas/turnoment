@@ -127,23 +127,40 @@ jobs:
             test "$MAIN_COUNT" -eq 1
           done
 
+          # Preserve all required screenshots; fail with a bounded width-specific error
+          # rather than cancelling the entire job after an unbounded Chrome hang.
+          capture_screenshot() {
+            local label="$1" width="$2" height="$3" target="$4" url="$5"
+            local profile_dir stderr_log status
+            profile_dir="$(mktemp -d)"
+            stderr_log="${target%.png}.stderr.log"
+            echo "Screenshot ${label}: isolated Chrome, 60s limit"
+            if timeout --signal=TERM --kill-after=5s 60s "$CHROME" \
+              --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --disable-background-mode --disable-background-networking \
+              --disable-component-update --disable-extensions --no-first-run \
+              --user-data-dir="$profile_dir" \
+              --window-size="${width},${height}" --screenshot="$target" \
+              "$url" >/dev/null 2>"$stderr_log"; then
+              if [[ ! -s "$target" ]]; then
+                echo "::error::Chrome exited without required screenshot ${label}"
+                tail -n 40 "$stderr_log" || true
+                rm -rf -- "$profile_dir"
+                return 1
+              fi
+            else
+              status=$?
+              echo "::error::Screenshot ${label} exited ${status} (124 = timeout)"
+              tail -n 40 "$stderr_log" || true
+              rm -rf -- "$profile_dir"
+              return "$status"
+            fi
+            rm -rf -- "$profile_dir"
+          }
+
           for WIDTH in 375 390 430 768 1024 1440; do
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --hide-scrollbars \
-              --window-size="${WIDTH},2000" \
-              --screenshot="artifacts/f20-gaming-center-detail-qa/center-c1-${WIDTH}.png" \
-              "$CENTER_URL" >/dev/null 2>&1
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --hide-scrollbars \
-              --window-size="${WIDTH},2000" \
-              --screenshot="artifacts/f20-gaming-center-detail-qa/center-c4-${WIDTH}.png" \
-              "$NO_ADDRESS_URL" >/dev/null 2>&1
+            capture_screenshot "center-c1-${WIDTH}" "${WIDTH}" "2000" "artifacts/f20-gaming-center-detail-qa/center-c1-${WIDTH}.png" "$CENTER_URL"
+            capture_screenshot "center-c4-${WIDTH}" "${WIDTH}" "2000" "artifacts/f20-gaming-center-detail-qa/center-c4-${WIDTH}.png" "$NO_ADDRESS_URL"
           done
 
           PNG_COUNT="$(find artifacts/f20-gaming-center-detail-qa -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"

@@ -7,6 +7,7 @@ import {
   type OtpChallenge,
 } from "@/lib/login-auth-contract";
 import { loginAuthRepository } from "@/lib/login-auth-repository";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 function faNumber(value: number) {
   return new Intl.NumberFormat("fa-IR", { useGrouping: false }).format(value);
@@ -25,6 +26,7 @@ function displayPhone(phone: string) {
 type Feedback = { tone: "error" | "info" | "success"; text: string } | null;
 
 export function OtpLoginPage({ redirectTo }: { redirectTo: string }) {
+  const hydrated = useHydrated();
   const [phone, setPhone] = useState("");
   const [challenge, setChallenge] = useState<OtpChallenge | null>(null);
   const [code, setCode] = useState("");
@@ -180,6 +182,7 @@ export function OtpLoginPage({ redirectTo }: { redirectTo: string }) {
                   <label htmlFor="login-phone" className="mb-2 block text-sm font-bold">شماره موبایل</label>
                   <input
                     id="login-phone"
+                    disabled={!hydrated}
                     name="phone"
                     type="tel"
                     inputMode="tel"
@@ -202,7 +205,7 @@ export function OtpLoginPage({ redirectTo }: { redirectTo: string }) {
 
                 <button
                   type="submit"
-                  disabled={requestPending || resendRemaining > 0}
+                  disabled={!hydrated || requestPending || resendRemaining > 0}
                   className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground transition hover:glow-violet-strong disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {requestPending ? "در حال ارسال…" : resendRemaining > 0 ? `تلاش دوباره تا ${countdown(resendRemaining)}` : "دریافت کد ورود"}
@@ -234,7 +237,7 @@ export function OtpLoginPage({ redirectTo }: { redirectTo: string }) {
                       autoComplete="one-time-code"
                       aria-labelledby="otp-label"
                       aria-describedby="otp-help login-feedback"
-                      disabled={verifyPending || !challengeUsable}
+                      disabled={!hydrated || verifyPending || !challengeUsable}
                       autoFocus
                     >
                       <InputOTPGroup className="gap-1.5 sm:gap-2">
@@ -252,7 +255,7 @@ export function OtpLoginPage({ redirectTo }: { redirectTo: string }) {
 
                 <button
                   type="submit"
-                  disabled={verifyPending || code.length !== 6 || !challengeUsable}
+                  disabled={!hydrated || verifyPending || code.length !== 6 || !challengeUsable}
                   className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground transition hover:glow-violet-strong disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {verifyPending ? "در حال تأیید…" : "تأیید و ورود"}
@@ -260,7 +263,7 @@ export function OtpLoginPage({ redirectTo }: { redirectTo: string }) {
 
                 <button
                   type="button"
-                  disabled={requestPending || resendRemaining > 0}
+                  disabled={!hydrated || requestPending || resendRemaining > 0}
                   onClick={() => void requestCode(challenge.phone)}
                   className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-border bg-surface px-4 text-sm font-bold transition hover:border-primary/60 hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                 >

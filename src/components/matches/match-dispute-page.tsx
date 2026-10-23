@@ -15,6 +15,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -67,6 +68,7 @@ function fileSize(bytes: number) {
 
 export function MatchDisputePage({ context }: { context: MatchDisputePageData }) {
   const router = useRouter();
+  const hydrated = useHydrated();
   const [reason, setReason] = useState("");
   const [statement, setStatement] = useState("");
   const [reviewing, setReviewing] = useState(false);
@@ -115,7 +117,7 @@ export function MatchDisputePage({ context }: { context: MatchDisputePageData })
 
   const review = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (submitting || context.disputeState !== "eligible" || createStale) return;
+    if (!hydrated || submitting || context.disputeState !== "eligible" || createStale) return;
     const errors = validateDisputeDraft(context, reason, statement);
     if (Object.keys(errors).length) {
       setLocalErrors(errors);
@@ -128,7 +130,7 @@ export function MatchDisputePage({ context }: { context: MatchDisputePageData })
   };
 
   const submitDispute = async () => {
-    if (!reviewing || submitting || context.disputeState !== "eligible" || createStale) return;
+    if (!hydrated || !reviewing || submitting || context.disputeState !== "eligible" || createStale) return;
     const key = createKey ?? createIdempotencyKey("dispute");
     setCreateKey(key);
     setSubmitting(true);
@@ -239,7 +241,7 @@ export function MatchDisputePage({ context }: { context: MatchDisputePageData })
                       id="dispute-reason"
                       value={reason}
                       onChange={(event) => { setReason(event.target.value); editDraft(); }}
-                      disabled={submitting}
+                      disabled={!hydrated || submitting}
                       aria-invalid={Boolean(fieldErrors.reason)}
                       aria-describedby={fieldErrors.reason ? "dispute-reason-error" : undefined}
                       className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -259,7 +261,7 @@ export function MatchDisputePage({ context }: { context: MatchDisputePageData })
                       id="dispute-statement"
                       value={statement}
                       onChange={(event) => { setStatement(event.target.value); editDraft(); }}
-                      disabled={submitting}
+                      disabled={!hydrated || submitting}
                       rows={7}
                       maxLength={context.policy.maxStatementLength}
                       aria-invalid={Boolean(fieldErrors.statement)}
@@ -288,14 +290,14 @@ export function MatchDisputePage({ context }: { context: MatchDisputePageData })
                       <div><dt className="text-xs text-muted-foreground">شرح</dt><dd className="mt-1 whitespace-pre-wrap leading-7">{statement.trim()}</dd></div>
                     </dl>
                     <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                      <Button type="button" variant="outline" onClick={() => setReviewing(false)} disabled={submitting}>اصلاح اطلاعات</Button>
-                      <Button type="button" onClick={() => void submitDispute()} disabled={submitting} aria-busy={submitting}>
+                      <Button type="button" variant="outline" onClick={() => setReviewing(false)} disabled={!hydrated || submitting}>اصلاح اطلاعات</Button>
+                      <Button type="button" onClick={() => void submitDispute()} disabled={!hydrated || submitting} aria-busy={submitting}>
                         {submitting ? "در حال ثبت اعتراض..." : "ثبت اعتراض"}
                       </Button>
                     </div>
                   </section>
                 ) : (
-                  <Button type="submit" className="h-12 w-full rounded-xl font-black" disabled={submitting}>بررسی اعتراض قبل از ثبت</Button>
+                  <Button type="submit" className="h-12 w-full rounded-xl font-black" disabled={!hydrated || submitting}>بررسی اعتراض قبل از ثبت</Button>
                 )}
               </form>
             ) : null}

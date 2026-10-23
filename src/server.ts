@@ -1,3 +1,45 @@
+
+import { AsyncLocalStorage } from "node:async_hooks";
+
+type SsrCookieState = {
+  context: AsyncLocalStorage<string>;
+};
+
+const cookieKey = Symbol.for("turnoment.ssrCookies");
+const shared = globalThis as typeof globalThis & {
+  [cookieKey]?: SsrCookieState;
+};
+
+if (!shared[cookieKey]) {
+  const state: SsrCookieState = {
+    context: new AsyncLocalStorage<string>(),
+  };
+  const originalFetch = globalThis.fetch.bind(globalThis);
+
+  globalThis.fetch = async (input, init) => {
+    const cookie = state.context.getStore();
+    const configured = import.meta.env.VITE_API_BASE_URL?.trim();
+    const url = new URL(
+      input instanceof Request ? input.url : String(input),
+    );
+
+    if (cookie && configured &&
+        url.origin === new URL(configured).origin &&
+        url.pathname.startsWith("/api/v1/")) {
+      const headers = new Headers(
+        init?.headers ?? (input instanceof Request ? input.headers : undefined),
+      );
+      headers.set("Cookie", cookie);
+      return originalFetch(input, { ...init, headers });
+    }
+
+    return originalFetch(input, init);
+  };
+  shared[cookieKey] = state;
+}
+
+const ssrCookieContext = shared[cookieKey]!.context;
+
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
@@ -41,7 +83,7 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await ssrCookieContext.run(request.headers.get("cookie") ?? "", () => handler.fetch(request, env, ctx));
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);
