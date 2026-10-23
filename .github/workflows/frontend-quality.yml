@@ -212,18 +212,24 @@ jobs:
             local label="$1"
             shift
             local stderr_log="artifacts/browser-qa/${label}.stderr.log"
-            echo "Capturing ${label}"
-            if timeout --signal=TERM --kill-after=5s 45s "$CHROME" --disable-background-networking --disable-component-update --disable-extensions --no-first-run "$@" >/dev/null 2>"$stderr_log"; then
+            local profile_dir
+            local status=0
+            # Prevent a timed-out Chrome from sharing its default profile or
+            # background process with the next independent capture.
+            profile_dir="$(mktemp -d)"
+            echo "Capturing ${label} with isolated Chrome profile"
+            if timeout --signal=TERM --kill-after=5s 45s "$CHROME" --user-data-dir="$profile_dir" --disable-background-mode --disable-background-networking --disable-component-update --disable-extensions --no-first-run "$@" >/dev/null 2>"$stderr_log"; then
               if [[ ! -s "artifacts/browser-qa/${label}.png" ]]; then
                 echo "::error::Chrome exited successfully but ${label}.png is missing or empty"
-                return 1
+                status=1
               fi
             else
-              local status=$?
+              status=$?
               echo "::error::Chrome screenshot ${label} exited ${status} (124 means per-capture timeout)"
               tail -n 60 "$stderr_log" || true
-              return "$status"
             fi
+            rm -rf -- "$profile_dir"
+            return "$status"
           }
 
           for WIDTH in 375 390 430 768 1024 1440; do
