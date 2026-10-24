@@ -34,4 +34,19 @@ const notAcknowledged = new ApiMatchActionsRepository(() => "https://api.example
   return String(input).includes("csrf") ? Response.json({ csrf_token: "proof" }) : Response.json(reply, { status: 403 });
 });
 await assert.rejects(() => notAcknowledged.confirmResult("m1", { revision: "2", playerScore: 1, opponentScore: 3 }));
+// Regression: Chromium Window.fetch rejects a repository object as receiver
+// with TypeError "Illegal invocation" before sending the CSRF GET.
+let browserLikeCalls = 0;
+const browserLikeRequest: typeof fetch = async function (this: unknown) {
+  assert.equal(this, globalThis, "Fetch must have the global receiver");
+  browserLikeCalls++;
+  return Response.json(browserLikeCalls === 1
+    ? { csrf_token: "csrf-proof" }
+    : { outcome: "accepted", matchId: "m1", state: "live", revision: "3" });
+};
+const browserRepository = new ApiMatchActionsRepository(
+  () => "https://api.example.test/", browserLikeRequest,
+);
+assert.equal((await browserRepository.changeLifecycle("m1", command)).outcome, "accepted");
+assert.equal(browserLikeCalls, 2, "CSRF and lifecycle POST must both use the safe receiver");
 console.log("Match action validation, identity, CSRF and failure checks passed.");

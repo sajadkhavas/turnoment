@@ -41,12 +41,15 @@ export class ApiMatchActionsRepository implements MatchActionsRepository {
   private async post(matchId: string, action: string, body: unknown): Promise<unknown> {
     if (!matchId.trim()) throw new Error("Missing match identity.");
     const base = this.baseUrl();
-    const csrf = await this.request(new URL("api/v1/auth/csrf/", base), {
+    // Window.fetch requires a Window receiver in Chromium. Calling it as
+    // this.request(...) binds the repository instance and throws before I/O.
+    const request = this.request.bind(globalThis);
+    const csrf = await request(new URL("api/v1/auth/csrf/", base), {
       credentials: "include", headers: { Accept: "application/json" },
     });
     if (!csrf.ok) throw new Error("Unable to authorize the action.");
     const token = z.object({ csrf_token: z.string().min(1) }).parse(await csrf.json()).csrf_token;
-    const response = await this.request(new URL(`api/v1/matches/${encodeURIComponent(matchId)}/${action}/`, base), {
+    const response = await request(new URL(`api/v1/matches/${encodeURIComponent(matchId)}/${action}/`, base), {
       method: "POST", credentials: "include",
       headers: { Accept: "application/json", "Content-Type": "application/json", "X-CSRFToken": token },
       body: JSON.stringify(body),
