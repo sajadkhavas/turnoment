@@ -1,10 +1,12 @@
 import { matchActionsRepository } from "@/lib/match-actions-repository";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import type { MyMatchItem } from "@/lib/my-matches-data";
 
 export function ChallengeLifecycleAction({ item }: { item: MyMatchItem }) {
   const router = useRouter();
+  const hydrated = useHydrated();
   const busy = useRef(false);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
@@ -12,7 +14,7 @@ export function ChallengeLifecycleAction({ item }: { item: MyMatchItem }) {
   const command = item.lifecycleState === "ready" ? "start" : "finish";
 
   async function execute() {
-    if (busy.current || completed || !item.revision || !item.canControlLifecycle) return;
+    if (!hydrated || busy.current || completed || !item.revision || !item.canControlLifecycle) return;
     busy.current = true;
     setPending(true);
     setMessage("");
@@ -40,7 +42,7 @@ export function ChallengeLifecycleAction({ item }: { item: MyMatchItem }) {
 
   return (
     <div className="mt-4 space-y-2">
-      <button type="button" disabled={pending || completed} aria-busy={pending}
+      <button type="button" disabled={!hydrated || pending || completed} aria-busy={pending}
         onClick={() => void execute()}
         className="min-h-11 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground disabled:opacity-50">
         {pending ? "\u062f\u0631 \u062d\u0627\u0644 \u062b\u0628\u062a..." :
