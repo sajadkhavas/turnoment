@@ -26,6 +26,7 @@ export interface PlayerIdentitySummary {
   primaryGame: string;
   statusLabel: string;
   avatarInitials: string;
+  avatarUrl?: string | null;
 }
 
 export interface CompetitiveSnapshot {

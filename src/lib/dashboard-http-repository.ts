@@ -11,6 +11,7 @@ const identitySchema = z.object({
   primaryGame: z.string(),
   statusLabel: z.string(),
   avatarInitials: z.string(),
+  avatarUrl: z.string().nullable().optional(),
 });
 
 const snapshotSchema = z.object({
