@@ -32,7 +32,7 @@ export type MyTournamentParticipation =
       kind: "team";
       teamId: string;
       teamName: string;
-      role: "captain" | "member";
+      role: "captain" | "member" | "center_manager";
     };
 
 export interface MyTournamentResult {

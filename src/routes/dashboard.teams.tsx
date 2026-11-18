@@ -1,9 +1,10 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   PlayerTeamsErrorState,
   PlayerTeamsPage,
   PlayerTeamsSkeleton,
 } from "@/components/dashboard/player-teams-page";
+import { CenterTeamPanel } from "@/components/dashboard/center-team-panel";
 import type { PlayerTeamsQuery } from "@/lib/player-teams-contract";
 import { playerTeamsRepository } from "@/lib/player-teams-repository";
 
@@ -66,6 +67,7 @@ export const Route = createFileRoute("/dashboard/teams")({
 
 function PlayerTeamsRoute() {
   const data = Route.useLoaderData();
+  const router = useRouter();
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -74,6 +76,8 @@ function PlayerTeamsRoute() {
   };
 
   return (
+    <>
+    <CenterTeamPanel onChanged={async () => { await router.invalidate(); }} />
     <PlayerTeamsPage
       data={data}
       teamId={search.team}
@@ -81,5 +85,6 @@ function PlayerTeamsRoute() {
       onPageChange={(page) => navigateTo(data.selectedTeam?.teamId ?? search.team, page)}
       onResetSelection={() => navigateTo(undefined)}
     />
+    </>
   );
 }
