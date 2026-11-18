@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { getDataAdapterMode } from "@/lib/data-adapter";
 
-const teamSchema = z.object({ teamId: z.string().uuid(), name: z.string() });
+const teamSchema = z.object({ teamId: z.string().uuid(), name: z.string(), image: z.string().optional() });
 const centersSchema = z.object({ items: z.array(z.object({
   id: z.string().uuid(), name: z.string(), team: teamSchema.nullable(),
 })) });
@@ -10,7 +10,7 @@ const invitesSchema = z.object({ items: z.array(z.object({
   inviteId: z.string().uuid(), teamName: z.string(),
 })) });
 
-async function teamRequest(path: string, data?: object) {
+async function teamRequest(path: string, data?: object, method = "POST") {
   const base = new URL(import.meta.env.VITE_API_BASE_URL || window.location.origin);
   const headers: Record<string, string> = { Accept: "application/json" };
   if (data) {
@@ -21,7 +21,7 @@ async function teamRequest(path: string, data?: object) {
   }
   const response = await fetch(new URL("/api/v1/" + path, base), {
     credentials: "include", headers,
-    ...(data ? { method: "POST", body: JSON.stringify(data) } : {}),
+    ...(data ? { method, body: JSON.stringify(data) } : {}),
   });
   if (!response.ok) throw new Error(response.status === 404
     ? "بازیکن یا دعوت پیدا نشد." : "عملیات انجام نشد. دسترسی و اطلاعات را بررسی کن.");
@@ -47,11 +47,11 @@ export function CenterTeamPanel({ onChanged }: { onChanged: () => Promise<void> 
     if (enabled) void refresh().catch(() => setNotice("دریافت اطلاعات تیم انجام نشد."));
   }, [enabled]);
 
-  async function act(path: string, payload: object, success: string) {
+  async function act(path: string, payload: object, success: string, method?: string) {
     setBusy(true);
     setNotice("");
     try {
-      await teamRequest(path, payload);
+      await teamRequest(path, payload, method);
       setNotice(success);
       await Promise.all([refresh(), onChanged()]);
     } catch (error) {
@@ -83,6 +83,22 @@ export function CenterTeamPanel({ onChanged }: { onChanged: () => Promise<void> 
               {center.team ? "ارسال دعوت" : "ساخت تیم"}
             </button>
           </div>
+        </form>
+      ))}
+      {centers.filter((center) => center.team).map((center) => (
+        <form key={center.id} className="flex flex-wrap items-end gap-2" onSubmit={(event) => {
+          event.preventDefault();
+          if (busy) return;
+          const image = String(new FormData(event.currentTarget).get("image") ?? "").trim();
+          void act("centers/" + center.id + "/team/", { image }, "تصویر تیم به‌روزرسانی شد.", "PATCH");
+        }}>
+          <label className="grid gap-1 text-sm">
+            تصویر تیم {center.team?.name} (لینک HTTPS)
+            <input name="image" defaultValue={center.team?.image} type="url" dir="ltr" maxLength={2048} placeholder="https://…"
+              className="rounded-lg border border-border bg-background px-3 py-2" />
+          </label>
+          <button disabled={busy} className="rounded-lg border border-border px-3 py-2">ذخیره تصویر</button>
+          <p className="basis-full text-xs text-muted-foreground">برای استفاده از عکس مرکز، لینک را خالی بگذار.</p>
         </form>
       ))}
       {invites.map((item) => (

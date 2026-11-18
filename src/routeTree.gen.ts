@@ -31,6 +31,8 @@ import { Route as DashboardTournamentsRouteImport } from './routes/dashboard.tou
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
 import { Route as PlayersUsernameRouteImport } from './routes/players.$username'
+import { Route as TeamsIndexRouteImport } from './routes/teams.index'
+import { Route as TeamsIdRouteImport } from './routes/teams.$id'
 import { Route as TournamentsIndexRouteImport } from './routes/tournaments.index'
 import { Route as TournamentsIdRouteImport } from './routes/tournaments.$id'
 import { Route as MatchesIdDisputeRouteImport } from './routes/matches.$id_.dispute'
@@ -147,6 +149,16 @@ const PlayersUsernameRoute = PlayersUsernameRouteImport.update({
   path: '/players/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeamsIndexRoute = TeamsIndexRouteImport.update({
+  id: '/teams/',
+  path: '/teams/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamsIdRoute = TeamsIdRouteImport.update({
+  id: '/teams/$id',
+  path: '/teams/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TournamentsIndexRoute = TournamentsIndexRouteImport.update({
   id: '/tournaments/',
   path: '/tournaments/',
@@ -193,10 +205,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/games/$slug': typeof GamesSlugRoute
   '/players/$username': typeof PlayersUsernameRoute
+  '/teams/$id': typeof TeamsIdRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/centers/': typeof CentersIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/teams/': typeof TeamsIndexRoute
   '/tournaments/': typeof TournamentsIndexRoute
   '/matches/$id/dispute': typeof MatchesIdDisputeRoute
   '/matches/$id/result': typeof MatchesIdResultRoute
@@ -221,10 +235,12 @@ export interface FileRoutesByTo {
   '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/games/$slug': typeof GamesSlugRoute
   '/players/$username': typeof PlayersUsernameRoute
+  '/teams/$id': typeof TeamsIdRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/centers': typeof CentersIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/games': typeof GamesIndexRoute
+  '/teams': typeof TeamsIndexRoute
   '/tournaments': typeof TournamentsIndexRoute
   '/matches/$id/dispute': typeof MatchesIdDisputeRoute
   '/matches/$id/result': typeof MatchesIdResultRoute
@@ -251,10 +267,12 @@ export interface FileRoutesById {
   '/dashboard/tournaments': typeof DashboardTournamentsRoute
   '/games/$slug': typeof GamesSlugRoute
   '/players/$username': typeof PlayersUsernameRoute
+  '/teams/$id': typeof TeamsIdRoute
   '/tournaments/$id': typeof TournamentsIdRoute
   '/centers/': typeof CentersIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/teams/': typeof TeamsIndexRoute
   '/tournaments/': typeof TournamentsIndexRoute
   '/matches/$id_/dispute': typeof MatchesIdDisputeRoute
   '/matches/$id_/result': typeof MatchesIdResultRoute
@@ -282,10 +300,12 @@ export interface FileRouteTypes {
     | '/dashboard/tournaments'
     | '/games/$slug'
     | '/players/$username'
+    | '/teams/$id'
     | '/tournaments/$id'
     | '/centers/'
     | '/dashboard/'
     | '/games/'
+    | '/teams/'
     | '/tournaments/'
     | '/matches/$id/dispute'
     | '/matches/$id/result'
@@ -310,10 +330,12 @@ export interface FileRouteTypes {
     | '/dashboard/tournaments'
     | '/games/$slug'
     | '/players/$username'
+    | '/teams/$id'
     | '/tournaments/$id'
     | '/centers'
     | '/dashboard'
     | '/games'
+    | '/teams'
     | '/tournaments'
     | '/matches/$id/dispute'
     | '/matches/$id/result'
@@ -339,10 +361,12 @@ export interface FileRouteTypes {
     | '/dashboard/tournaments'
     | '/games/$slug'
     | '/players/$username'
+    | '/teams/$id'
     | '/tournaments/$id'
     | '/centers/'
     | '/dashboard/'
     | '/games/'
+    | '/teams/'
     | '/tournaments/'
     | '/matches/$id_/dispute'
     | '/matches/$id_/result'
@@ -360,9 +384,11 @@ export interface RootRouteChildren {
   CentersIdRoute: typeof CentersIdRoute
   GamesSlugRoute: typeof GamesSlugRoute
   PlayersUsernameRoute: typeof PlayersUsernameRoute
+  TeamsIdRoute: typeof TeamsIdRoute
   TournamentsIdRoute: typeof TournamentsIdRoute
   CentersIndexRoute: typeof CentersIndexRoute
   GamesIndexRoute: typeof GamesIndexRoute
+  TeamsIndexRoute: typeof TeamsIndexRoute
   TournamentsIndexRoute: typeof TournamentsIndexRoute
   MatchesIdDisputeRoute: typeof MatchesIdDisputeRoute
   MatchesIdResultRoute: typeof MatchesIdResultRoute
@@ -525,6 +551,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayersUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teams/': {
+      id: '/teams/'
+      path: '/teams'
+      fullPath: '/teams/'
+      preLoaderRoute: typeof TeamsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teams/$id': {
+      id: '/teams/$id'
+      path: '/teams/$id'
+      fullPath: '/teams/$id'
+      preLoaderRoute: typeof TeamsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tournaments/': {
       id: '/tournaments/'
       path: '/tournaments'
@@ -604,9 +644,11 @@ const rootRouteChildren: RootRouteChildren = {
   CentersIdRoute: CentersIdRoute,
   GamesSlugRoute: GamesSlugRoute,
   PlayersUsernameRoute: PlayersUsernameRoute,
+  TeamsIdRoute: TeamsIdRoute,
   TournamentsIdRoute: TournamentsIdRoute,
   CentersIndexRoute: CentersIndexRoute,
   GamesIndexRoute: GamesIndexRoute,
+  TeamsIndexRoute: TeamsIndexRoute,
   TournamentsIndexRoute: TournamentsIndexRoute,
   MatchesIdDisputeRoute: MatchesIdDisputeRoute,
   MatchesIdResultRoute: MatchesIdResultRoute,

@@ -27,6 +27,7 @@ const nav = [
   { to: "/tournaments", label: "مسابقات", icon: Trophy },
   { to: "/games", label: "بازی‌ها", icon: Gamepad2 },
   { to: "/centers", label: "گیم‌نت‌ها", icon: MapPin },
+  { to: "/teams", label: "تیم‌ها", icon: Users },
   { to: "/ranking", label: "رتبه‌بندی", icon: Medal },
   { to: "/host", label: "میزبان شو", icon: Users },
 ] as const;

@@ -11,6 +11,8 @@ import {
 import { gamingCenterDetailRepository } from "@/lib/gaming-center-detail-repository";
 import { TournamentLayout } from "@/components/tournament/tournament-layout";
 
+import { listPublicTeams } from "@/lib/public-teams";
+
 function centerTitle(name: string, city: string) {
   return `${name} | گیم‌نت و مرکز گیمینگ در ${city} | Turnoment`;
 }
@@ -21,13 +23,16 @@ function centerDescription(name: string, city: string, district: string) {
 
 export const Route = createFileRoute("/centers/$id")({
   ssr: true,
-  loader: async ({ params }) => {
+  loader: async ({ params, abortController }) => {
     const publicId = parseGamingCenterPublicId(params.id);
     if (!publicId) throw notFound();
 
     const center = await gamingCenterDetailRepository.getByPublicId(publicId);
     if (!center) throw notFound();
-    return { center };
+    const team = await listPublicTeams({ center: publicId }, abortController.signal)
+      .then((data) => data.items[0])
+      .catch(() => undefined);
+    return { center, team };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -70,8 +75,8 @@ export const Route = createFileRoute("/centers/$id")({
 });
 
 function GamingCenterDetailRoute() {
-  const { center } = Route.useLoaderData();
-  return <GamingCenterDetailPage center={center} />;
+  const { center, team } = Route.useLoaderData();
+  return <GamingCenterDetailPage center={center} team={team} />;
 }
 
 function GamingCenterDetailRouteError() {
