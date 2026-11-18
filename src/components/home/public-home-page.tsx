@@ -7,12 +7,9 @@ import {
   ChevronLeft,
   Clock3,
   MapPin,
-  Minus,
   RotateCcw,
   SearchCheck,
   Star,
-  TrendingDown,
-  TrendingUp,
   Trophy,
   Users,
 } from "lucide-react";
@@ -25,10 +22,11 @@ import {
   type PublicHomeShowdown,
   type PublicHomeTournament,
   type PublicHomeTournamentRegistrationState,
-  type PublicHomeTrend,
 } from "@/lib/public-home-contract";
 import { formatNumber, formatPrice } from "@/lib/format";
 
+import { HomeHighlightsSection } from "./home-highlights";
+import type { HomeHighlights } from "@/lib/home-highlights";
 import { PublicHomeFinder } from "./public-home-finder";
 
 const sectionClass =
@@ -160,32 +158,6 @@ function formatDateTime(value: string, timezone: string) {
   }
 }
 
-function TrendIcon({ trend }: { trend: PublicHomeTrend }) {
-  if (trend === "up") {
-    return (
-      <TrendingUp
-        className="h-4 w-4 text-success"
-        aria-label="روند صعودی"
-      />
-    );
-  }
-
-  if (trend === "down") {
-    return (
-      <TrendingDown
-        className="h-4 w-4 text-destructive"
-        aria-label="روند نزولی"
-      />
-    );
-  }
-
-  return (
-    <Minus
-      className="h-4 w-4 text-muted-foreground"
-      aria-label="بدون تغییر"
-    />
-  );
-}
 
 function TournamentCard({
   tournament,
@@ -576,9 +548,18 @@ function Showdown({
 
 export function PublicHomePage({
   data,
+  highlights,
 }: {
   data: PublicHomePageData;
+  highlights?: HomeHighlights;
 }) {
+  const games = highlights?.games.length
+    ? highlights.games
+    : data.finder.games.slice(0, 12).map((game) => ({
+        ...game,
+        imageUrl: data.popularGames.find((item) => item.gameId === game.gameId)?.imageUrl ?? null,
+      }));
+  const leaders = highlights?.leaders ?? [];
   return (
     <TournamentLayout>
       {/* Hero */}
@@ -700,6 +681,8 @@ export function PublicHomePage({
         </div>
       </section>
 
+      {(games.length > 0 || leaders.length > 0) && <HomeHighlightsSection data={{ games, leaders }} />}
+
       {/* Benefits */}
       <section
         className="border-b border-white/10 bg-surface/25"
@@ -737,77 +720,6 @@ export function PublicHomePage({
           )}
         </div>
       </section>
-
-      {/* Popular games */}
-      {data.popularGames.length > 0 && (
-        <section
-          className={`${sectionClass} py-10 sm:py-14 lg:py-16`}
-          aria-labelledby="popular-games-title"
-        >
-          <SectionHeading
-            title="مسابقه را از بازی موردعلاقه‌ات پیدا کن"
-            description="بازی را انتخاب کن تا مستقیماً مسابقات مرتبط با همان عنوان را ببینی."
-            action={
-              <SectionAction to="/games">
-                همه بازی‌ها
-              </SectionAction>
-            }
-          />
-
-          <div
-            id="popular-games-title"
-            className="sr-only"
-          >
-            بازی‌های دارای مسابقه
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-            {data.popularGames.map((game) => (
-              <Link
-                key={game.gameId}
-                to="/tournaments"
-                search={{
-                  game: game.gameId,
-                }}
-                className="group min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-card shadow-[0_10px_35px_rgba(0,0,0,0.12)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:rounded-3xl"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-elevated">
-                  <img
-                    src={game.imageUrl}
-                    alt={`مسابقات ${game.name}`}
-                    loading="lazy"
-                    width={480}
-                    height={600}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent"
-                  />
-
-                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
-                    <h3 className="truncate text-xs font-black sm:text-sm">
-                      {game.name}
-                    </h3>
-
-                    <p className="mt-0.5 truncate text-[10px] text-muted-foreground sm:text-[11px]">
-                      {game.platformLabel}
-                    </p>
-
-                    <p className="mt-1 text-[10px] font-bold text-secondary sm:text-[11px]">
-                      {formatNumber(
-                        game.activeTournamentCount,
-                      )}{" "}
-                      مسابقه فعال
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Featured tournaments */}
       {data.featuredTournaments.length > 0 && (
@@ -886,82 +798,6 @@ export function PublicHomePage({
           </div>
         </section>
       )}
-
-      {/* Ranking */}
-      {data.rankingPreview &&
-        data.rankingPreview.entries.length > 0 && (
-          <section
-            className="border-y border-white/10 bg-surface/25"
-            aria-labelledby="ranking-preview-title"
-          >
-            <div className={`${sectionClass} py-10 sm:py-14 lg:py-16`}>
-              <SectionHeading
-                title={`نگاهی به رتبه‌بندی ${data.rankingPreview.game.name}`}
-                description="پیش‌نمایشی از رتبه‌بندی ثبت‌شده بازیکنان؛ برای جدول کامل وارد صفحه رتبه‌بندی شو."
-                action={
-                  <SectionAction to="/ranking">
-                    رتبه‌بندی کامل
-                  </SectionAction>
-                }
-              />
-
-              <div
-                id="ranking-preview-title"
-                className="sr-only"
-              >
-                پیش‌نمایش رتبه‌بندی بازیکنان
-              </div>
-
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-card/70 shadow-[0_15px_45px_rgba(0,0,0,0.12)] sm:rounded-3xl">
-                <ul className="divide-y divide-white/5">
-                  {data.rankingPreview.entries.map(
-                    (entry) => (
-                      <li
-                        key={entry.player.playerId}
-                        className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5 p-3.5 transition-colors hover:bg-white/[0.025] sm:gap-3 sm:p-4 md:grid-cols-[auto_minmax(0,1fr)_auto_auto_auto] md:px-5"
-                      >
-                        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 font-mono-num text-sm font-black text-primary">
-                          {formatNumber(entry.rank)}
-                        </span>
-
-                        <div className="min-w-0">
-                          <p className="truncate text-xs font-black sm:text-sm">
-                            {entry.player.gamerTag}
-                          </p>
-
-                          {entry.city && (
-                            <p className="mt-1 truncate text-[10px] text-muted-foreground sm:text-xs">
-                              {entry.city}
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="flex shrink-0 items-center gap-1.5">
-                          <span className="font-mono-num text-xs font-black text-secondary sm:text-sm">
-                            {formatNumber(entry.rating)}
-                          </span>
-
-                          <TrendIcon trend={entry.trend} />
-                        </div>
-
-                        <span className="hidden whitespace-nowrap text-xs text-muted-foreground md:block">
-                          {formatNumber(
-                            entry.finalizedMatches,
-                          )}{" "}
-                          Match نهایی
-                        </span>
-
-                        <span className="hidden whitespace-nowrap text-xs text-muted-foreground md:block">
-                          {formatNumber(entry.wins)} برد
-                        </span>
-                      </li>
-                    ),
-                  )}
-                </ul>
-              </div>
-            </div>
-          </section>
-        )}
 
       {/* How it works */}
       <section

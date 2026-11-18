@@ -2,12 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PublicHomeErrorState, PublicHomePage, PublicHomeSkeleton } from "@/components/home/public-home-page";
 import { publicHomeRepository } from "@/lib/public-home-repository";
 
+import { getHomeHighlights } from "@/lib/home-highlights";
+
 const TITLE = "مسابقات گیمینگ حضوری و تورنمنت‌های گیم‌نت | Turnoment";
 const DESCRIPTION = "مسابقات گیمینگ حضوری را بر اساس بازی، شهر و زمان پیدا کن؛ جزئیات رقابت و مرکز میزبان را ببین و از همان صفحه مسیر ثبت‌نام را ادامه بده.";
 
 export const Route = createFileRoute("/")({
   ssr: true,
-  loader: () => publicHomeRepository.getHome(),
+  loader: async ({ abortController }) => {
+    const [data, highlights] = await Promise.all([
+      publicHomeRepository.getHome(), getHomeHighlights(abortController.signal),
+    ]);
+    return { data, highlights };
+  },
   head: () => ({
     meta: [
       { title: TITLE },
@@ -26,6 +33,6 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeRoute() {
-  const data = Route.useLoaderData();
-  return <PublicHomePage data={data} />;
+  const { data, highlights } = Route.useLoaderData();
+  return <PublicHomePage data={data} highlights={highlights} />;
 }
