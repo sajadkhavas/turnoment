@@ -1,3 +1,4 @@
+import { WelcomePopup } from "@/components/home/welcome-popup";
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicHomeErrorState, PublicHomePage, PublicHomeSkeleton } from "@/components/home/public-home-page";
 import { publicHomeRepository } from "@/lib/public-home-repository";
@@ -34,5 +35,8 @@ export const Route = createFileRoute("/")({
 
 function HomeRoute() {
   const { data, highlights } = Route.useLoaderData();
-  return <PublicHomePage data={data} highlights={highlights} />;
+  return <>
+    <PublicHomePage data={data} highlights={highlights} />
+    <WelcomePopup />
+  </>;
 }
