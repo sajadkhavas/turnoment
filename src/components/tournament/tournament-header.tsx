@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { useAccountNavigation } from "@/lib/use-account-navigation";
 
 import {
   Dialog,
@@ -34,6 +35,7 @@ const nav = [
 
 export function TournamentHeader() {
   const [open, setOpen] = useState(false);
+  const { label: accountLabel, ...accountLink } = useAccountNavigation();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
@@ -122,12 +124,13 @@ export function TournamentHeader() {
 
             <div className="mt-auto border-t border-white/10 p-4">
               <Link
-                to="/login"
+                {...accountLink}
+                preload={false}
                 onClick={() => setOpen(false)}
                 className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-l from-primary to-secondary px-4 text-sm font-black text-white shadow-[0_10px_30px_rgba(124,58,237,0.25)]"
               >
                 <LogIn className="h-4 w-4" />
-                ورود بازیکن
+                {accountLabel}
               </Link>
             </div>
           </DialogContent>
@@ -148,11 +151,12 @@ export function TournamentHeader() {
 
         {/* right CTA */}
         <Link
-          to="/tournaments"
+          {...accountLink}
+          preload={false}
           dir="rtl"
           className="absolute right-4 top-1/2 inline-flex min-h-10 -translate-y-1/2 items-center rounded-xl bg-primary px-3 text-xs font-black text-primary-foreground shadow-[0_8px_25px_rgba(124,58,237,0.25)] transition-transform active:scale-95 max-[360px]:px-2"
         >
-          مشاهده مسابقات
+          {accountLabel}
         </Link>
       </div>
 
@@ -187,17 +191,11 @@ export function TournamentHeader() {
 
         <div className="flex shrink-0 items-center gap-2">
           <Link
-            to="/login"
-            className="inline-flex min-h-10 items-center rounded-lg border border-border bg-surface px-4 text-sm font-bold transition-colors hover:border-primary/60 hover:text-primary"
-          >
-            ورود بازیکن
-          </Link>
-
-          <Link
-            to="/tournaments"
+            {...accountLink}
+            preload={false}
             className="inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong"
           >
-            مشاهده مسابقات
+            {accountLabel}
           </Link>
         </div>
       </div>

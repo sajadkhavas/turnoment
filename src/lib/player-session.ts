@@ -32,6 +32,7 @@ class ApiPlayerSessionRepository implements PlayerSessionRepository {
     const response = await fetch(new URL("api/v1/auth/me/", baseUrl), {
       method: "GET",
       credentials: "include",
+      cache: "no-store",
       headers: { Accept: "application/json" },
     });
 
