@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="110" viewBox="0 0 420 110">
+  <title>نمونهٔ هدر موبایل تورنومچ با عکس پروفایل بدون کادر</title>
+  <rect width="420" height="110" rx="16" fill="#100c19"/>
+  <path d="M20 20h380" stroke="#342345"/>
+  <path d="M45 48h18m-18 6h18m-18 6h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  <text x="210" y="62" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="17" font-weight="700">TOURNOMATCH</text>
+  <clipPath id="round"><circle cx="355" cy="51" r="17"/></clipPath>
+  <g clip-path="url(#round)">
+    <rect x="338" y="34" width="34" height="34" fill="#8055b3"/>
+    <circle cx="355" cy="48" r="7" fill="#f3d1b9"/>
+    <path d="M348 48c-4-12 16-13 14-3-6 1-8-2-10-4z" fill="#261734"/>
+    <ellipse cx="355" cy="68" rx="14" ry="13" fill="#3b2452"/>
+  </g>
+  <text x="355" y="83" direction="rtl" text-anchor="middle" fill="#eee8f5" font-family="Tahoma, sans-serif" font-size="11">پروفایل من</text>
+</svg>

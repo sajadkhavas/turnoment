@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { avatarSource } from "@/lib/player-avatar";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, ArrowLeft, CalendarClock, Radio, ShieldCheck, Swords, Trophy } from "lucide-react";
 import type {
@@ -10,6 +12,8 @@ import { formatNumber, toPersianDigits } from "@/lib/format";
 import { SectionCard } from "./dashboard-states";
 
 export function PlayerDashboardHeader({ identity }: { identity: PlayerIdentitySummary }) {
+  const photo = avatarSource(identity.avatarUrl);
+  const [failedPhoto, setFailedPhoto] = useState<string>();
   return (
     <header className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
@@ -21,12 +25,15 @@ export function PlayerDashboardHeader({ identity }: { identity: PlayerIdentitySu
       </div>
 
       <div className="flex items-center gap-3 rounded-xl border border-border bg-elevated p-3">
-        <span
+        {photo && photo !== failedPhoto ? (
+          <img src={photo} alt="" width={48} height={48}
+            className="size-12 shrink-0 rounded-full object-cover" onError={() => setFailedPhoto(photo)} />
+        ) : <span
           aria-hidden="true"
           className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-black text-primary-foreground"
         >
           {identity.avatarInitials}
-        </span>
+        </span>}
         <div className="min-w-0">
           <div className="truncate text-sm font-black" dir="ltr">{identity.gamerTag}</div>
           <div className="mt-0.5 flex items-center gap-1 text-[11px] text-success">
@@ -41,9 +48,7 @@ export function PlayerDashboardHeader({ identity }: { identity: PlayerIdentitySu
               مشاهده پروفایل
             </Link>
           ) : (
-            <span className="mt-1 inline-block text-[11px] text-muted-foreground">
-              پروفایل عمومی هنوز منتشر نشده
-            </span>
+            <Link to="/dashboard/profile" className="mt-1 inline-block text-[11px] font-bold text-primary hover:underline">پروفایل من</Link>
           )}
         </div>
       </div>

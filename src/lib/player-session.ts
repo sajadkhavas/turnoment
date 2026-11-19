@@ -1,10 +1,12 @@
 import { getDataAdapterMode } from "./data-adapter";
+import { sessionAvatarPath } from "./player-avatar";
 export type PlayerSessionState = "authenticated" | "unauthenticated" | "session-expired";
 
 export interface PlayerSession {
   state: PlayerSessionState;
   playerId?: string;
   username?: string;
+  avatarUrl?: string;
 }
 
 export interface PlayerSessionRepository {
@@ -32,6 +34,7 @@ class ApiPlayerSessionRepository implements PlayerSessionRepository {
     const response = await fetch(new URL("api/v1/auth/me/", baseUrl), {
       method: "GET",
       credentials: "include",
+      cache: "no-store",
       headers: { Accept: "application/json" },
     });
 
@@ -49,6 +52,7 @@ class ApiPlayerSessionRepository implements PlayerSessionRepository {
 
     return {
       state: "authenticated",
+      avatarUrl: sessionAvatarPath(payload.profile) ?? sessionAvatarPath(payload),
       playerId: typeof id === "string" || typeof id === "number" ? String(id) : undefined,
       username: typeof username === "string" ? username : undefined,
     };

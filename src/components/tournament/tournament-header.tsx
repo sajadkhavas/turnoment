@@ -12,6 +12,8 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { avatarSource } from "@/lib/player-avatar";
+import { useAccountNavigation } from "@/lib/use-account-navigation";
 
 import {
   Dialog,
@@ -27,12 +29,28 @@ const nav = [
   { to: "/tournaments", label: "مسابقات", icon: Trophy },
   { to: "/games", label: "بازی‌ها", icon: Gamepad2 },
   { to: "/centers", label: "گیم‌نت‌ها", icon: MapPin },
+  { to: "/teams", label: "تیم‌ها", icon: Users },
   { to: "/ranking", label: "رتبه‌بندی", icon: Medal },
   { to: "/host", label: "میزبان شو", icon: Users },
 ] as const;
 
 export function TournamentHeader() {
   const [open, setOpen] = useState(false);
+  const { label: accountLabel, avatarUrl, ...accountLink } = useAccountNavigation();
+  const photo = avatarSource(avatarUrl);
+  const [failedPhoto, setFailedPhoto] = useState<string>();
+  const hasPhoto = Boolean(photo && photo !== failedPhoto);
+  const accountPhoto = hasPhoto ? (
+    <img src={photo} alt="" width={32} height={32}
+      className="size-8 shrink-0 rounded-full object-cover" onError={() => setFailedPhoto(photo)} />
+  ) : null;
+  const accountContent = hasPhoto ? (
+    <span className="flex flex-col items-center gap-0.5">
+      {accountPhoto}
+      <span className="whitespace-nowrap text-[10px] font-medium leading-3">{accountLabel}</span>
+    </span>
+  ) : accountLabel;
+
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
@@ -121,12 +139,15 @@ export function TournamentHeader() {
 
             <div className="mt-auto border-t border-white/10 p-4">
               <Link
-                to="/login"
+                {...accountLink}
+                preload={false}
                 onClick={() => setOpen(false)}
-                className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-l from-primary to-secondary px-4 text-sm font-black text-white shadow-[0_10px_30px_rgba(124,58,237,0.25)]"
+                className={`flex min-h-12 items-center justify-center gap-2 rounded-2xl px-4 focus-visible:outline-2 focus-visible:outline-primary ${hasPhoto
+                  ? "text-foreground hover:text-primary"
+                  : "bg-gradient-to-l from-primary to-secondary text-sm font-black text-white shadow-[0_10px_30px_rgba(124,58,237,0.25)]"}`}
               >
-                <LogIn className="h-4 w-4" />
-                ورود بازیکن
+                {!hasPhoto && <LogIn className="h-4 w-4" aria-hidden="true" />}
+                {accountContent}
               </Link>
             </div>
           </DialogContent>
@@ -147,11 +168,14 @@ export function TournamentHeader() {
 
         {/* right CTA */}
         <Link
-          to="/tournaments"
+          {...accountLink}
+          preload={false}
           dir="rtl"
-          className="absolute right-4 top-1/2 inline-flex min-h-10 -translate-y-1/2 items-center rounded-xl bg-primary px-3 text-xs font-black text-primary-foreground shadow-[0_8px_25px_rgba(124,58,237,0.25)] transition-transform active:scale-95 max-[360px]:px-2"
+          className={`absolute right-4 top-1/2 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-xl focus-visible:outline-2 focus-visible:outline-primary ${hasPhoto
+            ? "px-1 text-foreground hover:text-primary"
+            : "bg-primary px-3 text-xs font-black text-primary-foreground shadow-[0_8px_25px_rgba(124,58,237,0.25)] max-[360px]:px-2"}`}
         >
-          مشاهده مسابقات
+          {accountContent}
         </Link>
       </div>
 
@@ -186,17 +210,13 @@ export function TournamentHeader() {
 
         <div className="flex shrink-0 items-center gap-2">
           <Link
-            to="/login"
-            className="inline-flex min-h-10 items-center rounded-lg border border-border bg-surface px-4 text-sm font-bold transition-colors hover:border-primary/60 hover:text-primary"
+            {...accountLink}
+            preload={false}
+            className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg focus-visible:outline-2 focus-visible:outline-primary ${hasPhoto
+              ? "px-1 text-foreground hover:text-primary"
+              : "bg-primary px-4 text-sm font-bold text-primary-foreground hover:glow-violet-strong"}`}
           >
-            ورود بازیکن
-          </Link>
-
-          <Link
-            to="/tournaments"
-            className="inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong"
-          >
-            مشاهده مسابقات
+            {accountContent}
           </Link>
         </div>
       </div>

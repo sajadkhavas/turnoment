@@ -106,7 +106,7 @@ function ParticipationLabel({ item }: { item: MyTournamentItem }) {
 
   return (
     <span>
-      تیم <b dir="ltr">{item.participation.teamName}</b> · {item.participation.role === "captain" ? "کاپیتان" : "عضو تیم"}
+      تیم <b dir="ltr">{item.participation.teamName}</b> · {item.participation.role === "center_manager" ? "مدیر مرکز" : item.participation.role === "captain" ? "کاپیتان" : "عضو تیم"}
     </span>
   );
 }

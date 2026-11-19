@@ -1,3 +1,5 @@
+import { PublicTeamCard } from "@/components/tournament/public-team-card";
+import type { TeamCard } from "@/lib/public-teams";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -94,7 +96,7 @@ function TournamentMiniCard({ tournament }: { tournament: GamingCenterDetailTour
   );
 }
 
-export function GamingCenterDetailPage({ center }: { center: GamingCenterDetailData }) {
+export function GamingCenterDetailPage({ center, team }: { center: GamingCenterDetailData; team?: TeamCard }) {
   const hasVisitInfo = Boolean(center.publicAddress || center.publicPhone || center.openingHours.length > 0);
 
   return (
@@ -314,6 +316,10 @@ export function GamingCenterDetailPage({ center }: { center: GamingCenterDetailD
             </Link>
           </div>
         </section>
+      {team && <section className="container mx-auto px-4 pb-10">
+          <h2 className="mb-3 font-black">تیم گیم‌نت</h2>
+          <PublicTeamCard team={team} />
+        </section>}
       </main>
     </TournamentLayout>
   );

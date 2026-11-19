@@ -22,7 +22,7 @@ const participationSchema = z.discriminatedUnion("kind", [
     kind: z.literal("team"),
     teamId: z.string().min(1),
     teamName: z.string().min(1),
-    role: z.enum(["captain", "member"]),
+    role: z.enum(["captain", "member", "center_manager"]),
   }),
 ]);
 

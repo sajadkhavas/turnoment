@@ -1,4 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
+import { VenueResults } from "@/components/dashboard/venue-results";
 import { MyMatchesErrorState, MyMatchesPage, MyMatchesSkeleton } from "@/components/dashboard/my-matches-page";
 import {
   myMatchKindFilters,
@@ -107,6 +108,7 @@ function MyMatchesRoute() {
 
   return (
     <>
+      <VenueResults />
       {resultActions.length ? (
         <section aria-labelledby="result-actions-title" className="mb-5 rounded-2xl border border-warning/35 bg-warning/8 p-4 sm:p-5">
           <h2 id="result-actions-title" className="text-sm font-black text-warning">Matchهای نیازمند ثبت نتیجه</h2>
