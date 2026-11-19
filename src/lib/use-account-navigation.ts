@@ -15,6 +15,6 @@ export function useNavigationSession(freshOnMount = false) {
 export function useAccountNavigation() {
   const session = useNavigationSession();
   return session.isSuccess && session.data.state === "authenticated"
-    ? { to: "/dashboard/profile" as const, search: {}, label: "پروفایل من" }
+    ? { to: "/dashboard/profile" as const, search: {}, label: "پروفایل من", avatarUrl: session.data.avatarUrl }
     : { to: "/login" as const, search: { redirect: "/dashboard/profile" }, label: "ورود" };
 }

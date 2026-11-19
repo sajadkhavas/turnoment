@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { avatarSource } from "@/lib/player-avatar";
 import { useAccountNavigation } from "@/lib/use-account-navigation";
 
 import {
@@ -35,7 +36,14 @@ const nav = [
 
 export function TournamentHeader() {
   const [open, setOpen] = useState(false);
-  const { label: accountLabel, ...accountLink } = useAccountNavigation();
+  const { label: accountLabel, avatarUrl, ...accountLink } = useAccountNavigation();
+  const photo = avatarSource(avatarUrl);
+  const [failedPhoto, setFailedPhoto] = useState<string>();
+  const hasPhoto = Boolean(photo && photo !== failedPhoto);
+  const accountPhoto = hasPhoto ? (
+    <img src={photo} alt="" width={24} height={24}
+      className="size-6 shrink-0 rounded-full object-cover" onError={() => setFailedPhoto(photo)} />
+  ) : null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
@@ -129,7 +137,7 @@ export function TournamentHeader() {
                 onClick={() => setOpen(false)}
                 className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-l from-primary to-secondary px-4 text-sm font-black text-white shadow-[0_10px_30px_rgba(124,58,237,0.25)]"
               >
-                <LogIn className="h-4 w-4" />
+                {accountPhoto ?? <LogIn className="h-4 w-4" aria-hidden="true" />}
                 {accountLabel}
               </Link>
             </div>
@@ -156,7 +164,7 @@ export function TournamentHeader() {
           dir="rtl"
           className="absolute right-4 top-1/2 inline-flex min-h-10 -translate-y-1/2 items-center rounded-xl bg-primary px-3 text-xs font-black text-primary-foreground shadow-[0_8px_25px_rgba(124,58,237,0.25)] transition-transform active:scale-95 max-[360px]:px-2"
         >
-          {accountLabel}
+          <span className="flex items-center gap-1.5">{accountPhoto}<span className={hasPhoto ? "max-[360px]:sr-only" : undefined}>{accountLabel}</span></span>
         </Link>
       </div>
 
@@ -195,7 +203,7 @@ export function TournamentHeader() {
             preload={false}
             className="inline-flex min-h-10 items-center rounded-lg bg-primary px-4 text-sm font-bold text-primary-foreground transition-all hover:glow-violet-strong"
           >
-            {accountLabel}
+            <span className="flex items-center gap-2">{accountPhoto}<span className={hasPhoto ? "max-[360px]:sr-only" : undefined}>{accountLabel}</span></span>
           </Link>
         </div>
       </div>
